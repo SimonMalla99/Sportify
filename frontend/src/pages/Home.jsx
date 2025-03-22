@@ -4,19 +4,31 @@ import "../styles/Home.css"; // Add the styles here
 
 function Home() {
     const [fixtures, setFixtures] = useState([]);
+    const [previousFixtures, setPreviousFixtures] = useState([]);  // <-- FIXED: Added missing state
+    const [visibleCount, setVisibleCount] = useState(10);
+    const [players, setPlayers] = useState([]);  // State to store player data
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedPlayer, setSelectedPlayer] = useState(null);
+
+        useEffect(() => {
+            // Fetch player names from the Django API
+            fetch("http://127.0.0.1:8000/api/fpl-players/")
+                .then(response => response.json())
+                .then(data => setPlayers(data))  // Store response in state
+                .catch(error => console.error("Error fetching players:", error));
+        }, []);
 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/fpl-fixtures/") // Adjust the API endpoint if necessary
+        fetch("http://127.0.0.1:8000/api/fpl-fixtures/")
             .then(response => response.json())
             .then(data => {
-                const now = new Date(); // Get current time
+                const now = new Date();
     
-                const upcomingFixtures = data.filter(fixture => {
-                    const matchDate = new Date(fixture.kickoff_time);
-                    return matchDate > now; // Only keep future fixtures
-                });
+                const upcoming = data.filter(fixture => new Date(fixture.kickoff_time) > now);
+                const past = data.filter(fixture => new Date(fixture.kickoff_time) <= now);
     
-                setFixtures(upcomingFixtures);
+                setFixtures(upcoming);
+                setPreviousFixtures(past);
             })
             .catch(error => console.error("Error fetching fixtures:", error));
     }, []);
@@ -50,10 +62,18 @@ function Home() {
             18: "Tottenham Hotspur",
             19: "Westham Utd",
             20: "Wolves",
-            // Add more team IDs as needed
         };
         return teams[teamId] || `Team ${teamId}`;
     };
+
+    const handleSearch = (event) => {
+        setSearchQuery(event.target.value);
+        setSelectedPlayer(null);
+    };
+
+    const filteredPlayers = players.filter(player => 
+        `${player.first_name} ${player.second_name}`.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="home-container">
@@ -84,21 +104,99 @@ function Home() {
 
             {/* Premier League Fixtures Section */}
             <section className="fixtures-section">
-                <h2>Premier League Fixtures</h2>
-                {fixtures.length === 0 ? (
-                    <p>Loading fixtures...</p>
-                ) : (
-                    <ul className="fixtures-list">
-                        {fixtures.map((match) => (
-                            <li key={match.id}>
-                                {formatDate(match.kickoff_time)} - {getTeamName(match.team_a)} vs {getTeamName(match.team_h)}
-                            </li>
+            <h2>Premier League Fixtures</h2>
+
+            {/* Container for side-by-side layout */}
+            <div className="fixtures-container">
+                {/* Recent Matches */}
+                <div className="fixtures-column">
+                    <h3>Recent Matches</h3>
+                    {previousFixtures.length === 0 ? (
+                        <p>Loading previous fixtures...</p>
+                    ) : (
+                        <ul className="fixtures-list">
+                            {previousFixtures.slice(-10).map((match) => (
+                                <li key={match.id}>
+                                    {formatDate(match.kickoff_time)} - {getTeamName(match.team_h)} {match.team_h_score} : {match.team_a_score} {getTeamName(match.team_a)}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+
+                {/* Upcoming Matches */}
+                <div className="fixtures-column">
+                    <h3>Upcoming Matches</h3>
+                    {fixtures.length === 0 ? (
+                        <p>Loading fixtures...</p>
+                    ) : (
+                        <ul className="fixtures-list">
+                            {fixtures.slice(0, visibleCount).map((match) => (
+                                <li key={match.id}>
+                                    {formatDate(match.kickoff_time)} - {getTeamName(match.team_a)} vs {getTeamName(match.team_h)}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    {fixtures.length > visibleCount && (
+                        <button onClick={() => setVisibleCount(visibleCount + 10)}>Load More</button>
+                    )}
+                    {fixtures.length > visibleCount && (
+                        <button onClick={() => setVisibleCount(visibleCount - 10)}>Load Less</button>
+                    )}
+                    
+                </div>
+            </div>
+        </section>
+        <div>
+                <h1>Premier League Players</h1>
+                <input
+                    type="text"
+                    placeholder="Search player by name..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                />
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Team</th>
+                            <th>Goals Scored</th>
+                            <th>Assists</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredPlayers
+                        .sort((a, b) => b.goals_scored - a.goals_scored) // Sort by goals scored (highest first)
+                        .slice(0, 5) // Take top 5 players
+                        .map(player => (
+                            <tr key={player.id} onClick={() => setSelectedPlayer(player)}>
+                                <td>{player.first_name} {player.second_name}</td>
+                                <td>{player.team}</td>
+                                <td>{player.goals_scored}</td>
+                                <td>{player.assists}</td>
+                            </tr>
                         ))}
-                    </ul>
+                    </tbody>
+                </table>
+
+                {selectedPlayer && (
+                    <div className="player-details">
+                        <h2>{selectedPlayer.first_name} {selectedPlayer.second_name}</h2>
+                        <p><strong>Team:</strong> {selectedPlayer.team}</p>
+                        <p><strong>Goals Scored:</strong> {selectedPlayer.goals_scored}</p>
+                        <p><strong>Assists:</strong> {selectedPlayer.assists}</p>
+                        <p><strong>Position:</strong> {selectedPlayer.position}</p>
+                        <p><strong>Total Points:</strong> {selectedPlayer.total_points}</p>
+                    </div>
                 )}
-            </section>
+            </div>
         </div>
     );
 }
 
 export default Home;
+
+
+
+
