@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/Home.css"; // Add the styles here
+import { useNavigate } from "react-router-dom";
 
 function Home() {
     const [fixtures, setFixtures] = useState([]);
@@ -9,14 +10,19 @@ function Home() {
     const [players, setPlayers] = useState([]);  // State to store player data
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedPlayer, setSelectedPlayer] = useState(null);
+    const navigate = useNavigate();
+    const goToFantasy = () => {
+        navigate("/fantasy"); // Navigate to Fantasy page
+    };
 
-        useEffect(() => {
-            // Fetch player names from the Django API
-            fetch("http://127.0.0.1:8000/api/fpl-players/")
-                .then(response => response.json())
-                .then(data => setPlayers(data))  // Store response in state
-                .catch(error => console.error("Error fetching players:", error));
-        }, []);
+
+    useEffect(() => {
+        // Fetch player names from the Django API
+        fetch("http://127.0.0.1:8000/api/fpl-players/")
+            .then(response => response.json())
+            .then(data => setPlayers(data))  // Store response in state
+            .catch(error => console.error("Error fetching players:", error));
+    }, []);
 
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/fpl-fixtures/")
@@ -82,11 +88,11 @@ function Home() {
                 <div className="logo">Sportify</div>
                 <nav className="nav-bar">
                     <a href="#">Home Page</a>
-                    <a href="#">Fixtures</a>
+                    <a href="#">Fantasy</a>
                     <a href="#">Sports News</a>
                     <a href="#">About</a>
                     <a href="#">Contact</a>
-                    <button className="btn join-btn">Join</button>
+                    <button className="btn join-btn" onClick={goToFantasy}>Join</button>
                 </nav>
             </header>
 
@@ -148,8 +154,8 @@ function Home() {
                 </div>
             </div>
         </section>
-        <div>
-                <h1>Premier League Players</h1>
+            <div>
+                <h1>Top Premier League Players</h1>
                 <input
                     type="text"
                     placeholder="Search player by name..."
