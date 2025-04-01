@@ -1,42 +1,33 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import Fantasy from "./pages/Fantasy";
 import NotFound from "./pages/NotFound";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Fantasy from "./pages/Fantasy"; // ✅ Import Fantasy component
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
 
-function Logout() {
-  localStorage.clear();
-  return <Navigate to="/login" />;
+function PrivateRoute({ children }) {
+    const { user } = useContext(AuthContext);
+    return user ? children : <Navigate to="/login" />;
 }
 
-function RegisterAndLogout() {
-  localStorage.clear();
-  return <Register />;
+function Logout() {
+    localStorage.clear();
+    return <Navigate to="/login" />;
 }
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<RegisterAndLogout />} />
-        <Route path="/fantasy" element={<Fantasy />} /> {/* ✅ Added route for Fantasy */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  );
+    return (
+        <Routes>
+            <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/fantasy" element={<PrivateRoute><Fantasy /></PrivateRoute>} />
+            <Route path="*" element={<NotFound />} />
+        </Routes>
+    );
 }
 
 export default App;

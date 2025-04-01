@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/Home.css"; // Add the styles here
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 function Home() {
     const [fixtures, setFixtures] = useState([]);
@@ -11,8 +14,14 @@ function Home() {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedPlayer, setSelectedPlayer] = useState(null);
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);  // Get logged-in user state
+
     const goToFantasy = () => {
-        navigate("/fantasy"); // Navigate to Fantasy page
+        if (user) {
+            navigate("/fantasy");  // Redirect to fantasy if user is logged in
+        } else {
+            navigate("/login");  // Otherwise, redirect to login
+        }
     };
 
 
@@ -87,12 +96,13 @@ function Home() {
             <header className="home-header">
                 <div className="logo">Sportify</div>
                 <nav className="nav-bar">
-                    <a href="#">Home Page</a>
-                    <a href="#">Fantasy</a>
-                    <a href="#">Sports News</a>
-                    <a href="#">About</a>
-                    <a href="#">Contact</a>
+                    <Link to="/">Home Page</Link>
+                    <Link to="/fantasy">Fantasy</Link>
+                    <Link to="#">Sports News</Link>
+                    <Link to="#">About</Link>
+                    <Link to="#">Contact</Link>
                     <button className="btn join-btn" onClick={goToFantasy}>Join</button>
+                    {user.username}
                 </nav>
             </header>
 
@@ -101,6 +111,7 @@ function Home() {
                 <div className="hero-text">
                     <h1>Unleash Your Fantasy Football Passion with Sportify</h1>
                     <p>Explore the world of fantasy football and sports news in Nepal. Join us today!</p>
+                    {user ? <p>Logged in as: {user.username}</p> : <p>Please log in</p>}
                     <div className="hero-buttons">
                         <button className="btn primary-btn">Join</button>
                         <button className="btn secondary-btn">Learn More</button>
