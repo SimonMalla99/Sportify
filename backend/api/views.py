@@ -1,37 +1,39 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer
+from .serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Note
 import requests
 from django.http import JsonResponse
 from django.conf import settings
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth.models import User
+from rest_framework import viewsets, permissions
+from .models import DraftedPlayer
+from .serializers import DraftedPlayerSerializer
 
+class CustomTokenObtainPairView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)  # Get tokens
 
-class NoteListCreate(generics.ListCreateAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
+        if response.status_code == 200:
+            user = User.objects.get(username=request.data["username"])  # Fetch user details
+            user_data = {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email
+            }
+            response.data["user"] = user_data  # Attach user data to response
 
-    def get_queryset(self):
-        user = self.request.user
-        return Note.objects.filter(author=user)
+        return response
+class UserView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure user is logged in
 
-    def perform_create(self, serializer):
-        if serializer.is_valid():
-            serializer.save(author=self.request.user)
-        else:
-            print(serializer.errors)
-
-
-class NoteDelete(generics.DestroyAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Note.objects.filter(author=user)
-    
+    def get(self, request):
+        user = request.user
+        return Response({"id": user.id, "username": user.username})
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -105,3 +107,13 @@ def fetch_fixtures(request):
     else:
         return JsonResponse({"error": "Failed to fetch data"}, status=500)
 
+class DraftedPlayerViewSet(viewsets.ModelViewSet):
+    queryset = DraftedPlayer.objects.all()
+    serializer_class = DraftedPlayerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return DraftedPlayer.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
