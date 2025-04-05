@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import DraftedPlayer
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,7 +14,3 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class DraftedPlayerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DraftedPlayer
-        fields = "__all__"

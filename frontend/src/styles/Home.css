@@ -204,4 +204,34 @@ p {
     margin: 5px 0;
 }
 
+.account-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 1rem;
+}
+
+.account-dropdown {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.account-dropdown p {
+    margin: 0 0 10px 0;
+}
+
+.account-dropdown button {
+    background-color: #e63946;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
 

@@ -4,15 +4,19 @@ from rest_framework import generics
 from .serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 import requests
+import json
 from django.http import JsonResponse
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User
-from rest_framework import viewsets, permissions
 from .models import DraftedPlayer
-from .serializers import DraftedPlayerSerializer
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -33,7 +37,7 @@ class UserView(APIView):
 
     def get(self, request):
         user = request.user
-        return Response({"id": user.id, "username": user.username})
+        return Response({"id": user.id, "username": user.username, "is_superuser": user.is_superuser})
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -107,13 +111,75 @@ def fetch_fixtures(request):
     else:
         return JsonResponse({"error": "Failed to fetch data"}, status=500)
 
-class DraftedPlayerViewSet(viewsets.ModelViewSet):
-    queryset = DraftedPlayer.objects.all()
-    serializer_class = DraftedPlayerSerializer
-    permission_classes = [permissions.IsAuthenticated]
+@csrf_exempt
+def save_draft(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            drafted_players = data.get("drafted_players", [])
 
-    def get_queryset(self):
-        return DraftedPlayer.objects.filter(user=self.request.user)
+            for player in drafted_players:
+                DraftedPlayer.objects.create(
+                    player_id=player["player_id"],
+                    user_id=player["user_id"],
+                    position=player["position"]
+                )
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+            return JsonResponse({"success": True, "message": "Draft saved successfully!"})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)}, status=400)
+    
+    return JsonResponse({"success": False, "message": "Invalid request method"}, status=405)
+
+@csrf_exempt
+def has_team(request):
+    if request.method == "GET":
+        user_id = request.GET.get("user_id")
+
+        if not user_id:
+            return JsonResponse({"error": "User ID is required"}, status=400)
+
+        has_team = DraftedPlayer.objects.filter(user_id=user_id).count() == 11
+        return JsonResponse({"has_team": has_team})
+
+    return JsonResponse({"error": "GET request only"}, status=405)
+
+@csrf_exempt
+def get_user_team(request):
+    if request.method == "GET":
+        user_id = request.GET.get("user_id")
+
+        if not user_id:
+            return JsonResponse({"error": "User ID is required"}, status=400)
+
+        drafted_players = DraftedPlayer.objects.filter(user_id=user_id)
+
+        # Fetch live player info from FPL API to get names
+        fpl_response = requests.get("https://fantasy.premierleague.com/api/bootstrap-static/")
+        if fpl_response.status_code != 200:
+            return JsonResponse({"error": "Failed to fetch player data from FPL API"}, status=500)
+
+        fpl_data = fpl_response.json()
+        all_players = {p["id"]: p for p in fpl_data["elements"]}
+        teams = {t["id"]: t["name"] for t in fpl_data["teams"]}
+        positions = {
+            1: "Goalkeeper",
+            2: "Defender",
+            3: "Midfielder",
+            4: "Forward"
+        }
+
+        team_data = []
+        for dp in drafted_players:
+            player_data = all_players.get(dp.player_id)
+            if player_data:
+                team_data.append({
+                    "first_name": player_data["first_name"],
+                    "second_name": player_data["second_name"],
+                    "team": teams.get(player_data["team"], "Unknown"),
+                    "position": positions.get(player_data["element_type"], "Unknown")
+                })
+
+        return JsonResponse(team_data, safe=False)
+
+    return JsonResponse({"error": "GET method only"}, status=405)
