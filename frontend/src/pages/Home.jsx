@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
 
 function Home() {
     const [fixtures, setFixtures] = useState([]);
@@ -15,6 +16,8 @@ function Home() {
     const [selectedPlayer, setSelectedPlayer] = useState(null);
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);  // Get logged-in user state
+    const [showMenu, setShowMenu] = useState(false);
+    const toggleMenu = () => setShowMenu(!showMenu);
 
     const goToFantasy = () => {
         if (user) {
@@ -22,6 +25,9 @@ function Home() {
         } else {
             navigate("/login");  // Otherwise, redirect to login
         }
+    };
+    const handleLogout = () =>{
+         navigate("/logout");
     };
 
 
@@ -97,12 +103,22 @@ function Home() {
                 <div className="logo">Sportify</div>
                 <nav className="nav-bar">
                     <Link to="/">Home Page</Link>
-                    <Link to="/fantasy">Fantasy</Link>
+                    <Link to="/fantasy-team">Fantasy</Link>
                     <Link to="#">Sports News</Link>
                     <Link to="#">About</Link>
                     <Link to="#">Contact</Link>
                     <button className="btn join-btn" onClick={goToFantasy}>Join</button>
-                    {user.username}
+                    {user && (
+                        <div className="account-container">
+                            <FaUserCircle size={24} onClick={toggleMenu} style={{ cursor: "pointer" }} />
+                            {showMenu && (
+                                <div className="account-dropdown">
+                                    <p>👤 {user.username}</p>
+                                    <button onClick={handleLogout}>Logout</button>
+                                </div>
+                            )}
+        </div>
+    )}
                 </nav>
             </header>
 
