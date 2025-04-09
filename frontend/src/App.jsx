@@ -8,6 +8,9 @@ import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import FantasyTeam from "./pages/FantasyTeam";
 import AdminDashboard from "./pages/AdminDashboard";
+import NewsAdmin from "./pages/NewsAdmin";
+import News from "./pages/News";
+import Predictions from "./pages/Predictions"
 
 
 function PrivateRoute({ children }) {
@@ -31,6 +34,9 @@ function App() {
             <Route path="*" element={<NotFound />} />
             <Route path="/fantasy-team" element={<FantasyTeam />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path='/news-admin'element={<NewsAdmin />}/>
+            <Route path='/news'element={<News />}/>
+            <Route path='/predictions'element={<Predictions />}/>
         </Routes>
     );
 }

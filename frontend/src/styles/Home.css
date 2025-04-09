@@ -1,6 +1,8 @@
 /* General Container */
 .home-container {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #111;
+    background-color: #ffffff;
 }
 
 /* Header Styles */
@@ -8,59 +10,61 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #ddd;
+    padding: 16px 32px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
 .logo {
     font-size: 24px;
-    font-weight: bold;
-    color: #007bff;
+    font-weight: 700;
+    color: #111;
 }
 
 .nav-bar {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
 }
 
 .nav-bar a {
     text-decoration: none;
-    color: #333;
+    color: #111;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .nav-bar a:hover {
-    color: #007bff;
+    color: #555;
 }
 
 .btn {
     padding: 8px 16px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
 .join-btn {
-    background-color: #007bff;
-    color: white;
+    background-color: #111;
+    color: #fff;
 }
 
 .join-btn:hover {
-    background-color: #0056b3;
+    background-color: #333;
 }
 
 .login-btn {
-    background-color: #6c757d;
-    color: white;
+    background-color: #fff;
+    color: #111;
+    border: 1px solid #ccc;
 }
 
 .login-btn:hover {
-    background-color: #5a6268;
+    background-color: #f4f4f4;
 }
 
 /* Hero Section */
@@ -68,24 +72,26 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 40px 20px;
-    background-color: #f1f1f1;
+    padding: 60px 40px;
+    background-color: #f9f9f9;
 }
 
 .hero-text {
-    max-width: 50%;
+    max-width: 600px;
 }
 
 .hero-text h1 {
-    font-size: 36px;
-    color: #333;
-    margin-bottom: 15px;
+    font-size: 40px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 20px;
 }
 
 .hero-text p {
-    font-size: 18px;
+    font-size: 16px;
     color: #555;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
+    line-height: 1.6;
 }
 
 .hero-buttons .btn {
@@ -93,63 +99,69 @@
 }
 
 .primary-btn {
-    background-color: #007bff;
-    color: white;
+    background-color: #111;
+    color: #fff;
 }
 
 .primary-btn:hover {
-    background-color: #0056b3;
+    background-color: #222;
 }
 
 .secondary-btn {
-    background-color: #6c757d;
-    color: white;
+    background-color: #fff;
+    color: #111;
+    border: 1px solid #ccc;
 }
 
 .secondary-btn:hover {
-    background-color: #5a6268;
+    background-color: #f4f4f4;
 }
 
 .hero-image img {
     width: 300px;
-    height: auto;
     border-radius: 8px;
     object-fit: cover;
 }
+
+/* Fixtures Section */
 .fixtures-section {
-    margin: 20px;
-    padding: 20px;
-    background: #f8f9fa;
+    margin: 40px;
+    padding: 30px;
+    background: #ffffff;
     border-radius: 10px;
+    border: 1px solid #eee;
 }
 
 .fixtures-container {
     display: flex;
-    justify-content: space-between; /* Ensures equal spacing */
-    gap: 20px; /* Adds space between columns */
+    gap: 40px;
 }
 
 .fixtures-column {
-    flex: 1; /* Both columns take equal width */
-    min-width: 300px; /* Prevents it from becoming too narrow */
+    flex: 1;
 }
 
-/* Style adjustments */
 .fixtures-list {
     list-style: none;
     padding: 0;
 }
 
 .fixtures-list li {
-    padding: 10px;
-    background: #fff;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px 14px;
+    background: #f4f4f4;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    transition: background 0.2s ease;
 }
 
+.fixtures-list li:hover {
+    background: #e9e9e9;
+}
+
+/* Player Section */
 h1 {
-    color: #333;
+    color: #111;
+    font-size: 24px;
 }
 
 input {
@@ -157,81 +169,210 @@ input {
     padding: 10px;
     margin: 20px 0;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 16px;
 }
 
+/* Player Table */
 table {
     width: 100%;
     border-collapse: collapse;
-    background: #ffffff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    background: #fff;
     border-radius: 8px;
     overflow: hidden;
+    margin-top: 20px;
 }
 
 th, td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
 }
 
 th {
-    background-color: #007bff;
-    color: white;
+    background-color: #111;
+    color: #fff;
 }
 
 tr:hover {
-    background-color: #f1f1f1;
-    cursor: pointer;
+    background-color: #f7f7f7;
 }
 
 .player-details {
     margin-top: 20px;
-    padding: 15px;
-    background: white;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background: #fafafa;
+    border: 1px solid #eee;
     border-radius: 8px;
-    display: inline-block;
-    text-align: left;
 }
 
-.player-details h2 {
-    color: #007bff;
-}
-
-p {
-    margin: 5px 0;
-}
-
+/* Account Icon Dropdown */
 .account-container {
     position: relative;
     display: inline-block;
-    margin-left: 1rem;
 }
 
 .account-dropdown {
     position: absolute;
-    top: 30px;
+    top: 40px;
     right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
     z-index: 100;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
 }
 
 .account-dropdown p {
-    margin: 0 0 10px 0;
+    margin-bottom: 10px;
+    font-weight: 500;
 }
 
 .account-dropdown button {
     background-color: #e63946;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 14px;
 }
+
+.account-dropdown button:hover {
+    background-color: #c62828;
+}
+
+/* NewsAdmin Styles */
+.newsadmin-container {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.newsadmin-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #111;
+    text-align: center;
+}
+
+.newsadmin-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.newsadmin-form input[type="text"],
+.newsadmin-form textarea,
+.newsadmin-form input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 24px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.newsadmin-form input[type="text"]:focus,
+.newsadmin-form textarea:focus {
+    border-color: #111;
+    outline: none;
+}
+
+.newsadmin-form textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.newsadmin-form button {
+    background-color: #111;
+    color: #fff;
+    padding: 14px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.newsadmin-form button:hover {
+    background-color: #333;
+}
+
+/* News Page Styling */
+.news-articles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    padding: 2rem;
+}
+  
+.news-articles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .news-article {
+    background-color: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .news-article:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+  
+  .news-article img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+  }
+  
+  .news-article h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 1rem;
+    text-align: center;
+  }
+  
+  .news-article p {
+    padding: 0 1rem 1rem;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+  }
+  .news-header {
+    padding: 60px 20px 20px;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+.news-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 10px;
+}  
+    
 
