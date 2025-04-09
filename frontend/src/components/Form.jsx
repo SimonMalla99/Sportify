@@ -56,6 +56,10 @@ function Form({ route, method }) {
         }
     };
 
+    const handleSignupRedirect = () => {
+        navigate("/register"); // Redirect to the signup page
+    };
+
     return (
         <form onSubmit={handleSubmit} className="form-container">
             <h1>{name}</h1>
@@ -76,6 +80,17 @@ function Form({ route, method }) {
             <button className="form-button" type="submit" disabled={loading}>
                 {loading ? "Loading..." : name}
             </button>
+
+            {/* Add the signup button */}
+            {method === "login" && (
+                <button
+                    type="button"
+                    onClick={handleSignupRedirect}
+                    className="form-button signup-button"
+                >
+                    Don't have an account? Sign up
+                </button>
+            )}
         </form>
     );
 }

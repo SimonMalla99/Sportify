@@ -1,6 +1,11 @@
 import { useContext, useEffect, useState } from "react";
+import "../styles/Fantasy.css";
+import "../styles/Home.css";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
+
 
 
 function Fantasy() {
@@ -9,6 +14,13 @@ function Fantasy() {
     const [players, setPlayers] = useState([]);
     const [draftedPlayers, setDraftedPlayers] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [showMenu, setShowMenu] = useState(false);
+    const toggleMenu = () => setShowMenu(!showMenu);
+
+    const handleLogout = () =>{
+        navigate("/logout");
+   };
+    
 
     const POSITION_LIMITS = {
         "Forward": 3,  
@@ -113,93 +125,133 @@ function Fantasy() {
     if (!user) return null;
 
     return (
-        <div style={{ display: "flex", gap: "20px" }}>
-            <div>
-                <h1>Welcome to Fantasy Football, {user.username}!</h1>
-                <h2>Draft Your Players</h2>
-                
-                <input 
-                    type="text" 
-                    placeholder="Search for a player..." 
-                    value={searchQuery} 
-                    onChange={(e) => setSearchQuery(e.target.value)} 
-                    style={{ marginBottom: "10px", padding: "5px", width: "100%" }}
-                />
-                
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Team</th>
-                            <th>Position</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredPlayers
-                        .sort((a, b) => b.goals_scored - a.goals_scored)
-                        .map(player => (
-                            <tr key={player.id}>
-                                <td>{player.first_name} {player.second_name}</td>
-                                <td>{player.team}</td>
-                                <td>{player.position}</td>
-                                <td>
+        <div className="fantasy-container">
+            <>
+                <header className="fantasy-header">
+                    <div className="fantasy-logo">Sportify</div>
+                    <nav className="fantasy-nav">
+                        <Link to="/">Home Page</Link>
+                        <Link to="/fantasy-team">Fantasy</Link>
+                        <Link to="#">Sports News</Link>
+                        <Link to="#">About</Link>
+                        <Link to="#">Contact</Link>
+    
+                        {user && (
+                            <div className="fantasy-account">
+                                <FaUserCircle size={24} onClick={toggleMenu} className="account-icon" />
+                                {showMenu && (
+                                    <div className="account-dropdown">
+                                        <p>👤 {user.username}</p>
+                                        <button onClick={handleLogout}>Logout</button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </nav>
+                </header>
+    
+                {/* MAIN FLEX CONTAINER */}
+                <div className="fantasy-main">
+                    {/* LEFT: Player Table */}
+                    <div className="fantasy-left">
+                        <h1>Welcome to Fantasy Football, {user.username}!</h1>
+                        <h2>Draft Your Players</h2>
+    
+                        <input 
+                            type="text" 
+                            placeholder="Search for a player..." 
+                            value={searchQuery} 
+                            onChange={(e) => setSearchQuery(e.target.value)} 
+                            className="fantasy-search"
+                        />
+    
+                        <table className="fantasy-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Team</th>
+                                    <th>Position</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredPlayers
+                                .sort((a, b) => b.goals_scored - a.goals_scored)
+                                .map(player => {
+                                    console.log(player.id, player.first_name, player.second_name);
+                                    return (
+                                        <tr key={player.id}>
+                                            <td>{player.first_name} {player.second_name}</td>
+                                            <td>{player.team}</td>
+                                            <td>{player.position}</td>
+                                            <td>
+                                                <button 
+                                                    onClick={() => draftPlayer(player)} 
+                                                    disabled={
+                                                        draftedPlayers.length >= 11 || 
+                                                        draftedPlayers.some(p => p.id === player.id) || 
+                                                        getPositionCount(player.position) >= (POSITION_LIMITS[player.position] || 0)
+                                                    }
+                                                >
+                                                    Draft
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+    
+                    {/* RIGHT: Drafted Players */}
+                    <div className="fantasy-right">
+                        <div className="field-wrapper">
+                            <img src="/feild2.png" alt="Soccer Field" className="soccer-field" />
+
+                            {/* Players will be positioned based on their roles */}
+                            {draftedPlayers.map((player, index) => {
+                            let posClass = "";
+                            const posCount = draftedPlayers.filter(p => p.position === player.position)
+                                                            .slice(0, POSITION_LIMITS[player.position]);
+
+                            const indexInPosition = posCount.findIndex(p => p.id === player.id) + 1;
+
+                            if (player.position === "Goalkeeper") posClass = "position-gk";
+                            else if (player.position === "Defender") posClass = `position-d${indexInPosition}`;
+                            else if (player.position === "Midfielder") posClass = `position-m${indexInPosition}`;
+                            else if (player.position === "Forward") posClass = `position-f${indexInPosition}`;
+
+                            return (
+                                <div key={player.id} className={`player-container ${posClass}`}>
+                                    <div className="player-label">
+                                        {player.first_name} {player.second_name}
+                                    </div>
                                     <button 
-                                        onClick={() => draftPlayer(player)} 
-                                        disabled={
-                                            draftedPlayers.length >= 11 || 
-                                            draftedPlayers.some(p => p.id === player.id) || 
-                                            getPositionCount(player.position) >= (POSITION_LIMITS[player.position] || 0)
-                                        }
+                                        onClick={() => removePlayer(player.id)} 
+                                        className="remove-btn"
                                     >
-                                        Draft
+                                        X
                                     </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                                </div>
 
-            {/* Drafted Players Section */}
-            <div>
-                <h2>Your Drafted Players</h2>
-                {draftedPlayers.length === 0 ? (
-                    <p>No players drafted yet.</p>
-                ) : (
-                    <ul>
-                        {draftedPlayers.map(player => (
-                            <li key={player.id}>
-                                {player.first_name} {player.second_name} - {player.team} ({player.position}) 
-                                <button 
-                                    onClick={() => removePlayer(player.id)} 
-                                    style={{ marginLeft: "10px", color: "white", background: "red", border: "none", padding: "5px", cursor: "pointer" }}
-                                >
-                                    Remove
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                )}
 
-                {draftedPlayers.length === 11 && (
-                    <button 
-                        onClick={confirmDraft}
-                        style={{
-                            backgroundColor: "green",
-                            color: "white",
-                            padding: "10px",
-                            border: "none",
-                            cursor: "pointer",
-                            marginTop: "10px"
-                        }}
-                    >
-                        Confirm Team
-                    </button>
-                )}
-            </div>
+                            );
+                            })}
+                        </div>
+
+                        {draftedPlayers.length === 11 && (
+                            <button onClick={confirmDraft} className="confirm-btn">
+                            Confirm Team
+                            </button>
+                        )}
+                        </div>
+
+                </div>
+            </>
         </div>
     );
+    
+    
 }
 
 export default Fantasy;

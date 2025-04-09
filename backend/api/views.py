@@ -16,6 +16,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
+from .models import NewsArticle
+from .serializers import NewsArticleSerializer
+from rest_framework import viewsets, permissions
+from .models import PlayerPrediction
+from .serializers import PlayerPredictionSerializer
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -183,3 +190,30 @@ def get_user_team(request):
         return JsonResponse(team_data, safe=False)
 
     return JsonResponse({"error": "GET method only"}, status=405)
+
+class NewsArticleView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        news_articles = NewsArticle.objects.all().order_by("-id")
+        serializer = NewsArticleSerializer(news_articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = NewsArticleSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class PlayerPredictionViewSet(viewsets.ModelViewSet):
+    serializer_class = PlayerPredictionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return PlayerPrediction.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

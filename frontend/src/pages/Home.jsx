@@ -18,6 +18,10 @@ function Home() {
     const { user } = useContext(AuthContext);  // Get logged-in user state
     const [showMenu, setShowMenu] = useState(false);
     const toggleMenu = () => setShowMenu(!showMenu);
+    const [newsArticles, setNewsArticles] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
 
     const goToFantasy = () => {
         if (user) {
@@ -53,6 +57,21 @@ function Home() {
             })
             .catch(error => console.error("Error fetching fixtures:", error));
     }, []);
+
+    useEffect(() => {
+        // Fetch news articles from your Django backend
+        axios
+          .get("http://127.0.0.1:8000/api/news/")
+          .then((response) => {
+            setNewsArticles(response.data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.error("Error fetching news articles:", err);
+            setError(err);
+            setLoading(false);
+          });
+      }, []);
 
     // Function to format date and time
     const formatDate = (isoString) => {
@@ -104,7 +123,8 @@ function Home() {
                 <nav className="nav-bar">
                     <Link to="/">Home Page</Link>
                     <Link to="/fantasy-team">Fantasy</Link>
-                    <Link to="#">Sports News</Link>
+                    <Link to="/News">Sports News</Link>
+                    <Link to="/predictions">Predictions</Link>
                     <Link to="#">About</Link>
                     <Link to="#">Contact</Link>
                     <button className="btn join-btn" onClick={goToFantasy}>Join</button>
@@ -117,8 +137,8 @@ function Home() {
                                     <button onClick={handleLogout}>Logout</button>
                                 </div>
                             )}
-        </div>
-    )}
+                        </div>
+                    )}
                 </nav>
             </header>
 
@@ -224,9 +244,60 @@ function Home() {
                     </div>
                 )}
             </div>
+            <header className="news-header">
+            <h1>Latest News</h1>
+            </header>
+            <div className="news-articles">
+                {newsArticles.length === 0 ? (
+                    <p>No news articles available.</p>
+                ) : (
+                    newsArticles.map((article) => (
+                    <div key={article.id} className="news-article">
+                        {article.image && (
+                        <img
+                            src={`http://127.0.0.1:8000${article.image}`}
+                            alt={article.title}
+                        />
+                        )}
+                        <h2>{article.title}</h2>
+                    </div>
+                    ))
+                )}
+                </div>
+
+
         </div>
     );
 }
+const styles = {
+    grid: {
+      display: "flex",
+      gap: "20px",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      marginTop: "30px",
+    },
+    card: {
+      width: "250px",
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      overflow: "hidden",
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      backgroundColor: "#fff",
+      textAlign: "center",
+    },
+    image: {
+      width: "100%",
+      height: "150px",
+      objectFit: "cover",
+    },
+    title: {
+      padding: "10px",
+      fontSize: "1rem",
+      fontWeight: "bold",
+    },
+  };
+  
 
 export default Home;
 
