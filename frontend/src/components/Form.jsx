@@ -37,7 +37,7 @@ function Form({ route, method }) {
 
                 console.log("User data fetched:", userRes.data);
 
-                login(userRes.data); // ✅ Update AuthContext
+                login(userRes.data, res.data.access, res.data.refresh);
                 if (userRes.data.is_superuser) {
                     navigate("/admin-dashboard");  // ✅ redirect if admin
                 } else {

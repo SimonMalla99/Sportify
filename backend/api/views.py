@@ -21,6 +21,9 @@ from rest_framework import status
 from .models import NewsArticle
 from .serializers import NewsArticleSerializer
 from rest_framework import viewsets, permissions
+from .models import TeamGamePerformance
+from django.views.decorators.http import require_http_methods
+from .models import TeamPrediction
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -224,6 +227,11 @@ class NewsArticleView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class NewsArticleDetail(generics.RetrieveAPIView):
+    queryset = NewsArticle.objects.all()
+    serializer_class = NewsArticleSerializer
+    permission_classes = [AllowAny]
+    
 def calculate_custom_points(stats, position):
     points = 0
     minutes = stats.get("minutes", 0)
@@ -302,6 +310,7 @@ def calculate_player_game_points(request):
                     "penalties_missed": game["penalties_missed"],
                     "position": position,
                     "total_points": points,
+                    "gameweek": game["round"]
                 }
             )
             results.append({
@@ -315,10 +324,229 @@ def calculate_player_game_points(request):
                 "red_cards": game["red_cards"],
                 "saves": game["saves"],
                 "clean_sheets": bool(game["clean_sheets"]),
-                "total_points": points
+                "total_points": points,
+                "gameweek": game["round"]
             })
 
 
     return JsonResponse(results, safe=False)
 
+
+@csrf_exempt
+def calculate_team_game_performance(request):
+    if request.method != "GET":
+        return JsonResponse({"error": "Only GET allowed"}, status=405)
+
+    user_id = request.GET.get("user_id")
+    if not user_id:
+        return JsonResponse({"error": "user_id is required"}, status=400)
+
+    performances = PlayerGamePerformance.objects.filter(user_id=user_id)
+
+    # Group by gameweek (not fixture_id)
+    gameweeks = performances.values_list("gameweek", flat=True).distinct()
+
+    results = []
+
+    for gameweek in gameweeks:
+        fixture_players = performances.filter(gameweek=gameweek)
+
+        total_goals = 0
+        total_assists = 0
+        total_clean_sheets = 0
+        total_saves = 0
+        total_yellow_cards = 0
+        total_red_cards = 0
+        total_points = 0
+
+        forward_goals = 0
+        midfielder_goals = 0
+        defender_clean_sheets = 0
+        goalkeeper_clean_sheets = 0
+
+        for p in fixture_players:
+            total_goals += p.goals_scored
+            total_assists += p.assists
+            total_clean_sheets += int(p.clean_sheets)
+            total_saves += p.saves
+            total_yellow_cards += p.yellow_cards
+            total_red_cards += p.red_cards
+            total_points += p.total_points
+
+            # Breakdowns
+            if p.position == "Forward":
+                forward_goals += p.goals_scored
+            elif p.position == "Midfielder":
+                midfielder_goals += p.goals_scored
+            elif p.position == "Defender":
+                defender_clean_sheets += int(p.clean_sheets)
+            elif p.position == "Goalkeeper":
+                goalkeeper_clean_sheets += int(p.clean_sheets)
+
+        # Save or update record using `gameweek`
+        team_perf, created = TeamGamePerformance.objects.update_or_create(
+            user_id=user_id,
+            gameweek=gameweek,
+            defaults={
+                "total_goals": total_goals,
+                "total_assists": total_assists,
+                "total_clean_sheets": total_clean_sheets,
+                "total_saves": total_saves,
+                "total_yellow_cards": total_yellow_cards,
+                "total_red_cards": total_red_cards,
+                "total_points": total_points,
+                "forward_goals": forward_goals,
+                "midfielder_goals": midfielder_goals,
+                "defender_clean_sheets": defender_clean_sheets,
+                "goalkeeper_clean_sheets": goalkeeper_clean_sheets,
+            }
+        )
+
+        results.append({
+            "gameweek": gameweek,
+            "total_goals": total_goals,
+            "total_assists": total_assists,
+            "total_saves": total_saves,
+            "total_yellow_cards": total_yellow_cards,
+            "total_red_cards": total_red_cards,
+            "total_points": total_points,
+            "forward_goals": forward_goals,
+            "midfielder_goals": midfielder_goals,
+            "defender_clean_sheets": defender_clean_sheets,
+            "goalkeeper_clean_sheets": goalkeeper_clean_sheets,
+        })
+
+
+    return JsonResponse(results, safe=False)
+
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def submit_team_prediction(request):
+    try:
+        data = json.loads(request.body)
+
+        user_id = data.get("user_id")
+        gameweek = data.get("gameweek")
+
+        # Predicted stats
+        predicted_forward_goals = data.get("predicted_forward_goals", 0)
+        predicted_midfielder_goals = data.get("predicted_midfielder_goals", 0)
+        predicted_defender_clean_sheets = data.get("predicted_defender_clean_sheets", 0)
+        predicted_goalkeeper_clean_sheets = data.get("predicted_goalkeeper_clean_sheets", 0)
+        predicted_total_assists = data.get("predicted_total_assists", 0)
+
+        if not user_id or gameweek is None:
+            return JsonResponse({"error": "user_id and gameweek are required"}, status=400)
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+
+        # Save or update prediction
+        prediction, created = TeamPrediction.objects.update_or_create(
+            user=user,
+            gameweek=gameweek,
+            defaults={
+                "predicted_forward_goals": predicted_forward_goals,
+                "predicted_midfielder_goals": predicted_midfielder_goals,
+                "predicted_defender_clean_sheets": predicted_defender_clean_sheets,
+                "predicted_goalkeeper_clean_sheets": predicted_goalkeeper_clean_sheets,
+                "predicted_total_assists": predicted_total_assists,
+            }
+        )
+
+        return JsonResponse({
+            "success": True,
+            "message": "Prediction submitted successfully!",
+            "created": created
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def evaluate_prediction(request):
+    try:
+        data = json.loads(request.body)
+
+        user_id = data.get("user_id")
+        gameweek = data.get("gameweek")
+
+        if not user_id or gameweek is None:
+            return JsonResponse({"error": "user_id and gameweek are required"}, status=400)
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+
+        try:
+            prediction = TeamPrediction.objects.get(user=user, gameweek=gameweek)
+        except TeamPrediction.DoesNotExist:
+            return JsonResponse({"error": "Prediction not found for this user and gameweek"}, status=404)
+
+        try:
+            performance = TeamGamePerformance.objects.get(user=user, gameweek=gameweek)
+        except TeamGamePerformance.DoesNotExist:
+            return JsonResponse({"error": "No team performance data found for this gameweek"}, status=404)
+
+        # Check if prediction is correct
+        is_correct = (
+            prediction.predicted_forward_goals == performance.forward_goals and
+            prediction.predicted_midfielder_goals == performance.midfielder_goals and
+            prediction.predicted_defender_clean_sheets == performance.defender_clean_sheets and
+            prediction.predicted_goalkeeper_clean_sheets == performance.goalkeeper_clean_sheets and
+            prediction.predicted_total_assists == performance.total_assists
+        )
+
+        # Apply multiplier if correct
+        multiplier = 1.1 if is_correct else 1.0
+        final_points = round(performance.total_points * multiplier, 2)
+
+        # Save updated fields
+        prediction.prediction_correct = is_correct
+        prediction.multiplier_applied = is_correct
+        prediction.save()
+
+        # Update final_points based on prediction result
+        performance.final_points = performance.total_points * 1.5 if is_correct else performance.total_points
+        performance.save()
+
+
+        performance.final_points = final_points
+        performance.save()
+
+        return JsonResponse({
+            "success": True,
+            "prediction_correct": is_correct,
+            "multiplier_applied": is_correct,
+            "final_points": final_points,
+            "original_points": performance.total_points,
+        })
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+@csrf_exempt
+def debug_team_performance(request):
+    user_id = request.GET.get("user_id")
+    gameweek = request.GET.get("gameweek")
+
+    try:
+        perf = TeamGamePerformance.objects.get(user_id=user_id, gameweek=gameweek)
+        return JsonResponse({
+            "user_id": user_id,
+            "gameweek": gameweek,
+            "total_points": perf.total_points,
+            "final_points": perf.final_points
+        })
+    except TeamGamePerformance.DoesNotExist:
+        return JsonResponse({"error": "No performance found"}, status=404)
 
