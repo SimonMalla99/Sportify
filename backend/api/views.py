@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User
-from .models import DraftedPlayer
+from .models import DraftedPlayer, PlayerGamePerformance
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -21,8 +21,6 @@ from rest_framework import status
 from .models import NewsArticle
 from .serializers import NewsArticleSerializer
 from rest_framework import viewsets, permissions
-from .models import PlayerPrediction
-from .serializers import PlayerPredictionSerializer
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -85,7 +83,6 @@ def fetch_players(request):
             for player in players:
                 # Get the player's history (if available)
                 history = player.get("history", [])
-                matches_played = len(history)  # Count the number of games they have played, including substitutions
 
                 player_list.append({
                     "id": player["id"],
@@ -94,9 +91,13 @@ def fetch_players(request):
                     "team": team_map.get(player["team"], "Unknown Team"),
                     "total_points": player["total_points"],
                     "goals_scored": player["goals_scored"],
+                    "goals_conceded": player["goals_conceded"],
+                    "penalties_saved": player["penalties_saved"],
+                    "saves": player["saves"],
                     "assists": player["assists"],
                     "yellow_cards": player["yellow_cards"],
                     "red_cards": player["red_cards"],
+                    "photo": player["photo"],
                     "position": position_map.get(player["element_type"], "Unknown Position"),
                 })
 
@@ -161,7 +162,7 @@ def get_user_team(request):
 
         drafted_players = DraftedPlayer.objects.filter(user_id=user_id)
 
-        # Fetch live player info from FPL API to get names
+        # Fetch bootstrap-static data
         fpl_response = requests.get("https://fantasy.premierleague.com/api/bootstrap-static/")
         if fpl_response.status_code != 200:
             return JsonResponse({"error": "Failed to fetch player data from FPL API"}, status=500)
@@ -177,19 +178,35 @@ def get_user_team(request):
         }
 
         team_data = []
+
         for dp in drafted_players:
             player_data = all_players.get(dp.player_id)
             if player_data:
+                # Fetch detailed per-game stats
+                summary_url = f"https://fantasy.premierleague.com/api/element-summary/{dp.player_id}/"
+                match_history = []
+
+                try:
+                    summary_response = requests.get(summary_url)
+                    if summary_response.status_code == 200:
+                        summary_data = summary_response.json()
+                        match_history = summary_data.get("history", [])
+                except Exception as e:
+                    print(f"Error fetching element-summary for player {dp.player_id}: {str(e)}")
+
                 team_data.append({
+                    "id": dp.player_id,
                     "first_name": player_data["first_name"],
                     "second_name": player_data["second_name"],
                     "team": teams.get(player_data["team"], "Unknown"),
-                    "position": positions.get(player_data["element_type"], "Unknown")
+                    "position": positions.get(player_data["element_type"], "Unknown"),
+                    "match_history": match_history  # ⬅️ this is the new data
                 })
 
         return JsonResponse(team_data, safe=False)
 
     return JsonResponse({"error": "GET method only"}, status=405)
+
 
 class NewsArticleView(APIView):
     parser_classes = [MultiPartParser, FormParser]
@@ -207,13 +224,101 @@ class NewsArticleView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+def calculate_custom_points(stats, position):
+    points = 0
+    minutes = stats.get("minutes", 0)
 
-class PlayerPredictionViewSet(viewsets.ModelViewSet):
-    serializer_class = PlayerPredictionSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    if minutes >= 60:
+        points += 5
+    elif minutes > 0:
+        points += 2.5
 
-    def get_queryset(self):
-        return PlayerPrediction.objects.filter(user=self.request.user)
+    points += stats.get("goals_scored", 0) * 50
+    points += stats.get("assists", 0) * 25
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    if stats.get("clean_sheets", 0):
+        if position in ["Goalkeeper", "Defender"]:
+            points += 15
+        elif position == "Midfielder":
+            points += 3
+
+    points += (stats.get("saves", 0) // 3) * 1
+    points += stats.get("penalties_saved", 0) * 25
+    points -= stats.get("penalties_missed", 0) * 10
+    points -= stats.get("yellow_cards", 0) * 5
+    points -= stats.get("red_cards", 0) * 15
+
+    return points
+
+@csrf_exempt
+def calculate_player_game_points(request):
+    user_id = request.GET.get("user_id")
+    if not user_id:
+        return JsonResponse({"error": "User ID is required"}, status=400)
+
+    drafted_players = DraftedPlayer.objects.filter(user_id=user_id)
+    fpl_data = requests.get("https://fantasy.premierleague.com/api/bootstrap-static/").json()
+    position_map = {
+        1: "Goalkeeper",
+        2: "Defender",
+        3: "Midfielder",
+        4: "Forward"
+    }
+
+    results = []
+
+    for dp in drafted_players:
+        summary_url = f"https://fantasy.premierleague.com/api/element-summary/{dp.player_id}/"
+        res = requests.get(summary_url)
+        if res.status_code != 200:
+            continue
+
+        data = res.json()
+        games = data.get("history", [])
+
+        # get player position
+        player_info = next((p for p in fpl_data["elements"] if p["id"] == dp.player_id), None)
+        if not player_info:
+            continue
+        position = position_map.get(player_info["element_type"], "Unknown")
+
+        for game in games:
+            points = calculate_custom_points(game, position)
+
+            perf, created = PlayerGamePerformance.objects.update_or_create(
+                player_id=dp.player_id,
+                fixture_id=game["fixture"],
+                user_id=user_id,
+                defaults={
+                    "opponent_team": game["opponent_team"],
+                    "minutes": game["minutes"],
+                    "goals_scored": game["goals_scored"],
+                    "assists": game["assists"],
+                    "clean_sheets": bool(game["clean_sheets"]),
+                    "saves": game["saves"],
+                    "yellow_cards": game["yellow_cards"],
+                    "red_cards": game["red_cards"],
+                    "penalties_saved": game["penalties_saved"],
+                    "penalties_missed": game["penalties_missed"],
+                    "position": position,
+                    "total_points": points,
+                }
+            )
+            results.append({
+                "player_id": dp.player_id,
+                "fixture_id": game["fixture"],
+                "opponent_team": game["opponent_team"],
+                "minutes": game["minutes"],
+                "goals_scored": game["goals_scored"],
+                "assists": game["assists"],
+                "yellow_cards": game["yellow_cards"],
+                "red_cards": game["red_cards"],
+                "saves": game["saves"],
+                "clean_sheets": bool(game["clean_sheets"]),
+                "total_points": points
+            })
+
+
+    return JsonResponse(results, safe=False)
+
+
