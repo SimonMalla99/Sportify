@@ -127,7 +127,6 @@ function Home() {
                     <Link to="/predictions">Predictions</Link>
                     <Link to="#">About</Link>
                     <Link to="#">Contact</Link>
-                    <button className="btn join-btn" onClick={goToFantasy}>Join</button>
                     {user && (
                         <div className="account-container">
                             <FaUserCircle size={24} onClick={toggleMenu} style={{ cursor: "pointer" }} />
@@ -149,7 +148,7 @@ function Home() {
                     <p>Explore the world of fantasy football and sports news in Nepal. Join us today!</p>
                     {user ? <p>Logged in as: {user.username}</p> : <p>Please log in</p>}
                     <div className="hero-buttons">
-                        <button className="btn primary-btn">Join</button>
+                        <button className="btn primary-btn" onClick={goToFantasy}>Join</button>
                         <button className="btn secondary-btn">Learn More</button>
                     </div>
                 </div>

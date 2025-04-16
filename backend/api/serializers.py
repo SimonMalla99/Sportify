@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import NewsArticle
-from .models import PlayerPrediction
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -22,7 +21,3 @@ class NewsArticleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PlayerPredictionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PlayerPrediction
-        fields = '__all__'

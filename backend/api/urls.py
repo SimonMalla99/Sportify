@@ -8,13 +8,8 @@ from .views import (
     save_draft,
     has_team,
     NewsArticleView,
-    UserView,
-    PlayerPredictionViewSet  # <- Make sure this is imported
+    UserView,calculate_player_game_points,
 )
-
-# Registering viewsets
-router = DefaultRouter()
-router.register(r'predictions', PlayerPredictionViewSet, basename='prediction')
 
 urlpatterns = [
     path('fpl-data/', fetch_fpl_data, name='fetch_fpl_data'),
@@ -25,6 +20,6 @@ urlpatterns = [
     path('has-team/', has_team, name='has_team'),
     path('user-team/', views.get_user_team),
     path('news/', NewsArticleView.as_view(), name='news-article'),
+    path('custom-points/', calculate_player_game_points),
 
-    path('', include(router.urls)),  # <- Adds /api/predictions/
 ]

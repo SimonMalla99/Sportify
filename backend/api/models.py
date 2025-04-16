@@ -16,14 +16,23 @@ class NewsArticle(models.Model):
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-class PlayerPrediction(models.Model):
+class PlayerGamePerformance(models.Model):
+    player_id = models.IntegerField()
+    fixture_id = models.IntegerField()
+    opponent_team = models.CharField(max_length=100)
+    minutes = models.IntegerField()
+    goals_scored = models.IntegerField()
+    assists = models.IntegerField()
+    clean_sheets = models.BooleanField()
+    saves = models.IntegerField()
+    yellow_cards = models.IntegerField()
+    red_cards = models.IntegerField()
+    penalties_saved = models.IntegerField()
+    penalties_missed = models.IntegerField()
+    position = models.CharField(max_length=20)
+    total_points = models.FloatField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    player_id = models.IntegerField()  # Same as in DraftedPlayer
-    predicted_goals = models.PositiveIntegerField(default=0)
-    predicted_assists = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'player_id')
-
-    def __str__(self):
-        return f"{self.user.username} - Player ID: {self.player_id} Prediction"
+        unique_together = ('player_id', 'fixture_id', 'user')
