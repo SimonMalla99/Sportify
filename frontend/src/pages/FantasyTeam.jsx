@@ -14,6 +14,10 @@ function FantasyTeam() {
     const [playerStats, setPlayerStats] = useState(null);
     const [allPlayers, setAllPlayers] = useState([]);
     const [customStats, setCustomStats] = useState([]);
+    const [teamPerformance, setTeamPerformance] = useState([]);
+    const [showTeamPerformance, setShowTeamPerformance] = useState(false);
+
+
 
     const toggleMenu = () => setShowMenu(!showMenu);
 
@@ -62,6 +66,13 @@ function FantasyTeam() {
             .then(res => res.json())
             .then(data => setCustomStats(data))
             .catch(err => console.error("Error fetching custom points:", err));
+
+        fetch(`http://127.0.0.1:8000/api/team-performance/?user_id=${userData.id}`)
+            .then(res => res.json())
+            .then(data => setTeamPerformance(data))
+            .catch(err => console.error("Error fetching team performance:", err));
+          
+        
     }, [navigate]);
 
     const handleShowStats = (playerId) => {
@@ -108,7 +119,7 @@ function FantasyTeam() {
                         <Link to="/">Home Page</Link>
                         <Link to="/fantasy-team">Fantasy</Link>
                         <Link to="/News">Sports News</Link>
-                        <Link to="/predictions">Predictions</Link>
+                        <Link to="/team-prediction-form">Predictions</Link>
                         <Link to="#">About</Link>
                         <Link to="#">Contact</Link>
                         {user && (
@@ -124,75 +135,128 @@ function FantasyTeam() {
                         )}
                     </nav>
                 </header>
-
+    
                 <h1>Your Fantasy Team {user.username}</h1>
-
+    
                 {team.length > 0 && (
-                    <div className="field-wrapper">
-                        <img src="/feild2.png" alt="Soccer Field" className="soccer-field" />
-                        {positionedTeam.map((player) => {
-                            let posClass = "";
-                            if (player.position === "Goalkeeper") posClass = "position-gk";
-                            else if (player.position === "Defender") posClass = `position-d${player.indexInPosition}`;
-                            else if (player.position === "Midfielder") posClass = `position-m${player.indexInPosition}`;
-                            else if (player.position === "Forward") posClass = `position-f${player.indexInPosition}`;
+                    <div className="team-layout-wrapper">
+                        <div className="fantasyteam-table-container">
+                            <table className="fantasyteam-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Team</th>
+                                        <th>Position</th>
+                                        <th>Stats</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {[...team]
+                                        .sort((a, b) => {
+                                            const order = { "Forward": 1, "Midfielder": 2, "Defender": 3, "Goalkeeper": 4 };
+                                            return order[a.position] - order[b.position];
+                                        })
+                                        .map((player, index) => (
+                                            <tr key={index}>
+                                                <td>{player.first_name} {player.second_name}</td>
+                                                <td>{player.team}</td>
+                                                <td>{player.position}</td>
+                                                <td>
+                                                    <button onClick={() => handleShowStats(player.id)}>
+                                                        Show Stats
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                            </table>
+                        </div>
 
-                            return (
-                                <div
-                                    key={`${player.id}-${player.indexInPosition}`}
-                                    className={`player-container ${posClass}`}
-                                >
-                                    <div className="player-label">
-                                        {player.first_name} {player.second_name}
+                        <div className="field-wrapper">
+                            <img src="/feild2.png" alt="Soccer Field" className="soccer-field" />
+                            {positionedTeam.map((player) => {
+                                let posClass = "";
+                                if (player.position === "Goalkeeper") posClass = "position-gk";
+                                else if (player.position === "Defender") posClass = `position-d${player.indexInPosition}`;
+                                else if (player.position === "Midfielder") posClass = `position-m${player.indexInPosition}`;
+                                else if (player.position === "Forward") posClass = `position-f${player.indexInPosition}`;
+
+                                return (
+                                    <div
+                                        key={`${player.id}-${player.indexInPosition}`}
+                                        className={`player-container ${posClass}`}
+                                    >
+                                        <div className="player-label">
+                                            {player.first_name.charAt(0)}. {player.second_name.split(" ").slice(-1)[0]}
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
 
-                {team.length === 0 ? (
+    
+                {team.length === 0 && (
                     <p>You haven't drafted a team yet.</p>
-                ) : (
-                    <table className="fantasyteam-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Team</th>
-                                <th>Position</th>
-                                <th>Stats</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {[...team]
-                                .sort((a, b) => {
-                                    const order = { "Forward": 1, "Midfielder": 2, "Defender": 3, "Goalkeeper": 4 };
-                                    return order[a.position] - order[b.position];
-                                })
-                                .map((player, index) => (
-                                    <tr key={index}>
-                                        <td>{player.first_name} {player.second_name}</td>
-                                        <td>{player.team}</td>
-                                        <td>{player.position}</td>
-                                        <td>
-                                            <button onClick={() => handleShowStats(player.id)}>
-                                                Show Stats
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </table>
                 )}
-
+    
+                {teamPerformance.length > 0 && (
+                    <div className="team-performance">
+                        <button
+                            className="toggle-performance-button"
+                            onClick={() => setShowTeamPerformance(!showTeamPerformance)}
+                        >
+                            {showTeamPerformance ? "Hide Team Performance" : "Show Team Performance"}
+                        </button>
+    
+                        {showTeamPerformance && (
+                            <table className="match-history-table">
+                                <thead>
+                                    <tr>
+                                        <th>Gameweek</th>
+                                        <th>Total Points</th>
+                                        <th>Total Goals</th>
+                                        <th>Total Assists</th>
+                                        <th>Saves</th>
+                                        <th>Yellow Cards</th>
+                                        <th>Red Cards</th>
+                                        <th>FWD Goals</th>
+                                        <th>MID Goals</th>
+                                        <th>DEF Clean Sheets</th>
+                                        <th>GK Clean Sheets</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {teamPerformance
+                                        .sort((a, b) => a.gameweek - b.gameweek)
+                                        .map((gw, index) => (
+                                            <tr key={index}>
+                                                <td>{gw.gameweek}</td>
+                                                <td>{gw.total_points}</td>
+                                                <td>{gw.total_goals}</td>
+                                                <td>{gw.total_assists}</td>
+                                                <td>{gw.total_saves}</td>
+                                                <td>{gw.total_yellow_cards}</td>
+                                                <td>{gw.total_red_cards}</td>
+                                                <td>{gw.forward_goals}</td>
+                                                <td>{gw.midfielder_goals}</td>
+                                                <td>{gw.defender_clean_sheets}</td>
+                                                <td>{gw.goalkeeper_clean_sheets}</td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                )}
+    
                 {playerStats && (
                     <div className="player-details">
                         <h2>{playerStats.first_name} {playerStats.second_name}</h2>
                         <p><strong>Team:</strong> {playerStats.team}</p>
                         <p><strong>Position:</strong> {playerStats.position}</p>
-
-                        {console.log("Selected Player Stats:", playerStats)}
-
+    
                         {playerStats.match_history && playerStats.match_history.length > 0 && (
                             <div>
                                 <h3>Match-by-Match Stats</h3>
@@ -235,6 +299,7 @@ function FantasyTeam() {
             </>
         </div>
     );
+    
 }
 
 export default FantasyTeam;

@@ -19,6 +19,7 @@ class NewsArticle(models.Model):
 class PlayerGamePerformance(models.Model):
     player_id = models.IntegerField()
     fixture_id = models.IntegerField()
+    gameweek = models.IntegerField(null=True, blank=True)
     opponent_team = models.CharField(max_length=100)
     minutes = models.IntegerField()
     goals_scored = models.IntegerField()
@@ -36,3 +37,49 @@ class PlayerGamePerformance(models.Model):
 
     class Meta:
         unique_together = ('player_id', 'fixture_id', 'user')
+
+
+
+class TeamGamePerformance(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    gameweek = models.IntegerField()
+
+    total_goals = models.IntegerField(default=0)
+    total_assists = models.IntegerField(default=0)
+    total_clean_sheets = models.IntegerField(default=0)
+    total_saves = models.IntegerField(default=0)
+    total_yellow_cards = models.IntegerField(default=0)
+    total_red_cards = models.IntegerField(default=0)
+    total_points = models.IntegerField(default=0)
+
+    forward_goals = models.IntegerField(default=0)
+    midfielder_goals = models.IntegerField(default=0)
+    defender_clean_sheets = models.IntegerField(default=0)
+    goalkeeper_clean_sheets = models.IntegerField(default=0)
+
+    final_points = models.FloatField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'gameweek')
+
+
+class TeamPrediction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    gameweek = models.IntegerField()
+
+    predicted_forward_goals = models.IntegerField(default=0)
+    predicted_midfielder_goals = models.IntegerField(default=0)
+    predicted_defender_clean_sheets = models.IntegerField(default=0)
+    predicted_goalkeeper_clean_sheets = models.IntegerField(default=0)
+    predicted_total_assists = models.IntegerField(default=0)
+
+    multiplier_applied = models.BooleanField(default=False)
+    prediction_correct = models.BooleanField(default=False)  # Will be determined after comparison
+
+    class Meta:
+        unique_together = ('user', 'gameweek')
+
+    def __str__(self):
+        return f"Prediction by {self.user.username} for GW{self.gameweek}"
