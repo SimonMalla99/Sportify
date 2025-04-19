@@ -205,7 +205,7 @@ h1::after {
 
 /* Improved table design */
 .fantasyteam-table {
-    width: 90%;
+    width: 100%;
     max-width: 1000px;
     border-collapse: separate;
     border-spacing: 0;
@@ -432,7 +432,7 @@ h1::after {
 .fantasyteam-table-container {
     flex: 1;
     min-width: 350px;
-    max-width: 600px;
+    max-width: 1100px;
 }
 
   

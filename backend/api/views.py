@@ -24,6 +24,7 @@ from rest_framework import viewsets, permissions
 from .models import TeamGamePerformance
 from django.views.decorators.http import require_http_methods
 from .models import TeamPrediction
+from django.db.models import Sum
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -100,7 +101,7 @@ def fetch_players(request):
                     "assists": player["assists"],
                     "yellow_cards": player["yellow_cards"],
                     "red_cards": player["red_cards"],
-                    "photo": player["photo"],
+                    "photo": f"https://resources.premierleague.com/premierleague/photos/players/110x140/p{player['photo']}",
                     "position": position_map.get(player["element_type"], "Unknown Position"),
                 })
 
@@ -342,11 +343,10 @@ def calculate_team_game_performance(request):
         return JsonResponse({"error": "user_id is required"}, status=400)
 
     performances = PlayerGamePerformance.objects.filter(user_id=user_id)
-
-    # Group by gameweek (not fixture_id)
     gameweeks = performances.values_list("gameweek", flat=True).distinct()
 
     results = []
+    allpoints = 0  # <-- ADD THIS
 
     for gameweek in gameweeks:
         fixture_players = performances.filter(gameweek=gameweek)
@@ -373,7 +373,7 @@ def calculate_team_game_performance(request):
             total_red_cards += p.red_cards
             total_points += p.total_points
 
-            # Breakdowns
+            # Breakdown
             if p.position == "Forward":
                 forward_goals += p.goals_scored
             elif p.position == "Midfielder":
@@ -383,7 +383,9 @@ def calculate_team_game_performance(request):
             elif p.position == "Goalkeeper":
                 goalkeeper_clean_sheets += int(p.clean_sheets)
 
-        # Save or update record using `gameweek`
+        # ⬅️ Add to grand total
+        allpoints += total_points
+
         team_perf, created = TeamGamePerformance.objects.update_or_create(
             user_id=user_id,
             gameweek=gameweek,
@@ -410,14 +412,19 @@ def calculate_team_game_performance(request):
             "total_yellow_cards": total_yellow_cards,
             "total_red_cards": total_red_cards,
             "total_points": total_points,
+            "final_points": team_perf.final_points,
             "forward_goals": forward_goals,
             "midfielder_goals": midfielder_goals,
             "defender_clean_sheets": defender_clean_sheets,
             "goalkeeper_clean_sheets": goalkeeper_clean_sheets,
         })
 
+    # ✅ Add this to include the grand total
+    return JsonResponse({
+        "gameweek_results": results,
+        "allpoints": allpoints
+    }, safe=False)
 
-    return JsonResponse(results, safe=False)
 
 
 
@@ -549,4 +556,191 @@ def debug_team_performance(request):
         })
     except TeamGamePerformance.DoesNotExist:
         return JsonResponse({"error": "No performance found"}, status=404)
+    
 
+@csrf_exempt
+def fetch_npl_cricket_data(request):
+    if request.method == "GET":
+        try:
+            url = "http://core.espnuk.org/v2/sports/cricket/leagues/1462594/"
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            return JsonResponse(data, safe=False)
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "GET method only"}, status=405)
+
+@csrf_exempt
+def fetch_npl_matches(request):
+    if request.method == "GET":
+        try:
+            base_events_url = "http://core.espnuk.org/v2/sports/cricket/leagues/1462594/events"
+            events_response = requests.get(base_events_url)
+            events_response.raise_for_status()
+            events_data = events_response.json()
+
+            match_urls = [item["$ref"] for item in events_data.get("items", [])]
+            all_match_details = []
+
+            for match_url in match_urls:
+                match_res = requests.get(match_url)
+                if match_res.status_code == 200:
+                    match_data = match_res.json()
+                    all_match_details.append({
+                        "id": match_data.get("id"),
+                        "name": match_data.get("name"),
+                        "shortName": match_data.get("shortName"),
+                        "description": match_data.get("description"),
+                        "status": match_data.get("status"),
+                        "startDate": match_data.get("startDate"),
+                        "venue": match_data.get("venue", {}).get("fullName"),
+                        "competitors": match_data.get("competitors", []),
+                    })
+            return JsonResponse(all_match_details, safe=False)
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "GET only"}, status=405)
+
+
+@csrf_exempt
+def fetch_npl_teams(request):
+    if request.method == "GET":
+        try:
+            teams_url = "http://core.espnuk.org/v2/sports/cricket/leagues/1462594/teams"
+            response = requests.get(teams_url)
+            response.raise_for_status()
+            data = response.json()
+
+            team_refs = [item["$ref"] for item in data.get("items", [])]
+            team_list = []
+
+            for ref_url in team_refs:
+                team_res = requests.get(ref_url)
+                if team_res.status_code == 200:
+                    team_data = team_res.json()
+                    team_list.append({
+                        "id": team_data.get("id"),
+                        "name": team_data.get("name"),
+                        "abbreviation": team_data.get("abbreviation"),
+                        "shortDisplayName": team_data.get("shortDisplayName"),
+                        "logo": team_data.get("logos", [{}])[0].get("href") if team_data.get("logos") else None,
+                        "clubhouse": team_data.get("clubhouse", {}).get("href"),
+                        "links": team_data.get("links", [])
+                    })
+
+            return JsonResponse(team_list, safe=False)
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": "Failed to fetch from ESPN", "details": str(e)}, status=502)
+
+    return JsonResponse({"error": "GET method only"}, status=405)
+
+
+
+@csrf_exempt
+def fetch_npl_seasons(request):
+    if request.method == "GET":
+        try:
+            url = "http://core.espnuk.org/v2/sports/cricket/leagues/1462594/seasons"
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+
+            season_refs = [item["$ref"] for item in data.get("items", [])]
+            season_list = []
+
+            for ref in season_refs:
+                season_res = requests.get(ref)
+                if season_res.status_code == 200:
+                    season_data = season_res.json()
+                    season_list.append({
+                        "id": season_data.get("id"),
+                        "year": season_data.get("year"),
+                        "startDate": season_data.get("startDate"),
+                        "endDate": season_data.get("endDate"),
+                        "status": season_data.get("status", {}).get("type") if season_data.get("status") else None
+                    })
+
+            return JsonResponse(season_list, safe=False)
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "GET method only"}, status=405)
+
+@csrf_exempt
+def fetch_npl_standings(request):
+    if request.method == "GET":
+        url = "http://core.espnuk.org/v2/sports/cricket/leagues/1462594/seasons/2024/types/1/groups/1/standings/1"
+
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+
+            standings = []
+
+            for entry in data.get("standings", []):
+                team_ref = entry.get("team", {}).get("$ref")
+                team_id = team_ref.split("/")[-1] if team_ref else None
+
+                # Fetch team name from $ref
+                team_name = "Unknown"
+                if team_ref:
+                    try:
+                        team_response = requests.get(team_ref)
+                        if team_response.status_code == 200:
+                            team_data = team_response.json()
+                            team_name = team_data.get("name", "Unknown")
+                    except:
+                        pass
+
+                stats = entry.get("records", [])[0].get("stats", []) if entry.get("records") else []
+                team_stats = {stat["name"]: stat["value"] for stat in stats}
+
+                standings.append({
+                    "team_id": team_id,
+                    "team_name": team_name,
+                    "rank": team_stats.get("rank"),
+                    "matches_played": team_stats.get("matchesPlayed"),
+                    "matches_won": team_stats.get("matchesWon"),
+                    "matches_lost": team_stats.get("matchesLost"),
+                    "matches_tied": team_stats.get("matchesTied", 0),
+                    "matches_no_result": team_stats.get("matchesNoResult", 0),
+                })
+
+            return JsonResponse(standings, safe=False)
+
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "GET method only"}, status=405)
+
+@csrf_exempt
+def leaderboard_view(request):
+    if request.method == "GET":
+        users = User.objects.all()
+        leaderboard = []
+
+        for user in users:
+            total = TeamGamePerformance.objects.filter(user=user).aggregate(
+                total_points_sum=Sum("total_points")
+            )["total_points_sum"] or 0
+
+            leaderboard.append({
+                "user_id": user.id,
+                "username": user.username,
+                "allpoints": round(total, 2)
+            })
+
+        # Sort descending by points
+        leaderboard.sort(key=lambda x: x["allpoints"], reverse=True)
+
+        # Add rank
+        for i, item in enumerate(leaderboard, start=1):
+            item["rank"] = i
+
+        return JsonResponse(leaderboard, safe=False)
+
+    return JsonResponse({"error": "GET method only"}, status=405)

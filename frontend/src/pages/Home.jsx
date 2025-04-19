@@ -21,6 +21,7 @@ function Home() {
   const toggleMenu = () => setShowMenu(!showMenu);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const [topUsers, setTopUsers] = useState([]);
 
   const goToFantasy = () => {
     if (user) navigate("/fantasy");
@@ -158,7 +159,15 @@ function Home() {
     return () => observer.disconnect();
   }, [groupedFixtures]);
 
-  
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/leaderboard/")
+      .then(res => res.json())
+      .then(data => {
+        const filtered = data.filter(user => user.allpoints > 0).slice(0, 3);
+        setTopUsers(filtered);
+      })
+      .catch(err => console.error("Error fetching leaderboard:", err));
+  }, []);
 
   const getTeamName = (teamId) => {
     const teams = {
@@ -205,9 +214,9 @@ function Home() {
           <Link to="/">Home Page</Link>
           <Link to="/fantasy-team">Fantasy</Link>
           <Link to="/News">Sports News</Link>
-          <Link to="/predictions">Predictions</Link>
-          <Link to="#">About</Link>
-          <Link to="#">Contact</Link>
+          <Link to="/team-prediction-form">Predictions</Link>
+          <Link to="/npl">NPL</Link>
+          <Link to="/leaderboard">Leaderboards</Link>
           {user && (
             <div className="account-container">
               <FaUserCircle
@@ -217,7 +226,7 @@ function Home() {
               />
               {showMenu && (
                 <div className="account-dropdown">
-                  <p>👤 {user.username}</p>
+                  <p>👤 {user.username}</p><p><Link to="/account">Account Overview</Link></p>
                   <button onClick={handleLogout}>Logout</button>
                 </div>
               )}
@@ -354,7 +363,7 @@ function Home() {
               .sort((a, b) => b.goals_scored - a.goals_scored)
               .slice(0, 5)
               .map((player) => (
-                <tr key={player.id} onClick={() => setSelectedPlayer(player)}>
+                <tr key={player.id}>
                   <td>
                     {player.first_name} {player.second_name}
                   </td>
@@ -393,26 +402,112 @@ function Home() {
       
       {/* News */}
       <header className="news-header">
-        <h1>Latest News</h1>
-      </header>
-      <div className="news-articles">
-        {newsArticles.length === 0 ? (
-          <p>No news articles available.</p>
-        ) : (
-          newsArticles.slice(0, 3).map((article) => (
-            <div key={article.id} className="news-article">
-              {article.image && (
-                <img
-                  src={`http://127.0.0.1:8000${article.image}`}
-                  alt={article.title}
-                />
-              )}
-              <h2>{article.title}</h2>
-            </div>
-          ))
-        )}
+            <h1>Stay Updated with the Latest Sports News</h1>
+          </header>
+          <div className="news-articles">
+            {newsArticles.length === 0 ? (
+              <p>No news articles available.</p>
+            ) : (
+              newsArticles.slice(0, 3).map((article) => (
+                <div key={article.id} className="news-article">
+                  {article.image && (
+                    <img
+                      src={`http://127.0.0.1:8000${article.image}`}
+                      alt={article.title}
+                      
+                    />
+                  )}
+                  <h2 >{article.title  }</h2>
+                </div>
+              ))
+            )}
+          </div>
+          <section className="leaderboard-preview-section">
+      <header className="news-header">🏆 Top Fantasy Managers</header>
+      <div className="max-w-md mx-auto">
+        <table className="table-auto w-full text-sm rounded shadow-md overflow-hidden">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="p-2 text-left">Rank</th>
+              <th className="p-2 text-left">Username</th>
+              <th className="p-2 text-left">Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            {topUsers.map((user, index) => (
+              <tr
+                key={user.user_id}
+                className={`${
+                  index === 0
+                    ? "bg-yellow-100 font-bold"
+                    : index === 1
+                    ? "bg-gray-200 font-semibold"
+                    : index === 2
+                    ? "bg-orange-100 font-medium"
+                    : ""
+                }`}
+              >
+                <td className="p-2">{index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}</td>
+                <td className="p-2">{user.username}</td>
+                <td className="p-2">{user.allpoints}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="text-center mt-4">
+          <Link
+            to="/leaderboard"
+            className="text-blue-600 font-semibold hover:underline"
+          >
+            View Full Leaderboard →
+          </Link>
+        </div>
       </div>
+    </section>
+    <footer className="home-footer">
+      <div className="footer-cta">
+        <h2>Join the Fantasy Football Fun!</h2>
+        <p>Sign up now for exclusive updates and insights.</p>
+        <div className="footer-buttons">
+          <button className="btn primary-btn" onClick={goToFantasy}>
+              Join
+            </button>
+          <button className="btn outline-btn">Learn More</button>
+        </div>
+      </div>
+
+      <div className="footer-links">
+        <div className="footer-brand">
+          <h3>⚽ Sportify</h3>
+        </div>
+        <ul className="footer-nav">
+          <li>Fantasy League</li>
+          <li>Latest News</li>
+          <li>Player Stats</li>
+          <li>Join Us</li>
+          <li>Get Started</li>
+        </ul>
+        <div className="footer-socials">
+          <i className="fab fa-facebook"></i>
+          <i className="fab fa-instagram"></i>
+          <i className="fab fa-x-twitter"></i>
+          <i className="fab fa-linkedin"></i>
+          <i className="fab fa-youtube"></i>
+        </div>
+      </div>
+
+      <div className="footer-bottom">
+        <p>© 2024 Sportify. All rights reserved.</p>
+        <ul>
+          <li>Privacy Policy</li>
+          <li>Terms of Service</li>
+          <li>Cookies Settings</li>
+        </ul>
+      </div>
+    </footer>
+
     </div>
+    
   );
 }
 

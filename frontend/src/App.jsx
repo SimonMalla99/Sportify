@@ -11,6 +11,9 @@ import News from "./pages/News";
 import TeamPredictionForm from "./pages/TeamPredictionForm";
 import NewsDetail from "./pages/NewsDetail";
 import ProtectedRoute from "./components/ProtectedRoute"; // ✅ use your good one
+import NepalPremierLeague from "./pages/NepalPremierLeague";
+import Leaderboard from "./pages/Leaderboard";
+import Account from "./pages/Account";
 
 function Logout() {
     localStorage.clear();
@@ -85,6 +88,30 @@ function App() {
                 element={
                     <ProtectedRoute>
                         <NewsDetail />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/npl"
+                element={
+                    <ProtectedRoute>
+                        <NepalPremierLeague />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/leaderboard"
+                element={
+                    <ProtectedRoute>
+                        <Leaderboard />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/account"
+                element={
+                    <ProtectedRoute>
+                        <Account />
                     </ProtectedRoute>
                 }
             />

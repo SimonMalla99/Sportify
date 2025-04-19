@@ -1,0 +1,118 @@
+/* NewsAdmin.css */
+.newsadmin-container {
+    font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1a202c;
+    background-color: #f7fafc;
+    min-height: 100vh;
+  }
+  
+  .newsadmin-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #2d3748;
+    margin-bottom: 32px;
+    text-align: center;
+    position: relative;
+  }
+  
+  .newsadmin-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #4299e1, #4c51bf);
+    margin: 10px auto 0;
+    border-radius: 2px;
+  }
+  
+  .newsadmin-form {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  
+  .newsadmin-form label {
+    display: block;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 8px;
+    margin-top: 20px;
+  }
+  
+  .newsadmin-form input[type="text"],
+  .newsadmin-form input[type="file"],
+  .newsadmin-form textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 16px;
+  }
+  
+  .newsadmin-form textarea {
+    resize: vertical;
+    min-height: 150px;
+  }
+  
+  .newsadmin-form input:focus,
+  .newsadmin-form textarea:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+  }
+  
+  .newsadmin-form button {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+  }
+  
+  .newsadmin-form button:hover {
+    background: linear-gradient(135deg, #3182ce, #2b6cb0);
+    transform: translateY(-2px);
+  }
+  
+  /* Reuse topbar styles from home.css if applicable */
+  .home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 40px;
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .logo {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2d3748;
+    background: linear-gradient(135deg, #4299e1, #4c51bf);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  
+  .account-dropdown p {
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #2d3748;
+  }
+  

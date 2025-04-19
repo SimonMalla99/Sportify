@@ -8,7 +8,18 @@ from .views import (
     save_draft,
     has_team,
     NewsArticleView, NewsArticleDetail,
-    UserView, calculate_player_game_points, submit_team_prediction, evaluate_prediction, debug_team_performance
+    UserView, 
+    calculate_player_game_points, 
+    submit_team_prediction, 
+    evaluate_prediction, 
+    debug_team_performance, 
+    fetch_npl_cricket_data,
+    fetch_npl_cricket_data,
+    fetch_npl_matches,
+    fetch_npl_teams,
+    fetch_npl_seasons,
+    fetch_npl_standings,
+    leaderboard_view
 )
 
 urlpatterns = [
@@ -26,5 +37,13 @@ urlpatterns = [
     path("evaluate-prediction/", evaluate_prediction, name="evaluate_prediction"),
     path("debug-team-performance/", debug_team_performance),
     path('news/<int:pk>/', NewsArticleDetail.as_view(), name='news-detail'),
+    path('npl-cricket/', fetch_npl_cricket_data, name='fetch_npl_cricket_data'),
+    path('npl-matches/', fetch_npl_matches, name='fetch_npl_matches'),
+    path('npl-teams/', fetch_npl_teams, name='fetch_npl_teams'),
+    path('npl-seasons/', fetch_npl_seasons, name='fetch_npl_seasons'),
+    path('npl-standings/', fetch_npl_standings, name='fetch_npl_standings'),
+    path('leaderboard/', leaderboard_view, name='leaderboard'),
+
+
 
 ]
