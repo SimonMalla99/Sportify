@@ -69,7 +69,7 @@ function FantasyTeam() {
 
         fetch(`http://127.0.0.1:8000/api/team-performance/?user_id=${userData.id}`)
             .then(res => res.json())
-            .then(data => setTeamPerformance(data))
+            .then(data => setTeamPerformance(data.gameweek_results || []))
             .catch(err => console.error("Error fetching team performance:", err));
           
         
@@ -120,17 +120,21 @@ function FantasyTeam() {
                         <Link to="/fantasy-team">Fantasy</Link>
                         <Link to="/News">Sports News</Link>
                         <Link to="/team-prediction-form">Predictions</Link>
-                        <Link to="#">About</Link>
-                        <Link to="#">Contact</Link>
+                        <Link to="/npl">NPL</Link>
+                        <Link to="/leaderboard">Leaderboards</Link>
                         {user && (
                             <div className="account-container">
-                                <FaUserCircle size={24} onClick={toggleMenu} style={{ cursor: "pointer" }} />
-                                {showMenu && (
-                                    <div className="account-dropdown">
-                                        <p>👤 {user.username}</p>
-                                        <button onClick={handleLogout}>Logout</button>
-                                    </div>
-                                )}
+                            <FaUserCircle
+                                size={24}
+                                onClick={toggleMenu}
+                                style={{ cursor: "pointer" }}
+                            />
+                            {showMenu && (
+                                <div className="account-dropdown">
+                                <p>👤 {user.username}</p>
+                                <button onClick={handleLogout}>Logout</button>
+                                </div>
+                            )}
                             </div>
                         )}
                     </nav>
@@ -151,23 +155,30 @@ function FantasyTeam() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {[...team]
-                                        .sort((a, b) => {
-                                            const order = { "Forward": 1, "Midfielder": 2, "Defender": 3, "Goalkeeper": 4 };
-                                            return order[a.position] - order[b.position];
-                                        })
-                                        .map((player, index) => (
-                                            <tr key={index}>
-                                                <td>{player.first_name} {player.second_name}</td>
-                                                <td>{player.team}</td>
-                                                <td>{player.position}</td>
-                                                <td>
-                                                    <button onClick={() => handleShowStats(player.id)}>
-                                                        Show Stats
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                {[...team]
+                                    .sort((a, b) => {
+                                        const order = { "Forward": 1, "Midfielder": 2, "Defender": 3, "Goalkeeper": 4 };
+                                        return order[a.position] - order[b.position];
+                                    })
+                                    .map((player, index) => (
+                                        <tr key={index}>
+                                        <td>{player.first_name} {player.second_name}</td>
+                                        <td>{player.team}</td>
+                                        <td>{player.position}</td>
+                                        <td>
+                                            <button onClick={() => {
+                                            if (playerStats?.id === player.id) {
+                                                setPlayerStats(null); // hide stats if already open
+                                            } else {
+                                                handleShowStats(player.id); // show new stats
+                                            }
+                                            }}>
+                                            {playerStats?.id === player.id ? "Hide Stats" : "Show Stats"}
+                                            </button>
+                                        </td>
+                                        </tr>
+                                    ))}
+
                                 </tbody>
                             </table>
                         </div>
@@ -202,6 +213,7 @@ function FantasyTeam() {
                 )}
     
                 {teamPerformance.length > 0 && (
+                    
                     <div className="team-performance">
                         <button
                             className="toggle-performance-button"
@@ -216,6 +228,7 @@ function FantasyTeam() {
                                     <tr>
                                         <th>Gameweek</th>
                                         <th>Total Points</th>
+                                        <th>Final Points</th>
                                         <th>Total Goals</th>
                                         <th>Total Assists</th>
                                         <th>Saves</th>
@@ -234,6 +247,7 @@ function FantasyTeam() {
                                             <tr key={index}>
                                                 <td>{gw.gameweek}</td>
                                                 <td>{gw.total_points}</td>
+                                                <td>{gw.final_points}</td>
                                                 <td>{gw.total_goals}</td>
                                                 <td>{gw.total_assists}</td>
                                                 <td>{gw.total_saves}</td>

@@ -2,7 +2,8 @@ import React, { useEffect, useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { FaUserCircle } from "react-icons/fa";
-import "../styles/home.css"; // adjust path based on your structure
+import "../styles/NewsAdmin.css";
+
 
 function NewsAdmin() {
   const [title, setTitle] = useState("");
@@ -63,12 +64,6 @@ function NewsAdmin() {
       <header className="home-header">
                 <div className="logo">Sportify Admin</div>
                 <nav className="nav-bar">
-                    <Link to="/admin-dashboard">Home Page</Link>
-                    <Link to="/fantasy-team">Fantasy</Link>
-                    <Link to="/news-admin">Sports News</Link>
-                    <Link to="#">About</Link>
-                    <Link to="#">Contact</Link>
-
                     <div className="account-container">
                         <FaUserCircle size={24} onClick={toggleMenu} style={{ cursor: "pointer" }} />
                         {showMenu && (

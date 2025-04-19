@@ -14,6 +14,7 @@ function Fantasy() {
     const [players, setPlayers] = useState([]);
     const [draftedPlayers, setDraftedPlayers] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [activeFilter, setActiveFilter] = useState(null);
     const [showMenu, setShowMenu] = useState(false);
     const toggleMenu = () => setShowMenu(!showMenu);
 
@@ -117,9 +118,12 @@ function Fantasy() {
         setDraftedPlayers(draftedPlayers.filter(player => player.id !== playerId));
     };
 
-    const filteredPlayers = players.filter(player =>
-        `${player.first_name} ${player.second_name}`.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredPlayers = players.filter(player => {
+        const matchesSearch = `${player.first_name} ${player.second_name}`.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesFilter = activeFilter ? player.position === activeFilter : true;
+        return matchesSearch && matchesFilter;
+    });
+    
     
 
     if (!user) return null;
@@ -132,19 +136,23 @@ function Fantasy() {
                     <nav className="fantasy-nav">
                         <Link to="/">Home Page</Link>
                         <Link to="/fantasy-team">Fantasy</Link>
-                        <Link to="#">Sports News</Link>
-                        <Link to="#">About</Link>
-                        <Link to="#">Contact</Link>
-    
+                        <Link to="/News">Sports News</Link>
+                        <Link to="/team-prediction-form">Predictions</Link>
+                        <Link to="/npl">NPL</Link>
+                        <Link to="/leaderboard">Leaderboards</Link>
                         {user && (
-                            <div className="fantasy-account">
-                                <FaUserCircle size={24} onClick={toggleMenu} className="account-icon" />
-                                {showMenu && (
-                                    <div className="account-dropdown">
-                                        <p>👤 {user.username}</p>
-                                        <button onClick={handleLogout}>Logout</button>
-                                    </div>
-                                )}
+                            <div className="account-container">
+                            <FaUserCircle
+                                size={24}
+                                onClick={toggleMenu}
+                                style={{ cursor: "pointer" }}
+                            />
+                            {showMenu && (
+                                <div className="account-dropdown">
+                                <p>👤 {user.username}</p>
+                                <button onClick={handleLogout}>Logout</button>
+                                </div>
+                            )}
                             </div>
                         )}
                     </nav>
@@ -157,13 +165,28 @@ function Fantasy() {
                         <h1>Welcome to Fantasy Football, {user.username}!</h1>
                         <h2>Draft Your Players</h2>
     
-                        <input 
-                            type="text" 
-                            placeholder="Search for a player..." 
-                            value={searchQuery} 
-                            onChange={(e) => setSearchQuery(e.target.value)} 
-                            className="fantasy-search"
-                        />
+                        <div className="fantasy-filters">
+                            <input 
+                                type="text" 
+                                placeholder="Search for a player..." 
+                                value={searchQuery} 
+                                onChange={(e) => setSearchQuery(e.target.value)} 
+                                className="fantasy-search"
+                            />
+
+                            <div className="position-filters">
+                                {["Forward", "Midfielder", "Defender", "Goalkeeper"].map(pos => (
+                                    <button 
+                                        key={pos}
+                                        className={`filter-btn ${activeFilter === pos ? "active" : ""}`}
+                                        onClick={() => setActiveFilter(activeFilter === pos ? null : pos)}
+                                    >
+                                        {pos} {activeFilter === pos && <span className="close-x"></span>}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
     
                         <table className="fantasy-table">
                             <thead>

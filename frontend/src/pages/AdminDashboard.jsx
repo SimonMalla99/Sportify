@@ -25,11 +25,8 @@ function AdminDashboard() {
             <header className="home-header">
                 <div className="logo">Sportify Admin</div>
                 <nav className="nav-bar">
-                    <Link to="/">Home Page</Link>
-                    <Link to="/fantasy-team">Fantasy</Link>
-                    <Link to="/news-admin">Sports News</Link>
-                    <Link to="#">About</Link>
-                    <Link to="#">Contact</Link>
+                    
+                    <Link to="/news-admin">News Upload</Link>
 
                     <div className="account-container">
                         <FaUserCircle size={24} onClick={toggleMenu} style={{ cursor: "pointer" }} />
@@ -44,8 +41,7 @@ function AdminDashboard() {
             </header>
 
             <main style={{ padding: "2rem" }}>
-                <h1>Welcome Admin, {user.username}!</h1>
-                <p>Select a tool from the navigation above.</p>
+                <h1>Welcome Admin, {user.username}</h1>
             </main>
         </div>
     );

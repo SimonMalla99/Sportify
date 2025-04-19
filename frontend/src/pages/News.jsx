@@ -54,11 +54,16 @@ function News() {
           <Link to="/">Home Page</Link>
           <Link to="/fantasy-team">Fantasy</Link>
           <Link to="/News">Sports News</Link>
-          <Link to="#">About</Link>
-          <Link to="#">Contact</Link>
+          <Link to="/team-prediction-form">Predictions</Link>
+          <Link to="/npl">NPL</Link>
+          <Link to="/leaderboard">Leaderboards</Link>
           {user && (
             <div className="account-container">
-              <FaUserCircle size={24} onClick={toggleMenu} style={{ cursor: "pointer" }} />
+              <FaUserCircle
+                size={24}
+                onClick={toggleMenu}
+                style={{ cursor: "pointer" }}
+              />
               {showMenu && (
                 <div className="account-dropdown">
                   <p>👤 {user.username}</p>

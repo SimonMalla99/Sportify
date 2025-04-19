@@ -1,98 +1,117 @@
 import { useState, useContext } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"; // ✅ Import AuthContext
+import { AuthContext } from "../context/AuthContext";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css";
 
 function Form({ route, method }) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { login } = useContext(AuthContext); // ✅ Use AuthContext
-    const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(""); // ✅ email state
+  const [loading, setLoading] = useState(false);
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-    const name = method === "login" ? "Login" : "Sign up";
+  const name = method === "login" ? "Login" : "Sign Up";
 
-    const handleSubmit = async (e) => {
-        setLoading(true);
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-        try {
-            console.log("Submitting login request...");
+    try {
+      // ✅ Payload for login vs signup
+      const payload =
+        method === "login"
+          ? { username, password } // backend should support email or username in 'username' field
+          : { username, password, email };
 
-            const res = await api.post(route, { username, password });
+      const res = await api.post(route, payload);
 
-            if (method === "login") {
-                console.log("Login successful, storing tokens...");
-                localStorage.setItem(ACCESS_TOKEN, res.data.access);
-                localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+      if (method === "login") {
+        localStorage.setItem(ACCESS_TOKEN, res.data.access);
+        localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
 
-                console.log("Stored access token:", res.data.access);
+        const userRes = await api.get("/api/user/", {
+          headers: { Authorization: `Bearer ${res.data.access}` },
+        });
 
-                // ✅ Fetch user info after login
-                const userRes = await api.get("/api/user/", {
-                    headers: { Authorization: `Bearer ${res.data.access}` },
-                });
+        login(userRes.data, res.data.access, res.data.refresh);
 
-                console.log("User data fetched:", userRes.data);
-
-                login(userRes.data, res.data.access, res.data.refresh);
-                if (userRes.data.is_superuser) {
-                    navigate("/admin-dashboard");  // ✅ redirect if admin
-                } else {
-                    navigate("/");
-                }
-
-            } else {
-                console.log("Signup successful, redirecting to login...");
-                navigate("/login");
-            }
-        } catch (error) {
-            console.error("Login/Signup Error:", error);
-            alert(error.response?.data?.detail || "An error occurred");
-        } finally {
-            setLoading(false);
+        if (userRes.data.is_superuser) {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/");
         }
-    };
+      } else {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Login/Signup Error:", error);
+      alert(error.response?.data?.detail || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleSignupRedirect = () => {
-        navigate("/register"); // Redirect to the signup page
-    };
+  const handleSignupRedirect = () => {
+    navigate("/register");
+  };
 
-    return (
-        <form onSubmit={handleSubmit} className="form-container">
-            <h1>{name}</h1>
-            <input
-                className="form-input"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
-            />
-            <input
-                className="form-input"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-            />
-            <button className="form-button" type="submit" disabled={loading}>
-                {loading ? "Loading..." : name}
-            </button>
+  return (
+    <form onSubmit={handleSubmit} className="form-container">
+      <h2>{name}</h2>
+      <p style={{ marginBottom: "30px", color: "#4a5568" }}>
+        {method === "login"
+          ? "Welcome back! Please log in with your username or email."
+          : "Create a new account to get started."}
+      </p>
 
-            {/* Add the signup button */}
-            {method === "login" && (
-                <button
-                    type="button"
-                    onClick={handleSignupRedirect}
-                    className="form-button signup-button"
-                >
-                    Don't have an account? Sign up
-                </button>
-            )}
-        </form>
-    );
+      {/* ✅ Shared username/email field for login */}
+      <input
+        className="form-input"
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Username"
+        required
+      />
+
+      {/* ✅ Only show email input on signup */}
+      {method !== "login" && (
+        <input
+          className="form-input"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          required
+        />
+      )}
+
+      <input
+        className="form-input"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        required
+      />
+
+      <button className="form-button" type="submit" disabled={loading}>
+        {loading ? "Loading..." : name}
+      </button>
+
+      {method === "login" && (
+        <div className="form-footer">
+          Don’t have an account?
+          <button type="button" onClick={handleSignupRedirect}>
+            Sign up
+          </button>
+        </div>
+      )}
+    </form>
+  );
 }
 
 export default Form;

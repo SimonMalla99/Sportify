@@ -220,8 +220,8 @@
 .fantasy-search {
     margin-bottom: 20px;
     padding: 10px 14px;
-    width: 100%;
-    border-radius: 8px;
+    width: 80%;
+    border-radius: 20px;
     border: 1px solid #cbd5e0;
     font-size: 14px;
 }
@@ -309,8 +309,8 @@
     background-color: rgba(0, 0, 0, 0);
     color: #2d3748;
     border: 1px solid #2d3748;
-    border-radius: 10px;
-    padding: 4px 10px;
+    border-radius: 200px;
+    padding: 3px 7px;
     font-size: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -339,3 +339,23 @@
 .confirm-btn:hover {
     background: linear-gradient(135deg, #2f855a, #276749);
 }
+.position-filters {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.filter-btn {
+    margin-right: 10px;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background-color: #eee;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.filter-btn.active {
+    background-color: #007bff;
+    color: white;
+}
+

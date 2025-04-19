@@ -5,9 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import "../styles/Prediction.css";
-
-
-
+import "../styles/Home.css";
 
 
 function TeamPredictionForm() {
@@ -102,24 +100,28 @@ function TeamPredictionForm() {
     return (
         
         <div className="prediction-form-container">
-            <header className="home-header">
+            <header className="prediciton-header">
                             <div className="logo">Sportify</div>
                             <nav className="nav-bar">
                                 <Link to="/">Home Page</Link>
                                 <Link to="/fantasy-team">Fantasy</Link>
                                 <Link to="/News">Sports News</Link>
-                                <Link to="/predictions">Predictions</Link>
-                                <Link to="#">About</Link>
-                                <Link to="#">Contact</Link>
+                                <Link to="/team-prediction-form">Predictions</Link>
+                                <Link to="/npl">NPL</Link>
+                                <Link to="/leaderboard">Leaderboards</Link>
                                 {user && (
                                     <div className="account-container">
-                                        <FaUserCircle size={24} onClick={toggleMenu} style={{ cursor: "pointer" }} />
-                                        {showMenu && (
-                                            <div className="account-dropdown">
-                                                <p>👤 {user.username}</p>
-                                                <button onClick={handleLogout}>Logout</button>
-                                            </div>
-                                        )}
+                                    <FaUserCircle
+                                        size={24}
+                                        onClick={toggleMenu}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                    {showMenu && (
+                                        <div className="account-dropdown">
+                                        <p>👤 {user.username}</p>
+                                        <button onClick={handleLogout}>Logout</button>
+                                        </div>
+                                    )}
                                     </div>
                                 )}
                             </nav>
