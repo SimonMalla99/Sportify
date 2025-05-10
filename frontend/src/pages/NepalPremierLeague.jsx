@@ -85,12 +85,12 @@ const NepalPremierLeague = () => {
                 </header>
       {/* Page Title */}
       <div className="text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Nepal Premier League</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">National Leagues</h1>
       
 
       {/* Final Standings Section */}
         <section>
-        <h2 className="text-xl font-bold mb-4">Final Standings</h2>
+        <h2 className="text-xl font-bold mb-4">Nepal Premier League</h2>
         <div className="overflow-x-auto">
             <table className="table-auto w-full border-collapse border border-gray-300">
             <thead>
@@ -115,7 +115,27 @@ const NepalPremierLeague = () => {
             </tbody>
             </table>
         </div>
+        
         </section>
+        {/* SofaScore Standings Embed */}
+        <div className="sofascore-wrapper">
+        <div className="sofascore-embed">
+          <h2 className="text-xl font-bold mb-4 text-center">Nepal Super League</h2>
+          <iframe
+            id="sofa-standings-embed-147271-72852"
+            src="https://widgets.sofascore.com/embed/tournament/147271/season/72852/standings/Nepal%20Super%20League%202025?widgetTitle=Nepal%20Super%20League%202025&showCompetitionLogo=true"
+            style={{
+              height: "603px",
+              maxWidth: "768px",
+              width: "100%",
+              border: "none",
+            }}
+            scrolling="no"
+            title="SofaScore NSL Standings"
+          ></iframe>
+        </div>
+</div>
+
 
     </div></div>
   );

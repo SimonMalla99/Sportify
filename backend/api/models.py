@@ -83,3 +83,24 @@ class TeamPrediction(models.Model):
 
     def __str__(self):
         return f"Prediction by {self.user.username} for GW{self.gameweek}"
+    
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    dob = models.DateField()
+    phone_number = models.CharField(max_length=10)
+    bio = models.TextField(blank=True)
+    
+    SPORTS_CHOICES = [
+        ('Football', 'Football'),
+        ('Basketball', 'Basketball'),
+        ('Cricket', 'Cricket'),
+        ('Swimming', 'Swimming'),
+        ('Table Tennis', 'Table Tennis'),
+        ('Badminton', 'Badminton'),
+        ('Volleyball', 'Volleyball'),
+        ('Track and Field', 'Track and Field'),
+    ]
+    favourite_sports = models.JSONField(default=list, blank=True)  # stores selected sports as list of strings
+
+    def __str__(self):
+        return f"{self.user.username}'s profile"

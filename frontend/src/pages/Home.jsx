@@ -415,9 +415,10 @@ function Home() {
                       src={`http://127.0.0.1:8000${article.image}`}
                       alt={article.title}
                       
+                      
                     />
                   )}
-                  <h2 >{article.title  }</h2>
+                  <h2 >{article.title}</h2>
                 </div>
               ))
             )}
