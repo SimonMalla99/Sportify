@@ -1,100 +1,195 @@
+/* ----------------- General Container ------------------ */
 .form-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: 80px auto;
-  padding: 40px 30px;
-  border-radius: 16px;
+  padding: 50px 35px;
+  border-radius: 20px;
   background-color: #ffffff;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
   max-width: 420px;
   width: 90%;
   transition: box-shadow 0.3s ease;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .form-container:hover {
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
 }
 
-.form-container h2 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 30px;
-  color: #2d3748;
+/* ----------------- Logo Styling ------------------ */
+.logo-text {
+  font-size: 42px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #4299e1, #4c51bf);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   text-align: center;
+  letter-spacing: -0.8px;
 }
 
+/* ----------------- Header / Title ------------------ */
+.form-container h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: 14px;
+  color: #1a202c;
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* ----------------- Subtitle / Description ------------------ */
+.form-container p {
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: center;
+  margin-bottom: 32px;
+  color: #4a5568;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ----------------- Form Field Group ------------------ */
+
+.form-container form {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Reduced from 16px to tighten spacing */
+}
+
+/* ----------------- Input Styling ------------------ */
 .form-input {
   width: 100%;
-  padding: 14px;
-  margin-bottom: 20px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  padding: 14px 16px;
   font-size: 16px;
-  box-sizing: border-box;
-  transition: all 0.2s ease;
   background-color: #f9fafb;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  transition: box-shadow 0.2s ease, border 0.2s ease;
+  box-sizing: border-box;
 }
 
 .form-input:focus {
   border-color: #4299e1;
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+  box-shadow: 0 0 0 4px rgba(66, 153, 225, 0.2);
   outline: none;
 }
 
+/* ----------------- Button ------------------ */
 .form-button {
   width: 100%;
   padding: 14px;
-  margin-top: 10px;
+  margin-top: 6px; /* Reduced from 10px */
   background: linear-gradient(135deg, #4299e1, #3182ce);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 14px rgba(66, 153, 225, 0.3);
+  box-shadow: 0 6px 20px rgba(49, 130, 206, 0.3);
 }
 
-.form-button:hover {
-  background: linear-gradient(135deg, #3182ce, #2b6cb0);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(49, 130, 206, 0.4);
-}
-
+/* ----------------- Footer ------------------ */
 .form-footer {
-  margin-top: 20px;
+  margin-top: 18px; /* Reduced from 26px */
   font-size: 14px;
   color: #4a5568;
   text-align: center;
 }
 
-.form-footer a {
-  color: #3182ce;
-  text-decoration: none;
-  font-weight: 600;
-  margin-left: 5px;
-  transition: color 0.2s ease;
+
+.form-button:hover {
+  background: linear-gradient(135deg, #3182ce, #2b6cb0);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(49, 130, 206, 0.4);
 }
 
-.form-footer a:hover {
-  color: #2b6cb0;
-}
+.form-footer a,
 .form-footer button {
-  background: none;
-  border: none;
   color: #3182ce;
   font-weight: 600;
   cursor: pointer;
+  background: none;
+  border: none;
   margin-left: 6px;
   font-size: 14px;
   transition: color 0.2s ease;
 }
 
+.form-footer a:hover,
 .form-footer button:hover {
   color: #2b6cb0;
   text-decoration: underline;
+}
+
+/* ----------------- Extra Signup Fields ------------------ */
+textarea.form-input {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.sport-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.sport-tag {
+  background-color: #edf2f7;
+  border: 1px solid #cbd5e0;
+  color: #2d3748;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sport-tag:hover {
+  background-color: #e2e8f0;
+}
+
+.sport-tag.selected {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+  border-color: #3182ce;
+  box-shadow: 0 2px 8px rgba(49, 130, 206, 0.3);
+}
+
+/* ----------------- Responsive ------------------ */
+@media (max-width: 480px) {
+  .form-container {
+    padding: 30px 20px;
+    margin: 40px auto;
+  }
+
+  .logo-text {
+    font-size: 32px;
+  }
+
+  .form-container h2 {
+    font-size: 18px;
+  }
+
+  .form-container p {
+    font-size: 13px;
+  }
+}
+.Toastify__toast-container {
+  z-index: 99999 !important;
+  pointer-events: all;
 }

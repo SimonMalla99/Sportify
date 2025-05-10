@@ -25,6 +25,11 @@ from .models import TeamGamePerformance
 from django.views.decorators.http import require_http_methods
 from .models import TeamPrediction
 from django.db.models import Sum
+from rest_framework.decorators import api_view, permission_classes
+from .serializers import UserProfileSerializer
+from .models import UserProfile
+from .serializers import UserProfileSerializer
+
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -744,3 +749,43 @@ def leaderboard_view(request):
         return JsonResponse(leaderboard, safe=False)
 
     return JsonResponse({"error": "GET method only"}, status=405)
+
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def create_user_profile(request):
+    user_id = request.data.get("user_id")
+    if not user_id:
+        return JsonResponse({"error": "User ID is required"}, status=400)
+
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+
+    serializer = UserProfileSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(user=user)
+        return JsonResponse({"message": "Profile created successfully!"}, status=201)
+
+    # 🔥 Log the actual issue:
+    print("Serializer errors:", serializer.errors)
+    return JsonResponse(serializer.errors, status=400)
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def get_user_profile(request):
+    user_id = request.GET.get("user_id")  # 👈 get from query string
+    if not user_id:
+        return Response({"error": "User ID required"}, status=400)
+
+    try:
+        user = User.objects.get(id=user_id)
+        profile = user.profile
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=404)
+    except UserProfile.DoesNotExist:
+        return Response({"error": "Profile not found"}, status=404)
+

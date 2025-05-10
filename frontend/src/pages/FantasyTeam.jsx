@@ -16,6 +16,10 @@ function FantasyTeam() {
     const [customStats, setCustomStats] = useState([]);
     const [teamPerformance, setTeamPerformance] = useState([]);
     const [showTeamPerformance, setShowTeamPerformance] = useState(false);
+    const latestGameweek = teamPerformance.length > 0
+    ? [...teamPerformance].sort((a, b) => b.gameweek - a.gameweek)[0]
+    : null;
+
 
 
 
@@ -24,6 +28,9 @@ function FantasyTeam() {
     const handleLogout = () => {
         navigate("/logout");
     };
+
+    const [allPoints, setAllPoints] = useState(null);
+
 
     const positionedTeam = [];
     const tracker = {
@@ -71,6 +78,22 @@ function FantasyTeam() {
             .then(res => res.json())
             .then(data => setTeamPerformance(data.gameweek_results || []))
             .catch(err => console.error("Error fetching team performance:", err));
+
+        fetch(`http://127.0.0.1:8000/api/team-performance/?user_id=${userData.id}`)
+            .then(res => res.json())
+            .then(data => {
+              setTeamPerformance(data.gameweek_results || []);
+              setTotalPoints(data.allpoints || 0); // 👈 THIS grabs total correctly
+            })
+        fetch("http://127.0.0.1:8000/api/leaderboard/")
+            .then(res => res.json())
+            .then(data => {
+              const me = data.find(u => u.username === userData.username);
+              if (me) setAllPoints(me.allpoints);
+            })
+            .catch(err => console.error("Error fetching leaderboard:", err));
+          
+    
           
         
     }, [navigate]);
@@ -182,7 +205,7 @@ function FantasyTeam() {
                                 </tbody>
                             </table>
                         </div>
-
+                        <div className="field-and-points-wrapper">    
                         <div className="field-wrapper">
                             <img src="/feild2.png" alt="Soccer Field" className="soccer-field" />
                             {positionedTeam.map((player) => {
@@ -202,9 +225,22 @@ function FantasyTeam() {
                                         </div>
                                     </div>
                                 );
+                                
                             })}
+                            </div>   
+                            <div className="points-summary-boxes">
+                                {latestGameweek && (
+                                <div className="latest-gw-box">
+                                    <h3>GW {latestGameweek.gameweek} Points: {latestGameweek.total_points}</h3>
+                                </div>
+                                )}   
+                            {allPoints !== null && (
+                                    <div className="total-points-box">
+                                    <h3>Total Points: {allPoints}</h3>
+                                    </div>
+                                )}      
                         </div>
-                    </div>
+                    </div>             </div>     
                 )}
 
     
