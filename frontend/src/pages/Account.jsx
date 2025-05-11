@@ -77,6 +77,7 @@ const Account = () => {
           <span>{user?.username.charAt(0).toUpperCase()}</span>
         </div>
         <h2>{user?.username}</h2>
+        <p><strong>Email:</strong> {user?.email || "Not available"}</p>
 
         <p className="points-label">Total Fantasy Points:</p>
         <div className="points">{allPoints !== null ? allPoints : "Loading..."}</div>
@@ -84,7 +85,7 @@ const Account = () => {
         {profile && (
           <>
             <div className="extra-info">
-              <p><strong>Date of Birth:</strong> {user.email}</p>
+              <p><strong>Email:</strong> {user.email}</p>
               <p><strong>Date of Birth:</strong> {profile.dob}</p>
               <p><strong>Phone:</strong> {profile.phone_number}</p>
               {profile.bio && <p><strong>Bio:</strong> {profile.bio}</p>}
