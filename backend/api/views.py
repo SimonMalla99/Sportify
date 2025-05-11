@@ -29,7 +29,7 @@ from rest_framework.decorators import api_view, permission_classes
 from .serializers import UserProfileSerializer
 from .models import UserProfile
 from .serializers import UserProfileSerializer
-
+from django.core.mail import send_mail
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -57,6 +57,18 @@ class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        user = serializer.save()  # Creates the user and returns it
+        if user.email:
+            send_mail(
+                subject="Welcome to Sportify!",
+                message="Thanks for signing up. Enjoy your fantasy sports experience!",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+    
 
 
 def fetch_fpl_data(request):

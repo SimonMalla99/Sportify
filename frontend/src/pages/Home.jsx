@@ -23,6 +23,17 @@ function Home() {
   const { user } = useContext(AuthContext);
   const [topUsers, setTopUsers] = useState([]);
 
+  const handleSendEmail = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/api/send-test-email/");
+      const data = await response.json();
+      alert(data.message); // e.g., "Email sent successfully!"
+    } catch (error) {
+      alert("Error sending email");
+      console.error("Email error:", error);
+    }
+  };
+
   const goToFantasy = () => {
     if (user) navigate("/fantasy");
     else navigate("/login");
@@ -418,7 +429,7 @@ function Home() {
                       
                     />
                   )}
-                  <h2 >{article.title}</h2>
+                  <h2 >{article.title} </h2>
                 </div>
               ))
             )}

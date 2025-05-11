@@ -21,7 +21,7 @@ from .views import (
     fetch_npl_standings,
     leaderboard_view,
     create_user_profile,
-    get_user_profile
+    get_user_profile,
 )
 
 urlpatterns = [
@@ -47,7 +47,6 @@ urlpatterns = [
     path('leaderboard/', leaderboard_view, name='leaderboard'),
     path("create-profile/", create_user_profile, name="create_user_profile"),
     path("get-profile/", get_user_profile, name="get_user_profile"),
-
 
 
 ]

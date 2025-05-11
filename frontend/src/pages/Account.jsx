@@ -84,6 +84,7 @@ const Account = () => {
         {profile && (
           <>
             <div className="extra-info">
+              <p><strong>Date of Birth:</strong> {user.email}</p>
               <p><strong>Date of Birth:</strong> {profile.dob}</p>
               <p><strong>Phone:</strong> {profile.phone_number}</p>
               {profile.bio && <p><strong>Bio:</strong> {profile.bio}</p>}
