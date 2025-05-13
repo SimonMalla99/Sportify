@@ -30,6 +30,8 @@ from .serializers import UserProfileSerializer
 from .models import UserProfile
 from .serializers import UserProfileSerializer
 from django.core.mail import send_mail
+from django.template.loader import render_to_string  # Optional, for better HTML email
+from django.utils.html import strip_tags
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -51,7 +53,13 @@ class UserView(APIView):
 
     def get(self, request):
         user = request.user
-        return Response({"id": user.id, "username": user.username, "is_superuser": user.is_superuser})
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,  # ✅ ADD THIS LINE
+            "is_superuser": user.is_superuser
+        })
+
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -140,25 +148,60 @@ def fetch_fixtures(request):
     else:
         return JsonResponse({"error": "Failed to fetch data"}, status=500)
 
+
+
 @csrf_exempt
 def save_draft(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
             drafted_players = data.get("drafted_players", [])
+            user_id = drafted_players[0]["user_id"] if drafted_players else None
+
+            if not user_id:
+                return JsonResponse({"error": "User ID is required"}, status=400)
+
+            user = User.objects.get(id=user_id)
+            saved_players = []
 
             for player in drafted_players:
-                DraftedPlayer.objects.create(
+                obj = DraftedPlayer.objects.create(
                     player_id=player["player_id"],
                     user_id=player["user_id"],
                     position=player["position"]
                 )
+                saved_players.append(obj)
 
-            return JsonResponse({"success": True, "message": "Draft saved successfully!"})
+            # 💡 Fetch player names from FPL API
+            fpl_data = requests.get("https://fantasy.premierleague.com/api/bootstrap-static/").json()
+            all_players = {p["id"]: p for p in fpl_data["elements"]}
+
+            # Build HTML table
+            table_html = "<h2>Your Drafted Fantasy Team</h2><table border='1' cellpadding='8' cellspacing='0'><tr><th>First Name</th><th>Last Name</th><th>Position</th></tr>"
+            for dp in saved_players:
+                player_info = all_players.get(dp.player_id)
+                if player_info:
+                    table_html += f"<tr><td>{player_info['first_name']}</td><td>{player_info['second_name']}</td><td>{dp.position}</td></tr>"
+            table_html += "</table>"
+
+            # Send email
+            if user.email:
+                send_mail(
+                    subject="Your Fantasy Team Has Been Drafted!",
+                    message=strip_tags(table_html),  # Fallback plain text
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False,
+                    html_message=table_html
+                )
+
+            return JsonResponse({"success": True, "message": "Draft saved and email sent!"})
+
         except Exception as e:
             return JsonResponse({"success": False, "message": str(e)}, status=400)
-    
+
     return JsonResponse({"success": False, "message": "Invalid request method"}, status=405)
+
 
 @csrf_exempt
 def has_team(request):

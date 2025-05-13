@@ -12,6 +12,7 @@ function FantasyTeam() {
     const [team, setTeam] = useState([]);
     const [showMenu, setShowMenu] = useState(false);
     const [playerStats, setPlayerStats] = useState(null);
+    const [totalPoints, setTotalPoints] = useState(0);
     const [allPlayers, setAllPlayers] = useState([]);
     const [customStats, setCustomStats] = useState([]);
     const [teamPerformance, setTeamPerformance] = useState([]);
