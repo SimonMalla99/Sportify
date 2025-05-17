@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import NepalPremierLeague from "./pages/NepalPremierLeague";
 import Leaderboard from "./pages/Leaderboard";
 import Account from "./pages/Account";
+import ProfileEdit from "./pages/ProfileEdit";
 
 function Logout() {
     localStorage.clear();
@@ -108,6 +109,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <Leaderboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/profileedit"
+                    element={
+                        <ProtectedRoute>
+                            <ProfileEdit />
                         </ProtectedRoute>
                     }
                 />

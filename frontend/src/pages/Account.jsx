@@ -74,8 +74,17 @@ const Account = () => {
 
       <div className="account-card">
         <div className="avatar-circle">
-          <span>{user?.username.charAt(0).toUpperCase()}</span>
+          {profile?.profile_picture ? (
+            <img
+              src={`http://127.0.0.1:8000${profile.profile_picture}`}
+              alt="Profile"
+              className="profile-picture"
+            />
+          ) : (
+            <span>{user?.username.charAt(0).toUpperCase()}</span>
+          )}
         </div>
+
         <h2>{user?.username}</h2>
         <p><strong>Email:</strong> {user?.email || "Not available"}</p>
 
@@ -96,7 +105,15 @@ const Account = () => {
           </>
         )}
 
+        <button
+          onClick={() => navigate("/profileedit")}
+          className="edit-profile-btn"
+        >
+          Edit Profile
+        </button>
+
         <button onClick={handleLogout} className="logout-btn">Log out</button>
+
       </div>
     </div>
     </div>

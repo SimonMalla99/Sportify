@@ -89,6 +89,8 @@ class UserProfile(models.Model):
     dob = models.DateField()
     phone_number = models.CharField(max_length=10)
     bio = models.TextField(blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+
     
     SPORTS_CHOICES = [
         ('Football', 'Football'),

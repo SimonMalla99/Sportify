@@ -844,3 +844,45 @@ def get_user_profile(request):
     except UserProfile.DoesNotExist:
         return Response({"error": "Profile not found"}, status=404)
 
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def update_user_profile(request):
+    user_id = request.GET.get("user_id")
+    if not user_id:
+        return JsonResponse({"error": "User ID is required"}, status=400)
+
+    try:
+        user = User.objects.get(id=user_id)
+        profile = user.profile
+    except (User.DoesNotExist, UserProfile.DoesNotExist):
+        return JsonResponse({"error": "User or profile not found"}, status=404)
+
+    data = request.data
+
+    # Update username
+    new_username = data.get("username")
+    if new_username and new_username != user.username:
+        user.username = new_username
+        user.save()
+
+    # Update UserProfile fields
+    profile.dob = data.get("dob", profile.dob)
+    profile.phone_number = data.get("phone_number", profile.phone_number)
+    profile.bio = data.get("bio", profile.bio)
+
+    # Favourite Sports (JSON list)
+    favourite_sports = data.get("favourite_sports")
+    if favourite_sports:
+        try:
+            profile.favourite_sports = json.loads(favourite_sports)
+        except Exception as e:
+            print("Error parsing favourite_sports:", e)
+
+    # Profile Picture (if uploaded)
+    if "profile_picture" in request.FILES:
+        profile.profile_picture = request.FILES["profile_picture"]
+
+    profile.save()
+
+    return JsonResponse({"message": "Profile updated successfully!"}, status=200)
