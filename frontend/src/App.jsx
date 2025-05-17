@@ -18,6 +18,7 @@ import NepalPremierLeague from "./pages/NepalPremierLeague";
 import Leaderboard from "./pages/Leaderboard";
 import Account from "./pages/Account";
 import ProfileEdit from "./pages/ProfileEdit";
+import VideoStream from "./pages/VideoStream";
 
 function Logout() {
     localStorage.clear();
@@ -128,6 +129,14 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="/videostream"
+                    element={
+                        <ProtectedRoute>
+                            <VideoStream />
+                        </ProtectedRoute>
+                    }
+                />                
                 <Route path="*" element={<NotFound />} />
             </Routes>
 

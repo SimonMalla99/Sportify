@@ -11,10 +11,24 @@ class DraftedPlayer(models.Model):
         return f"{self.user.username} - Player ID: {self.player_id}"
 
 class NewsArticle(models.Model):
+    CATEGORY_CHOICES = [
+        ('Football', 'Football'),
+        ('Basketball', 'Basketball'),
+        ('Cricket', 'Cricket'),
+        ('Swimming', 'Swimming'),
+        ('Table Tennis', 'Table Tennis'),
+        ('Badminton', 'Badminton'),
+        ('Volleyball', 'Volleyball'),
+        ('Track and Field', 'Track and Field'),
+        ('Other', 'Other'),
+    ]
+
     title = models.CharField(max_length=255)
     image = models.ImageField(upload_to='news_images/')
     body = models.TextField()
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='Other')
     created_at = models.DateTimeField(auto_now_add=True)
+
 
 class PlayerGamePerformance(models.Model):
     player_id = models.IntegerField()

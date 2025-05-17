@@ -36,8 +36,23 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem(REFRESH_TOKEN);
     };
 
+    const [profilePic, setProfilePic] = useState(null);
+
+    useEffect(() => {
+    if (user) {
+        fetch(`http://127.0.0.1:8000/api/get-profile/?user_id=${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.profile_picture) {
+            setProfilePic(`http://127.0.0.1:8000${data.profile_picture}`);
+            }
+        });
+    }
+    }, [user]);
+
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, getAccessToken }}>
+        <AuthContext.Provider value={{ user, login, logout, getAccessToken, profilePic }}>
             {children}
         </AuthContext.Provider>
     );

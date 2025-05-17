@@ -113,3 +113,22 @@
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(49, 130, 206, 0.4);
 }
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.info-row strong {
+  min-width: 140px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.info-row span {
+  flex: 1;
+  color: #4a5568;
+  word-break: break-word;
+}

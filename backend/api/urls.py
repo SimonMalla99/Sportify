@@ -49,6 +49,7 @@ urlpatterns = [
     path("create-profile/", create_user_profile, name="create_user_profile"),
     path("get-profile/", get_user_profile, name="get_user_profile"),
     path("update-profile/", update_user_profile, name="update_user_profile"),
+    path('news/', NewsArticleView.as_view(), name='news'),
 
 
 ]

@@ -1,10 +1,7 @@
-// src/components/News.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import "../styles/News.css";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { FaUserCircle } from "react-icons/fa";
 
@@ -12,36 +9,90 @@ function News() {
   const [newsArticles, setNewsArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showMenu, setShowMenu] = useState(false);
+
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const [showMenu, setShowMenu] = useState(false);
+
+  const [availableCategories] = useState([
+    "Football",
+    "Basketball",
+    "Cricket",
+    "Swimming",
+    "Table Tennis",
+    "Badminton",
+    "Volleyball",
+    "Track and Field",
+    "Other",
+  ]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
   const toggleMenu = () => setShowMenu(!showMenu);
 
   const goToFantasy = () => {
-    if (user) {
-      navigate("/fantasy");
-    } else {
-      navigate("/login");
-    }
+    if (user) navigate("/fantasy");
+    else navigate("/login");
   };
 
   const handleLogout = () => {
     navigate("/logout");
   };
 
+  // Fetch user's favourite sports to preselect categories
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/news/")
-      .then((response) => {
-        setNewsArticles(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching news articles:", err);
-        setError(err);
-        setLoading(false);
-      });
-  }, []);
+    if (user) {
+      axios.get(`http://127.0.0.1:8000/api/get-profile/?user_id=${user.id}`)
+        .then((res) => {
+          const favSports = res.data.favourite_sports || [];
+          setSelectedCategories(favSports);
+        })
+        .catch((err) => console.error("Error fetching user profile:", err));
+    }
+  }, [user]);
+
+  // Fetch news articles based on selected categories
+  useEffect(() => {
+    setLoading(true);
+
+    if (selectedCategories.length === 0) {
+      // Load all news if nothing is selected
+      axios.get("http://127.0.0.1:8000/api/news/")
+        .then((response) => {
+          setNewsArticles(response.data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching news articles:", err);
+          setError(err);
+          setLoading(false);
+        });
+    } else {
+      // Fetch news for each selected category & merge results
+      const fetches = selectedCategories.map(cat =>
+        axios.get(`http://127.0.0.1:8000/api/news/?category=${cat}`)
+      );
+
+      Promise.all(fetches)
+        .then((responses) => {
+          const mergedArticles = responses.flatMap(res => res.data);
+          setNewsArticles(mergedArticles);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching filtered news:", err);
+          setError(err);
+          setLoading(false);
+        });
+    }
+  }, [selectedCategories]);
+
+  const toggleCategory = (category) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
+  };
 
   if (loading) return <p>Loading news articles...</p>;
   if (error) return <p>Error loading news articles: {error.message || "Unknown error"}</p>;
@@ -78,6 +129,27 @@ function News() {
       <header className="news-header">
         <h1>Latest News</h1>
       </header>
+
+      {/* Category Filters */}
+      <div className="category-filters">
+        <button
+          className={`category-pill ${selectedCategories.length === 0 ? "selected" : ""}`}
+          onClick={() => setSelectedCategories([])}
+        >
+          All
+        </button>
+
+        {availableCategories.map((cat) => (
+          <button
+            key={cat}
+            className={`category-pill ${selectedCategories.includes(cat) ? "selected" : ""}`}
+            onClick={() => toggleCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
 
       <div className="news-articles">
         {newsArticles.length === 0 ? (

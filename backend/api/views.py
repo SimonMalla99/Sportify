@@ -277,7 +277,13 @@ class NewsArticleView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        news_articles = NewsArticle.objects.all().order_by("-id")
+        category = request.GET.get("category")
+
+        if category:
+            news_articles = NewsArticle.objects.filter(category=category).order_by("-id")
+        else:
+            news_articles = NewsArticle.objects.all().order_by("-id")
+
         serializer = NewsArticleSerializer(news_articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -287,6 +293,7 @@ class NewsArticleView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 class NewsArticleDetail(generics.RetrieveAPIView):
     queryset = NewsArticle.objects.all()

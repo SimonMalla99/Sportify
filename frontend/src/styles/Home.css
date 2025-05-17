@@ -817,4 +817,10 @@ table {
     margin: 0;
     padding: 0;
   }
-  
+  .nav-profile-picture {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}

@@ -20,6 +20,9 @@ function FantasyTeam() {
     const latestGameweek = teamPerformance.length > 0
     ? [...teamPerformance].sort((a, b) => b.gameweek - a.gameweek)[0]
     : null;
+    const [showPointLog, setShowPointLog] = useState(false);
+    const [pointLogs, setPointLogs] = useState([]);
+
 
 
 
@@ -131,7 +134,53 @@ function FantasyTeam() {
         };
         return teams[teamId] || `Team ${teamId}`;
     };
-    
+
+    const generatePointLogs = () => {
+    if (showPointLog) {
+        setShowPointLog(false);
+        return;
+    }
+
+    const logs = [];
+
+    team.forEach((player) => {
+        const match_history = customStats
+        .filter(match => match.player_id === player.id)
+        .sort((a, b) => a.gameweek - b.gameweek);
+
+        // Only include matches where points are greater than 0
+        const relevantMatches = match_history.filter(match => match.total_points > 0);
+
+        // If no matches earned any points, skip this player
+        if (relevantMatches.length === 0) return;
+
+        relevantMatches.forEach(match => {
+        const actions = [];
+
+        if (match.goals_scored) actions.push(`${match.goals_scored} goal${match.goals_scored > 1 ? 's' : ''}`);
+        if (match.assists) actions.push(`${match.assists} assist${match.assists > 1 ? 's' : ''}`);
+        if (match.minutes) actions.push(`${match.minutes} minutes played`);
+        if (match.saves) actions.push(`${match.saves} save${match.saves > 1 ? 's' : ''}`);
+        if (match.yellow_cards) actions.push(`${match.yellow_cards} yellow card${match.yellow_cards > 1 ? 's' : ''}`);
+        if (match.red_cards) actions.push(`${match.red_cards} red card${match.red_cards > 1 ? 's' : ''}`);
+        if (match.clean_sheets) actions.push(`a clean sheet`);
+
+        const statText = actions.length ? ` with ${actions.join(", ")}` : "";
+        logs.push({
+            gameweek: match.gameweek,
+            log: `${player.first_name} ${player.second_name} earned ${match.total_points} points${statText} in Gameweek ${match.gameweek}.`
+        });
+        });
+    });
+
+    logs.sort((a, b) => b.gameweek - a.gameweek);
+
+    setPointLogs(logs);
+    setShowPointLog(true);
+    };
+
+
+
     
 
     return (
@@ -165,6 +214,35 @@ function FantasyTeam() {
                 </header>
     
                 <h1>Your Fantasy Team {user.username}</h1>
+
+                <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                <button onClick={generatePointLogs} className="points-history-btn">
+                    {showPointLog ? "Hide Points History" : "Show Points History"}
+                </button>
+                </div>
+
+
+                {showPointLog && (
+                <div className="pointlog-modal-overlay" onClick={() => setShowPointLog(false)}>
+                    <div className="pointlog-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="pointlog-modal-header">
+                        <h2>Points History</h2>
+                        <button className="close-modal-btn" onClick={() => setShowPointLog(false)}>×</button>
+                    </div>
+                    <div className="points-history-card-grid">
+                        {pointLogs.map((entry, idx) => (
+                        <div className="points-history-card" key={idx}>
+                            <div className="points-history-header">
+                            <span className="gw-badge">GW {entry.gameweek}</span>
+                            </div>
+                            <p>{entry.log}</p>
+                        </div>
+                        ))}
+                    </div>
+                    </div>
+                </div>
+                )}
+
     
                 {team.length > 0 && (
                     <div className="team-layout-wrapper">
