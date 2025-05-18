@@ -1,0 +1,6 @@
+.video-container {
+    font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1a202c;
+    background: url('/bbb.png') center center / cover no-repeat;
+    min-height: 100vh;
+}

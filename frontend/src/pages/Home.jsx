@@ -130,9 +130,13 @@ function Home() {
 
   const scrollToDate = (index, date) => {
     const carousel = carouselRef.current;
-    const card = carousel.children[index];
+    if (!carousel) return;
 
-    card.scrollIntoView({
+    // Find the exact match-card by data-date attribute
+    const targetCard = carousel.querySelector(`.match-card[data-date="${date}"]`);
+    if (!targetCard) return;
+
+    targetCard.scrollIntoView({
       behavior: "smooth",
       inline: "center",
       block: "nearest",
@@ -140,10 +144,11 @@ function Home() {
 
     setSelectedDate(date);
 
-    const pill = dateNavRef.current.children[index];
+    // Handle date-pill centering
+    const pills = dateNavRef.current.querySelectorAll(".date-pill");
+    const pill = pills[index];
     const navContainer = dateNavRef.current;
-    const offset =
-      pill.offsetLeft - navContainer.offsetWidth / 2 + pill.offsetWidth / 2;
+    const offset = pill.offsetLeft - navContainer.offsetWidth / 2 + pill.offsetWidth / 2;
 
     navContainer.scrollTo({
       left: offset,
@@ -151,25 +156,47 @@ function Home() {
     });
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.find((entry) => entry.isIntersecting);
-        if (visible) {
-          const date = visible.target.getAttribute("data-date");
-          setSelectedDate(date);
-        }
-      },
-      {
-        root: carouselRef.current,
-        threshold: 0.6,
-      }
-    );
 
-    const cards = carouselRef.current?.children || [];
-    Array.from(cards).forEach((card) => observer.observe(card));
-    return () => observer.disconnect();
-  }, [groupedFixtures]);
+
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    const handleScroll = () => {
+      const children = Array.from(carousel.children);
+      const carouselCenter = carousel.scrollLeft + carousel.offsetWidth / 2;
+
+      let closestCard = null;
+      let closestDistance = Infinity;
+
+      children.forEach((card) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const distance = Math.abs(carouselCenter - cardCenter);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestCard = card;
+        }
+      });
+
+      children.forEach((card) => {
+        if (card === closestCard) {
+          card.classList.add("focused");
+        } else {
+          card.classList.remove("focused");
+        }
+      });
+    };
+
+    carousel.addEventListener("scroll", handleScroll);
+    // run once to initialize focus
+    handleScroll();
+
+    return () => {
+      carousel.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/leaderboard/")
@@ -218,6 +245,43 @@ function Home() {
       .includes(searchQuery.toLowerCase())
   );
 
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    const handleWheelScroll = (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        carousel.scrollLeft += e.deltaY;
+      }
+    };
+
+    carousel.addEventListener("wheel", handleWheelScroll, { passive: false });
+
+    return () => {
+      carousel.removeEventListener("wheel", handleWheelScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const hero = document.querySelector(".scroll-reveal");
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+
+      // Add or remove class based on scroll distance
+      if (scrollY > window.innerHeight * 0.4) {
+        hero.classList.add("fade-out");
+      } else {
+        hero.classList.remove("fade-out");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+
   return (
     <div className="home-container">
       <header className="home-header">
@@ -259,15 +323,11 @@ function Home() {
           )}
         </nav>
       </header>
-
-      <main className="hero">
+      <div className="scroll-reveal-wrapper">
+      <main className="hero scroll-reveal">
         <div className="hero-text">
           <h1>Unleash Your Fantasy Football Passion with Sportify</h1>
-          <p>
-            Explore the world of fantasy football and sports news in Nepal. Join
-            us today!
-          </p>
-          {user ? <p>Logged in as: {user.username}</p> : <p>Please log in</p>}
+
           <div className="hero-buttons">
             <button className="btn primary-btn" onClick={goToFantasy}>
               Join
@@ -276,7 +336,6 @@ function Home() {
           </div>
         </div>
       </main>
-
       <section className="features-section">
         <h2 className="features-title">
             Explore the Latest in Football, Player Stats, and Match Results!
@@ -305,7 +364,7 @@ function Home() {
             </div>
         </div>
         </section>
-
+        </div>
       {/* Fixtures Section */}
       <section className="fixtures-section">
         <h2>Premier League Fixtures</h2>

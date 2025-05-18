@@ -22,7 +22,10 @@ from .views import (
     leaderboard_view,
     create_user_profile,
     get_user_profile,
-    update_user_profile
+    update_user_profile,
+    change_password,
+    request_reset_otp,
+    reset_password_with_otp
 )
 
 urlpatterns = [
@@ -50,6 +53,8 @@ urlpatterns = [
     path("get-profile/", get_user_profile, name="get_user_profile"),
     path("update-profile/", update_user_profile, name="update_user_profile"),
     path('news/', NewsArticleView.as_view(), name='news'),
-
+    path("change-password/", change_password, name="change-password"),
+    path("request-reset-otp/", request_reset_otp),
+    path("reset-password/", reset_password_with_otp),
 
 ]

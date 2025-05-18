@@ -4,7 +4,7 @@
 .home-container {
     font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
     color: #1a202c;
-    background-color: #ffffff;
+    background: rgb(255, 255, 255) !important;
     min-height: 100vh;
 }
 
@@ -14,7 +14,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 18px 40px;
-    background-color: #ffffff !important;
+    background-color: #0a011b !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     position: sticky;
@@ -46,8 +46,8 @@ html, body {
 
 .nav-bar a {
     text-decoration: none;
-    color: #4a5568;
-    font-weight: 600;
+    color: #ffffffdc !important;
+    font-weight: 10 !important;
     font-size: 15px;
     transition: all 0.2s ease;
     position: relative;
@@ -55,7 +55,7 @@ html, body {
 }
 
 .nav-bar a:hover {
-    color: #3182ce;
+    color: #ffffff;
 }
 
 .nav-bar a::after {
@@ -65,7 +65,7 @@ html, body {
     height: 2px;
     bottom: 0;
     left: 0;
-    background: linear-gradient(90deg, #4299e1, #4c51bf);
+    background-color: #ffffff;
     transition: width 0.3s ease;
 }
 
@@ -105,28 +105,55 @@ html, body {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+.scroll-reveal-wrapper {
+  position: relative;
+  overflow: hidden;
+}
 
-/* Hero Section with enhanced visuals */
+.scroll-reveal {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 10;
+  transition: opacity 0.5s ease-out, transform 0.8s ease-out;
+  will-change: transform, opacity;
+}
+
+.scroll-reveal.fade-out {
+  opacity: 0;
+  transform: translateY(-50px);
+}
+
 .hero {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 80px 60px;
-    background: linear-gradient(135deg, #7facda, #edf2f7);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+  height: 100vh;
+  background: url('/fff.jpg') center center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 2;
+  padding: 100px 60px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); /* Adds a curtain-like edge */
 }
 
 .hero-text {
-    max-width: 600px;
+    max-width: 700px;
+    padding: 50px ;
 }
 
 .hero-text h1 {
-    font-size: 48px;
+    font-size: 60px;
     font-weight: 800;
-    color: #2d3748;
-    margin-bottom: 24px;
+    align-items: center !important;
+    color: #ffffff;
     line-height: 1.2;
     letter-spacing: -0.5px;
+    text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+
 }
 
 .hero-text p {
@@ -135,9 +162,12 @@ html, body {
     margin-bottom: 36px;
     line-height: 1.7;
 }
-
+.hero-buttons{
+  padding: 100px;
+}
 .hero-buttons .btn {
     margin-right: 16px;
+    padding: auto ;
 }
 
 .primary-btn {
@@ -184,7 +214,7 @@ html, body {
     margin: 60px auto;
     padding: 40px;
     max-width: 1200px;
-    background: linear-gradient(135deg, #7facda, #edf2f7);
+    background: linear-gradient(135deg, #6fcef3, #0c3d6e);
     border-radius: 16px;
     border: none;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -193,21 +223,12 @@ html, body {
 .fixtures-section h2 {
     font-size: 32px;
     font-weight: 700;
-    color: #2d3748;
+    color: #e3e8f0;
     margin-bottom: 30px;
     text-align: center;
     position: relative;
 }
 
-.fixtures-section h2::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, #4299e1, #4c51bf);
-    margin: 15px auto 0;
-    border-radius: 2px;
-}
 
 .fixtures-block {
     margin-bottom: 50px;
@@ -216,21 +237,13 @@ html, body {
 .fixtures-block h3 {
     font-size: 24px;
     font-weight: 700;
-    color: #2d3748;
+    color: #ffffff;
     margin-bottom: 24px;
     text-align: center;
     position: relative;
 }
 
-.fixtures-block h3::after {
-    content: '';
-    display: block;
-    width: 50px;
-    height: 3px;
-    background: linear-gradient(90deg, #4299e1, #4c51bf);
-    margin: 10px auto 0;
-    border-radius: 2px;
-}
+
 
 .fixture-controls {
     display: flex;
@@ -248,6 +261,10 @@ html, body {
     flex-direction: column;
     align-items: center;
     gap: 20px;
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .scroll-item {
@@ -278,6 +295,14 @@ html, body {
     max-width: 1200px;
     text-align: center;
   }
+
+  .upcoming-section h3 {
+    margin: 60px auto;
+    padding: 20px 40px;
+    max-width: 1200px;
+    text-align: center;
+    color: white;
+  }
   
   /* Date nav bar */
   .date-nav {
@@ -288,6 +313,9 @@ html, body {
     justify-content: center;
     scroll-behavior: smooth;
   }
+  .date-nav::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
   
   .date-pill {
     padding: 10px 16px;
@@ -307,52 +335,103 @@ html, body {
   }
   
   /* Carousel of date cards */
-  .match-carousel {
-    display: flex;
-    gap: 40px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 0 10vw;
-    scroll-behavior: smooth;
-  }
-  
-  .match-card {
-    scroll-snap-align: center;
-    flex: 0 0 60%;
-    padding: 30px 20px;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-    opacity: 0.6;
-    transform: scale(0.95);
-  }
-  
-  .match-card.focused {
-    transform: scale(1);
-    opacity: 1;
-  }
-  
-  .match-card h4 {
-    font-size: 22px;
-    margin-bottom: 16px;
-    color: #2d3748;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 8px;
-  }
-  
-  .match-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .match-list li {
-    background: #f7fafc;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    font-size: 15px;
-  }
+.match-carousel {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  padding: 30px 10vw;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.match-carousel::-webkit-scrollbar {
+  height: 6px;
+}
+.match-carousel::-webkit-scrollbar-thumb {
+  background: #4c51bf;
+  border-radius: 6px;
+}
+
+.match-card {
+  scroll-snap-align: center;
+  flex: 0 0 320px; /* smaller than before */
+  height: 380px; /* taller to fit 3 fixtures neatly */
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s ease;
+  opacity: 0.6;
+  transform: scale(0.9);
+  color: white;
+  backdrop-filter: blur(6px);
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.match-card.focused {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.match-card h4 {
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: #ffffff;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 8px;
+}
+.match-card {
+  min-height: 300px;
+  max-height: 300px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+
+.match-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.match-list li {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 14px 20px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  color: #1a202c;
+  text-align: center;
+  line-height: 1.4;
+  word-break: break-word;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+
+.match-list li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.match-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.match-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.match-list::-webkit-scrollbar-thumb {
+  background-color: #6366f1;  /* blue-ish tone */
+  border-radius: 10px;
+}
+
   
 
 .fixtures-carousel {
@@ -504,7 +583,9 @@ table {
     background-color: #f7fafc; /* Optional: slight hover effect */
   }
   
-
+.players-section h1{
+  color:#000;
+}
 .player-details {
     margin: 40px auto;
     max-width: 600px;
@@ -532,12 +613,18 @@ table {
     position: relative;
     display: inline-block;
 }
-
+.account-dropdown a {
+  color: black !important;
+  text-decoration: none;
+}
+.account-dropdown a:hover {
+  text-decoration: underline;
+}
 .account-dropdown {
     position: absolute;
     top: 45px;
     right: 0;
-    background-color: white;
+    background-color: rgb(0, 0, 0);
     border: none;
     border-radius: 10px;
     padding: 16px;
@@ -555,13 +642,16 @@ table {
 .account-dropdown p {
     margin-bottom: 12px;
     font-weight: 600;
-    color: #2d3748;
+    color: #000000 !important;
+}
+.account-dropdown link{
+  color:#000;
 }
 
 .account-dropdown button {
     width: 100%;
     background: linear-gradient(135deg, #e53e3e, #c53030);
-    color: white;
+    color: rgb(0, 0, 0);
     border: none;
     padding: 8px 12px;
     border-radius: 6px;
@@ -587,15 +677,7 @@ table {
     position: relative;
 }
 
-.newsadmin-title::after {
-    content: '';
-    display: block;
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(90deg, #4299e1, #4c51bf);
-    margin: 15px auto 0;
-    border-radius: 2px;
-}
+
 
 .newsadmin-form label {
     display: block;
@@ -657,11 +739,17 @@ table {
     justify-content: flex-start;
     background-color: #f7fafc; /* match your theme */
   }
-  .features-section {
-    padding: 80px 40px;
-    background-color: #ffffff;
-    text-align: center;
-  }
+.features-section {
+  position: relative;
+  background-color: white;
+  margin-top: -100px; /* This is the magic line: pull the next section under the hero */
+  padding-top: 120px; /* Add spacing inside to offset the negative margin */
+  z-index: 1;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -5px 15px rgba(0,0,0,0.1); /* Optional for more separation */
+}
+
   
   .features-title {
     font-size: 28px;

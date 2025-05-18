@@ -21,6 +21,10 @@ const Leaderboard = () => {
   const toggleMenu = () => setShowMenu(!showMenu);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const [showPointLog, setShowPointLog] = useState(false);
+  const [pointLogs, setPointLogs] = useState([]);
+  const { profilePic } = useContext(AuthContext);
+  const [topUsers, setTopUsers] = useState([]);
   
   const goToFantasy = () => {
     if (user) navigate("/fantasy");
@@ -49,20 +53,33 @@ const Leaderboard = () => {
           <Link to="/team-prediction-form">Predictions</Link>
           <Link to="/npl">NPL</Link>
           <Link to="/leaderboard">Leaderboards</Link>
+          <Link to="/videostream">Live Game</Link>
           {user && (
             <div className="account-container">
-              <FaUserCircle
-                size={24}
-                onClick={toggleMenu}
-                style={{ cursor: "pointer" }}
-              />
+              {profilePic ? (
+                <img
+                  src={profilePic}
+                  alt="Profile"
+                  className="nav-profile-picture"
+                  onClick={toggleMenu}
+                />
+              ) : (
+                <FaUserCircle
+                  size={24}
+                  onClick={toggleMenu}
+                  style={{ cursor: "pointer" }}
+                />
+              )}
+              
               {showMenu && (
                 <div className="account-dropdown">
                   <p>👤 {user.username}</p>
+                  <p><Link to="/account">Account Overview</Link></p>
                   <button onClick={handleLogout}>Logout</button>
                 </div>
               )}
             </div>
+
           )}
         </nav>
       </header>

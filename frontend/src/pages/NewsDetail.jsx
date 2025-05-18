@@ -12,6 +12,16 @@ function NewsDetail() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [showMenu, setShowMenu] = useState(false);
+  const [showPointLog, setShowPointLog] = useState(false);
+  const [pointLogs, setPointLogs] = useState([]);
+  const [fixtures, setFixtures] = useState([]);
+  const [previousFixtures, setPreviousFixtures] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(10);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [newsArticles, setNewsArticles] = useState([]);
+  const [error, setError] = useState(null);
+  const { profilePic } = useContext(AuthContext);
+  const [topUsers, setTopUsers] = useState([]);
 
   const toggleMenu = () => setShowMenu(!showMenu);
 
@@ -37,24 +47,42 @@ function NewsDetail() {
 
   return (
     <div className="news-container">
-      <header className="news-top-header">
+      <header className="home-header">
         <div className="logo">Sportify</div>
         <nav className="nav-bar">
           <Link to="/">Home Page</Link>
           <Link to="/fantasy-team">Fantasy</Link>
           <Link to="/News">Sports News</Link>
-          <Link to="#">About</Link>
-          <Link to="#">Contact</Link>
+          <Link to="/team-prediction-form">Predictions</Link>
+          <Link to="/npl">NPL</Link>
+          <Link to="/leaderboard">Leaderboards</Link>
+          <Link to="/videostream">Live Game</Link>
           {user && (
             <div className="account-container">
-              <FaUserCircle size={24} onClick={toggleMenu} style={{ cursor: "pointer" }} />
+              {profilePic ? (
+                <img
+                  src={profilePic}
+                  alt="Profile"
+                  className="nav-profile-picture"
+                  onClick={toggleMenu}
+                />
+              ) : (
+                <FaUserCircle
+                  size={24}
+                  onClick={toggleMenu}
+                  style={{ cursor: "pointer" }}
+                />
+              )}
+              
               {showMenu && (
                 <div className="account-dropdown">
                   <p>👤 {user.username}</p>
+                  <p><Link to="/account">Account Overview</Link></p>
                   <button onClick={handleLogout}>Logout</button>
                 </div>
               )}
             </div>
+
           )}
         </nav>
       </header>

@@ -3,12 +3,23 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { AuthContext } from "../context/AuthContext";
 import "../styles/Home.css";
+import "../styles/VideoStream.css";
 
 const VideoStream = () => {
   const navigate = useNavigate();
   const { user, profilePic } = useContext(AuthContext);
   const [showMenu, setShowMenu] = useState(false);
   const toggleMenu = () => setShowMenu(!showMenu);
+  const [showPointLog, setShowPointLog] = useState(false);
+  const [pointLogs, setPointLogs] = useState([]);
+  const [fixtures, setFixtures] = useState([]);
+  const [previousFixtures, setPreviousFixtures] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(10);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [newsArticles, setNewsArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [topUsers, setTopUsers] = useState([]);
 
   const handleLogout = () => {
     navigate("/logout");
@@ -23,8 +34,7 @@ const VideoStream = () => {
   }, []);
 
   return (
-    <div className="home-container" style={{ overflow: "hidden" }}>
-      {/* Header */}
+    <div className="video-container" style={{ overflow: "hidden" }}>
       <header className="home-header">
         <div className="logo">Sportify</div>
         <nav className="nav-bar">
@@ -34,6 +44,7 @@ const VideoStream = () => {
           <Link to="/team-prediction-form">Predictions</Link>
           <Link to="/npl">NPL</Link>
           <Link to="/leaderboard">Leaderboards</Link>
+          <Link to="/videostream">Live Game</Link>
           {user && (
             <div className="account-container">
               {profilePic ? (
@@ -50,6 +61,7 @@ const VideoStream = () => {
                   style={{ cursor: "pointer" }}
                 />
               )}
+              
               {showMenu && (
                 <div className="account-dropdown">
                   <p>👤 {user.username}</p>
@@ -58,16 +70,15 @@ const VideoStream = () => {
                 </div>
               )}
             </div>
+
           )}
         </nav>
       </header>
-
       {/* Cropped iframe */}
       <div
         style={{
           width: "100%",
           height: "calc(100vh - 80px)",
-          backgroundColor: "#7facda",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -85,7 +96,7 @@ const VideoStream = () => {
           }}
         >
           <iframe
-            src="https://cdn.totalsportek.space/embed77/?event=stack.html&link=1&domain=&force=https%3A%2F%2Fstreambtw.com%2Fiframe%2Ff1.php&ask=1747494000&lgt=3&noplayer=0"
+            src="https://cdn.totalsportek.space/embed77/?event=stack.html&link=1&domain=&force=https%3A%2F%2Fstreambtw.com%2Fiframe%2Fch1.php&ask=1747569600&lgt=3&noplayer=1"
             style={{
               position: "absolute",
               top: "-90px",

@@ -22,34 +22,50 @@ function Form({ route, method }) {
   const [phone, setPhone] = useState("");
   const [bio, setBio] = useState("");
   const [sports, setSports] = useState([]);
+  const [formMode, setFormMode] = useState(method); // login, signup, forgot
+  const [showOtpReset, setShowOtpReset] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
   const availableSports = [
     "Football", "Basketball", "Cricket", "Swimming",
     "Table Tennis", "Badminton", "Volleyball", "Track and Field"
   ];
 
-  const name = method === "login" ? "Login" : "Sign Up";
+  const name = formMode === "login" ? "Login" : "Sign Up";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    if (method !== "login" && password !== confirmPassword) {
+    if (formMode === "forgot") {
+      try {
+        await api.post("/api/request-reset-otp/", { email });
+        toast.success("OTP sent to your email.");
+        setShowOtpReset(true);
+      } catch (err) {
+        toast.error("Failed to send OTP. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    if (formMode !== "login" && password !== confirmPassword) {
       toast.error("Passwords do not match.");
       setLoading(false);
       return;
     }
-    
 
     try {
       const payload =
-        method === "login"
+        formMode === "login"
           ? { username, password }
           : { username, password, email };
 
       const res = await api.post(route, payload);
 
-      if (method === "login") {
+      if (formMode === "login") {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
 
@@ -77,15 +93,23 @@ function Form({ route, method }) {
         error.response?.data ||
         "Login failed. Please check your credentials.";
       toast.error(typeof message === "string" ? message : "Something went wrong.");
-    }
-     finally {
+    } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    try {
+      await api.post("/api/reset-password/", { email, otp, new_password: newPassword });
+      toast.success("Password reset successful!");
+      setFormMode("login");
+    } catch (error) {
+      toast.error("Failed to reset password. Try again.");
     }
   };
 
   const handleExtraSubmit = async (e) => {
     e.preventDefault();
-
     try {
       await api.post("/api/create-profile/", {
         user_id: userId,
@@ -118,78 +142,134 @@ function Form({ route, method }) {
       {!showExtraFields ? (
         <form onSubmit={handleSubmit}>
           <div className="logo-text">Sportify</div>
-          <h2>{name}</h2>
-          <p style={{ marginBottom: "30px", color: "#4a5568" }}>
-            {method === "login"
-              ? "Welcome back! Please log in with your username and password"
-              : "Create a new account to get started."}
-          </p>
+          <h2>{formMode === "forgot" ? "Forgot Password" : name}</h2>
 
-          <input
-            className="form-input"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            required
-          />
-
-          {method !== "login" && (
-            <input
-              className="form-input"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              required
-            />
-          )}
-
-          <input
-            className="form-input"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-          />
-
-          {method !== "login" && (
+          {formMode === "forgot" ? (
             <>
               <input
                 className="form-input"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Retype Password"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your registered email"
                 required
               />
-              {confirmPassword && password !== confirmPassword && (
-                <p style={{ color: "red", fontSize: "0.85rem" }}>
-                  Passwords do not match
+
+              {showOtpReset ? (
+                <>
+                  <input
+                    className="form-input"
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="Enter OTP"
+                    required
+                  />
+                  <input
+                    className="form-input"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="New Password"
+                    required
+                  />
+                  <button
+                    className="form-button"
+                    type="button"
+                    onClick={handleResetPassword}
+                  >
+                    Reset Password
+                  </button>
+                </>
+              ) : (
+                <button className="form-button" type="submit">
+                  {loading ? "Sending..." : "Send OTP"}
+                </button>
+              )}
+              <p
+                onClick={() => setFormMode("login")}
+                style={{ cursor: "pointer", color: "#3182ce", marginTop: "10px" }}
+              >
+                Back to login
+              </p>
+            </>
+          ) : (
+            <>
+              <input
+                className="form-input"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+                required
+              />
+              {formMode !== "login" && (
+                <input
+                  className="form-input"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  required
+                />
+              )}
+              <input
+                className="form-input"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                required
+              />
+              {formMode === "login" && (
+                <p
+                  style={{
+                    fontSize: "0.9rem",
+                    color: "#3182ce",
+                    cursor: "pointer",
+                    marginTop: "10px",
+                    textAlign: "right"
+                  }}
+                  onClick={() => setFormMode("forgot")}
+                >
+                  Forgot your password?
                 </p>
               )}
-            </>
-          )}
-
-          <button className="form-button" type="submit" disabled={loading}>
-            {loading ? "Loading..." : name}
-          </button>
-
-          {method === "login" && (
-            <div className="form-footer">
-              Don’t have an account?
-              <button type="button" onClick={handleSignupRedirect}>
-                Sign up
+              {formMode !== "login" && (
+                <>
+                  <input
+                    className="form-input"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Retype Password"
+                    required
+                  />
+                  {confirmPassword && password !== confirmPassword && (
+                    <p style={{ color: "red", fontSize: "0.85rem" }}>
+                      Passwords do not match
+                    </p>
+                  )}
+                </>
+              )}
+              <button className="form-button" type="submit" disabled={loading}>
+                {loading ? "Loading..." : name}
               </button>
-            </div>
+              {formMode === "login" && (
+                <div className="form-footer">
+                  Don’t have an account?
+                  <button type="button" onClick={handleSignupRedirect}>
+                    Sign up
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </form>
       ) : (
         <form onSubmit={handleExtraSubmit}>
           <div className="logo-text">Sportify</div>
           <h2>Tell us more about you</h2>
-
           <input
             className="form-input"
             type="date"
@@ -198,7 +278,6 @@ function Form({ route, method }) {
             placeholder="Date of Birth"
             required
           />
-
           <input
             className="form-input"
             type="tel"
@@ -209,14 +288,12 @@ function Form({ route, method }) {
             title="10-digit number"
             required
           />
-
           <textarea
             className="form-input"
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             placeholder="Short Bio (optional)"
           />
-
           <label style={{ fontWeight: "bold", marginTop: "10px" }}>
             Favourite Sports (optional):
           </label>
@@ -232,7 +309,6 @@ function Form({ route, method }) {
               </button>
             ))}
           </div>
-
           <button className="form-button" type="submit">
             Continue
           </button>

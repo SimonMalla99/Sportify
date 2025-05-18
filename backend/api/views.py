@@ -32,6 +32,9 @@ from .serializers import UserProfileSerializer
 from django.core.mail import send_mail
 from django.template.loader import render_to_string  # Optional, for better HTML email
 from django.utils.html import strip_tags
+import random
+from django.core.cache import cache
+
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -893,3 +896,71 @@ def update_user_profile(request):
     profile.save()
 
     return JsonResponse({"message": "Profile updated successfully!"}, status=200)
+
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    user = request.user
+    old_password = request.data.get("old_password")
+    new_password = request.data.get("new_password")
+
+    if not old_password or not new_password:
+        return Response({"detail": "Both old and new passwords are required."}, status=400)
+
+    if not user.check_password(old_password):
+        return Response({"detail": "Old password is incorrect."}, status=400)
+
+    user.set_password(new_password)
+    user.save()
+
+    return Response({"detail": "Password changed successfully."}, status=200)
+
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def request_reset_otp(request):
+    email = request.data.get("email")
+    if not email:
+        return JsonResponse({"error": "Email is required"}, status=400)
+
+    try:
+        user = User.objects.get(email=email)
+        otp = random.randint(100000, 999999)
+        cache.set(f"reset_otp_{email}", otp, timeout=300)  # 5 mins
+
+        send_mail(
+            subject="Your Sportify Password Reset OTP",
+            message=f"Your OTP is: {otp}",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+        return JsonResponse({"message": "OTP sent to your email"}, status=200)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "No user found with that email"}, status=404)
+
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def reset_password_with_otp(request):
+    email = request.data.get("email")
+    otp = request.data.get("otp")
+    new_password = request.data.get("new_password")
+
+    if not all([email, otp, new_password]):
+        return JsonResponse({"error": "Email, OTP, and new password are required"}, status=400)
+
+    cached_otp = cache.get(f"reset_otp_{email}")
+    if not cached_otp or str(cached_otp) != str(otp):
+        return JsonResponse({"error": "Invalid or expired OTP"}, status=400)
+
+    try:
+        user = User.objects.get(email=email)
+        user.set_password(new_password)
+        user.save()
+        cache.delete(f"reset_otp_{email}")
+        return JsonResponse({"message": "Password reset successful"}, status=200)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)

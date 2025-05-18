@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import "../styles/News.css";
+import "../styles/Home.css";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { FaUserCircle } from "react-icons/fa";
@@ -10,7 +11,14 @@ function News() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
-
+  const [showPointLog, setShowPointLog] = useState(false);
+  const [pointLogs, setPointLogs] = useState([]);
+  const [fixtures, setFixtures] = useState([]);
+  const [previousFixtures, setPreviousFixtures] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(10);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const { profilePic } = useContext(AuthContext);
+  const [topUsers, setTopUsers] = useState([]);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
@@ -99,7 +107,7 @@ function News() {
 
   return (
     <div className="news-container">
-      <header className="news-top-header">
+      <header className="home-header">
         <div className="logo">Sportify</div>
         <nav className="nav-bar">
           <Link to="/">Home Page</Link>
@@ -108,20 +116,33 @@ function News() {
           <Link to="/team-prediction-form">Predictions</Link>
           <Link to="/npl">NPL</Link>
           <Link to="/leaderboard">Leaderboards</Link>
+          <Link to="/videostream">Live Game</Link>
           {user && (
             <div className="account-container">
-              <FaUserCircle
-                size={24}
-                onClick={toggleMenu}
-                style={{ cursor: "pointer" }}
-              />
+              {profilePic ? (
+                <img
+                  src={profilePic}
+                  alt="Profile"
+                  className="nav-profile-picture"
+                  onClick={toggleMenu}
+                />
+              ) : (
+                <FaUserCircle
+                  size={24}
+                  onClick={toggleMenu}
+                  style={{ cursor: "pointer" }}
+                />
+              )}
+              
               {showMenu && (
                 <div className="account-dropdown">
                   <p>👤 {user.username}</p>
+                  <p><Link to="/account">Account Overview</Link></p>
                   <button onClick={handleLogout}>Logout</button>
                 </div>
               )}
             </div>
+
           )}
         </nav>
       </header>

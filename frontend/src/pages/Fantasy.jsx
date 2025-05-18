@@ -17,6 +17,17 @@ function Fantasy() {
     const [activeFilter, setActiveFilter] = useState(null);
     const [showMenu, setShowMenu] = useState(false);
     const toggleMenu = () => setShowMenu(!showMenu);
+    const [showPointLog, setShowPointLog] = useState(false);
+    const [pointLogs, setPointLogs] = useState([]);
+    const [fixtures, setFixtures] = useState([]);
+    const [previousFixtures, setPreviousFixtures] = useState([]);
+    const [visibleCount, setVisibleCount] = useState(10);
+    const [selectedPlayer, setSelectedPlayer] = useState(null);
+    const [newsArticles, setNewsArticles] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const { profilePic } = useContext(AuthContext);
+    const [topUsers, setTopUsers] = useState([]);
 
     const handleLogout = () =>{
         navigate("/logout");
@@ -131,30 +142,43 @@ function Fantasy() {
     return (
         <div className="fantasy-container">
             <>
-                <header className="fantasy-header">
-                    <div className="fantasy-logo">Sportify</div>
-                    <nav className="fantasy-nav">
-                        <Link to="/">Home Page</Link>
-                        <Link to="/fantasy-team">Fantasy</Link>
-                        <Link to="/News">Sports News</Link>
-                        <Link to="/team-prediction-form">Predictions</Link>
-                        <Link to="/npl">NPL</Link>
-                        <Link to="/leaderboard">Leaderboards</Link>
-                        {user && (
-                            <div className="account-container">
-                            <FaUserCircle
-                                size={24}
-                                onClick={toggleMenu}
-                                style={{ cursor: "pointer" }}
+                <header className="home-header">
+                    <div className="logo">Sportify</div>
+                    <nav className="nav-bar">
+                    <Link to="/">Home Page</Link>
+                    <Link to="/fantasy-team">Fantasy</Link>
+                    <Link to="/News">Sports News</Link>
+                    <Link to="/team-prediction-form">Predictions</Link>
+                    <Link to="/npl">NPL</Link>
+                    <Link to="/leaderboard">Leaderboards</Link>
+                    <Link to="/videostream">Live Game</Link>
+                    {user && (
+                        <div className="account-container">
+                        {profilePic ? (
+                            <img
+                            src={profilePic}
+                            alt="Profile"
+                            className="nav-profile-picture"
+                            onClick={toggleMenu}
                             />
-                            {showMenu && (
-                                <div className="account-dropdown">
-                                <p>👤 {user.username}</p>
-                                <button onClick={handleLogout}>Logout</button>
-                                </div>
-                            )}
+                        ) : (
+                            <FaUserCircle
+                            size={24}
+                            onClick={toggleMenu}
+                            style={{ cursor: "pointer" }}
+                            />
+                        )}
+                        
+                        {showMenu && (
+                            <div className="account-dropdown">
+                            <p>👤 {user.username}</p>
+                            <p><Link to="/account">Account Overview</Link></p>
+                            <button onClick={handleLogout}>Logout</button>
                             </div>
                         )}
+                        </div>
+
+                    )}
                     </nav>
                 </header>
     

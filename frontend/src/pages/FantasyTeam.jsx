@@ -22,6 +22,28 @@ function FantasyTeam() {
     : null;
     const [showPointLog, setShowPointLog] = useState(false);
     const [pointLogs, setPointLogs] = useState([]);
+    const [fixtures, setFixtures] = useState([]);
+    const [previousFixtures, setPreviousFixtures] = useState([]);
+    const [visibleCount, setVisibleCount] = useState(10);
+    const [players, setPlayers] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedPlayer, setSelectedPlayer] = useState(null);
+    const [newsArticles, setNewsArticles] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const { profilePic } = useContext(AuthContext);
+    const [topUsers, setTopUsers] = useState([]);
+    const [showPredictionModal, setShowPredictionModal] = useState(false);
+
+    const [gameweek, setGameweek] = useState(1);
+    const [forwardGoals, setForwardGoals] = useState(0);
+    const [midfielderGoals, setMidfielderGoals] = useState(0);
+    const [defenderCleanSheets, setDefenderCleanSheets] = useState(0);
+    const [goalkeeperCleanSheets, setGoalkeeperCleanSheets] = useState(0);
+    const [totalAssists, setTotalAssists] = useState(0);
+    const [predictionMessage, setPredictionMessage] = useState("");
+    const [evaluationMessage, setEvaluationMessage] = useState("");
+
 
 
 
@@ -179,6 +201,63 @@ function FantasyTeam() {
     setShowPointLog(true);
     };
 
+    const handleSubmitPrediction = async (e) => {
+        e.preventDefault();
+
+        const payload = {
+            user_id: user.id,
+            gameweek,
+            predicted_forward_goals: forwardGoals,
+            predicted_midfielder_goals: midfielderGoals,
+            predicted_defender_clean_sheets: defenderCleanSheets,
+            predicted_goalkeeper_clean_sheets: goalkeeperCleanSheets,
+            predicted_total_assists: totalAssists,
+        };
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/submit-prediction/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                setPredictionMessage("✅ Prediction submitted successfully!");
+            } else {
+                setPredictionMessage(data.error || "❌ Something went wrong");
+            }
+        } catch (error) {
+            console.error("Prediction submission error:", error);
+            setPredictionMessage("❌ Error submitting prediction");
+        }
+    };
+
+    const handleEvaluatePrediction = async () => {
+        const payload = {
+            user_id: user.id,
+            gameweek,
+        };
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/evaluate-prediction/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                setEvaluationMessage("✅ Prediction evaluated successfully!");
+            } else {
+                setEvaluationMessage(data.error || "❌ Evaluation failed");
+            }
+        } catch (error) {
+            console.error("Evaluation error:", error);
+            setEvaluationMessage("❌ Error evaluating prediction");
+        }
+    };
+
 
 
     
@@ -187,38 +266,61 @@ function FantasyTeam() {
         <div className="fantasyteam-container">
             <>
                 <header className="fantasyteam-header">
-                    <div className="fantasyteam-logo">Sportify</div>
-                    <nav className="fantasyteam-nav">
+                    <div className="logo">Sportify</div>
+                    <nav className="nav-bar">
                         <Link to="/">Home Page</Link>
                         <Link to="/fantasy-team">Fantasy</Link>
                         <Link to="/News">Sports News</Link>
                         <Link to="/team-prediction-form">Predictions</Link>
                         <Link to="/npl">NPL</Link>
                         <Link to="/leaderboard">Leaderboards</Link>
+                        <Link to="/videostream">Live Game</Link>
                         {user && (
                             <div className="account-container">
-                            <FaUserCircle
+                            {profilePic ? (
+                                <img
+                                src={profilePic}
+                                alt="Profile"
+                                className="nav-profile-picture"
+                                onClick={toggleMenu}
+                                />
+                            ) : (
+                                <FaUserCircle
                                 size={24}
                                 onClick={toggleMenu}
                                 style={{ cursor: "pointer" }}
-                            />
+                                />
+                            )}
+                            
                             {showMenu && (
                                 <div className="account-dropdown">
-                                <p>👤 {user.username}</p>
+                                <p>👤 {user.username }</p>
+                                <p><Link to="/account" >Account Overview</Link></p>
                                 <button onClick={handleLogout}>Logout</button>
                                 </div>
                             )}
                             </div>
+
                         )}
                     </nav>
                 </header>
     
+                <div className="fantasyteam-header-row">
                 <h1>Your Fantasy Team {user.username}</h1>
-
-                <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                <button onClick={generatePointLogs} className="points-history-btn">
+                <div className="top-right-buttons">
+                <button onClick={generatePointLogs} className="top-action-button">
                     {showPointLog ? "Hide Points History" : "Show Points History"}
                 </button>
+
+                <button onClick={() => setShowTeamPerformance(!showTeamPerformance)} className="top-action-button">
+                    {showTeamPerformance ? "Hide Team Performance" : "Show Team Performance"}
+                </button>
+
+                <button onClick={() => setShowPredictionModal(true)} className="top-action-button">
+                    Make Your Predictions
+                </button>
+                </div>
+
                 </div>
 
 
@@ -328,103 +430,155 @@ function FantasyTeam() {
                 )}
     
                 {teamPerformance.length > 0 && (
-                    
-                    <div className="team-performance">
-                        <button
-                            className="toggle-performance-button"
-                            onClick={() => setShowTeamPerformance(!showTeamPerformance)}
-                        >
-                            {showTeamPerformance ? "Hide Team Performance" : "Show Team Performance"}
-                        </button>
-    
-                        {showTeamPerformance && (
-                            <table className="match-history-table">
-                                <thead>
-                                    <tr>
-                                        <th>Gameweek</th>
-                                        <th>Total Points</th>
-                                        <th>Final Points</th>
-                                        <th>Total Goals</th>
-                                        <th>Total Assists</th>
-                                        <th>Saves</th>
-                                        <th>Yellow Cards</th>
-                                        <th>Red Cards</th>
-                                        <th>FWD Goals</th>
-                                        <th>MID Goals</th>
-                                        <th>DEF Clean Sheets</th>
-                                        <th>GK Clean Sheets</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {teamPerformance
-                                        .sort((a, b) => a.gameweek - b.gameweek)
-                                        .map((gw, index) => (
-                                            <tr key={index}>
-                                                <td>{gw.gameweek}</td>
-                                                <td>{gw.total_points}</td>
-                                                <td>{gw.final_points}</td>
-                                                <td>{gw.total_goals}</td>
-                                                <td>{gw.total_assists}</td>
-                                                <td>{gw.total_saves}</td>
-                                                <td>{gw.total_yellow_cards}</td>
-                                                <td>{gw.total_red_cards}</td>
-                                                <td>{gw.forward_goals}</td>
-                                                <td>{gw.midfielder_goals}</td>
-                                                <td>{gw.defender_clean_sheets}</td>
-                                                <td>{gw.goalkeeper_clean_sheets}</td>
-                                            </tr>
-                                        ))}
-                                </tbody>
-                            </table>
-                        )}
+                <div className="team-performance">
+                    <button
+                    className="toggle-performance-button"
+                    onClick={() => setShowTeamPerformance(!showTeamPerformance)}
+                    >
+                    {showTeamPerformance ? "Hide Team Performance" : "Show Team Performance"}
+                    </button>
+
+                    {showTeamPerformance && (
+                    <div className="teamperformance-modal-overlay" onClick={() => setShowTeamPerformance(false)}>
+                        <div className="teamperformance-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Team Performance</h2>
+                            <button className="close-modal-btn" onClick={() => setShowTeamPerformance(false)}>×</button>
+                        </div>
+                        <table className="match-history-table">
+                            <thead>
+                            <tr>
+                                <th>Gameweek</th>
+                                <th>Total Points</th>
+                                <th>Final Points</th>
+                                <th>Total Goals</th>
+                                <th>Total Assists</th>
+                                <th>Saves</th>
+                                <th>Yellow Cards</th>
+                                <th>Red Cards</th>
+                                <th>FWD Goals</th>
+                                <th>MID Goals</th>
+                                <th>DEF Clean Sheets</th>
+                                <th>GK Clean Sheets</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {teamPerformance
+                                .sort((a, b) => a.gameweek - b.gameweek)
+                                .map((gw, index) => (
+                                <tr key={index}>
+                                    <td>{gw.gameweek}</td>
+                                    <td>{gw.total_points}</td>
+                                    <td>{gw.final_points}</td>
+                                    <td>{gw.total_goals}</td>
+                                    <td>{gw.total_assists}</td>
+                                    <td>{gw.total_saves}</td>
+                                    <td>{gw.total_yellow_cards}</td>
+                                    <td>{gw.total_red_cards}</td>
+                                    <td>{gw.forward_goals}</td>
+                                    <td>{gw.midfielder_goals}</td>
+                                    <td>{gw.defender_clean_sheets}</td>
+                                    <td>{gw.goalkeeper_clean_sheets}</td>
+                                </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        </div>
                     </div>
+                    )}
+                </div>
                 )}
+
     
                 {playerStats && (
-                    <div className="player-details">
+                <div className="playerstats-modal-overlay" onClick={() => setPlayerStats(null)}>
+                    <div className="playerstats-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="modal-header">
                         <h2>{playerStats.first_name} {playerStats.second_name}</h2>
-                        <p><strong>Team:</strong> {playerStats.team}</p>
-                        <p><strong>Position:</strong> {playerStats.position}</p>
-    
-                        {playerStats.match_history && playerStats.match_history.length > 0 && (
-                            <div>
-                                <h3>Match-by-Match Stats</h3>
-                                <table className="match-history-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Fixture ID</th>
-                                            <th>Opponent</th>
-                                            <th>Minutes</th>
-                                            <th>Goals</th>
-                                            <th>Assists</th>
-                                            <th>Yellow</th>
-                                            <th>Red</th>
-                                            <th>Saves</th>
-                                            <th>Clean Sheets</th>
-                                            <th>Custom Points</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {playerStats.match_history.map((match, i) => (
-                                            <tr key={i}>
-                                                <td>{match.fixture_id}</td>
-                                                <td>{getTeamName(match.opponent_team)}</td>
-                                                <td>{match.minutes}</td>
-                                                <td>{match.goals_scored}</td>
-                                                <td>{match.assists}</td>
-                                                <td>{match.yellow_cards}</td>
-                                                <td>{match.red_cards}</td>
-                                                <td>{match.saves}</td>
-                                                <td>{String(match.clean_sheets)}</td>
-                                                <td>{match.total_points}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                        <button className="close-modal-btn" onClick={() => setPlayerStats(null)}>×</button>
                     </div>
+                    <p><strong>Team:</strong> {playerStats.team}</p>
+                    <p><strong>Position:</strong> {playerStats.position}</p>
+
+                    {playerStats.match_history && playerStats.match_history.length > 0 && (
+                        <div>
+                        <h3>Match-by-Match Stats</h3>
+                        <table className="match-history-table">
+                            <thead>
+                            <tr>
+                                <th>Fixture ID</th>
+                                <th>Opponent</th>
+                                <th>Minutes</th>
+                                <th>Goals</th>
+                                <th>Assists</th>
+                                <th>Yellow</th>
+                                <th>Red</th>
+                                <th>Saves</th>
+                                <th>Clean Sheets</th>
+                                <th>Custom Points</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {playerStats.match_history.map((match, i) => (
+                                <tr key={i}>
+                                <td>{match.fixture_id}</td>
+                                <td>{getTeamName(match.opponent_team)}</td>
+                                <td>{match.minutes}</td>
+                                <td>{match.goals_scored}</td>
+                                <td>{match.assists}</td>
+                                <td>{match.yellow_cards}</td>
+                                <td>{match.red_cards}</td>
+                                <td>{match.saves}</td>
+                                <td>{String(match.clean_sheets)}</td>
+                                <td>{match.total_points}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                        </div>
+                    )}
+                    </div>
+                </div>
                 )}
+                {showPredictionModal && (
+                <div className="prediction-modal-overlay" onClick={() => setShowPredictionModal(false)}>
+                    <div className="prediction-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="modal-header">
+                        <h2>Submit Prediction</h2>
+                        <button className="close-modal-btn" onClick={() => setShowPredictionModal(false)}>×</button>
+                    </div>
+                    <form onSubmit={handleSubmitPrediction}>
+                        <label>Gameweek:
+                        <input type="number" value={gameweek} onChange={(e) => setGameweek(parseInt(e.target.value))} required />
+                        </label>
+                        <label>Forward Goals:
+                        <input type="number" value={forwardGoals} onChange={(e) => setForwardGoals(parseInt(e.target.value))} />
+                        </label>
+                        <label>Midfielder Goals:
+                        <input type="number" value={midfielderGoals} onChange={(e) => setMidfielderGoals(parseInt(e.target.value))} />
+                        </label>
+                        <label>Defender Clean Sheets:
+                        <input type="number" value={defenderCleanSheets} onChange={(e) => setDefenderCleanSheets(parseInt(e.target.value))} />
+                        </label>
+                        <label>Goalkeeper Clean Sheets:
+                        <input type="number" value={goalkeeperCleanSheets} onChange={(e) => setGoalkeeperCleanSheets(parseInt(e.target.value))} />
+                        </label>
+                        <label>Total Assists:
+                        <input type="number" value={totalAssists} onChange={(e) => setTotalAssists(parseInt(e.target.value))} />
+                        </label>
+                        <button type="submit">Submit Prediction</button>
+                    </form>
+
+                    {predictionMessage && <p className="submission-message">{predictionMessage}</p>}
+
+                    <hr />
+                    <h3>Evaluate Prediction</h3>
+                    <button type="button" onClick={handleEvaluatePrediction}>Evaluate</button>
+                    {evaluationMessage && <p className="submission-message">{evaluationMessage}</p>}
+                    </div>
+                </div>
+                )}
+
             </>
         </div>
     );
