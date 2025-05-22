@@ -96,7 +96,7 @@ const VideoStream = () => {
           }}
         >
           <iframe
-            src="https://cdn.totalsportek.space/embed77/?event=stack.html&link=1&domain=&force=https%3A%2F%2Fstreambtw.com%2Fiframe%2Fch1.php&ask=1747569600&lgt=3&noplayer=1"
+            src="https://cdn.totalsportek.space/embed77/?event=stack.html&link=1&domain=&force=https%3A%2F%2Fstreambtw.com%2Fiframe%2Fch1.php&ask=1747857600&lgt=3&noplayer=0"
             style={{
               position: "absolute",
               top: "-90px",
