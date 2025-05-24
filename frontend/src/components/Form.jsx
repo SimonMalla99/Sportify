@@ -6,6 +6,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/Form.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function Form({ route, method }) {
   const [username, setUsername] = useState("");
@@ -26,6 +27,9 @@ function Form({ route, method }) {
   const [showOtpReset, setShowOtpReset] = useState(false);
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const availableSports = [
     "Football", "Basketball", "Cricket", "Swimming",
@@ -213,14 +217,24 @@ function Form({ route, method }) {
                   required
                 />
               )}
-              <input
-                className="form-input"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                required
-              />
+
+              <div className="password-wrapper">
+                <input
+                  className="form-input"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  required
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="eye-icon"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+
               {formMode === "login" && (
                 <p
                   style={{
@@ -235,16 +249,26 @@ function Form({ route, method }) {
                   Forgot your password?
                 </p>
               )}
+
               {formMode !== "login" && (
                 <>
-                  <input
-                    className="form-input"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Retype Password"
-                    required
-                  />
+                  <div className="password-wrapper">
+                    <input
+                      className="form-input"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Retype Password"
+                      required
+                    />
+                    <span
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="eye-icon"
+                    >
+                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                    </span>
+                  </div>
+
                   {confirmPassword && password !== confirmPassword && (
                     <p style={{ color: "red", fontSize: "0.85rem" }}>
                       Passwords do not match
@@ -252,9 +276,11 @@ function Form({ route, method }) {
                   )}
                 </>
               )}
+
               <button className="form-button" type="submit" disabled={loading}>
                 {loading ? "Loading..." : name}
               </button>
+
               {formMode === "login" && (
                 <div className="form-footer">
                   Don’t have an account?

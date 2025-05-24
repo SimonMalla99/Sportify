@@ -195,3 +195,15 @@ textarea.form-input {
   z-index: 99999 !important;
   pointer-events: all;
 }
+.password-wrapper {
+  position: relative;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #444;
+}

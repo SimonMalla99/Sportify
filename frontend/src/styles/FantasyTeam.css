@@ -1,11 +1,12 @@
-/* Base styles with modern look */
+/* Base styles with modern look - SCALED DOWN */
 .fantasyteam-container {
   position: relative;
   font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
   color: #1a202c;
   min-height: 100vh;
-  padding-bottom: 10px;
-  overflow: hidden; /* prevent scrollbars from pseudo-element */
+  padding-bottom: 8px;
+  overflow: hidden;
+  font-size: 14px; /* Base font size reduced */
 }
 
 /* Add this for the blur background */
@@ -20,24 +21,22 @@
   z-index: -1;
 }
 
-
-
-/* Sleek header with gradient accent */
+/* Sleek header with gradient accent - SCALED DOWN */
 .fantasyteam-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 40px;
+    padding: 12px 28px; /* Reduced from 18px 40px */
     background-color: #0a011b !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Slightly reduced shadow */
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
 .fantasyteam-logo {
-    font-size: 28px;
+    font-size: 22px; /* Reduced from 28px */
     font-weight: 800;
     color: #2d3748;
     background: linear-gradient(135deg, #4299e1, #4c51bf);
@@ -49,17 +48,17 @@
 .fantasyteam-nav {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: 20px; /* Reduced from 28px */
 }
 
 .fantasyteam-nav a {
     text-decoration: none;
     color: #4a5568;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 13px; /* Reduced from 15px */
     transition: all 0.2s ease;
     position: relative;
-    padding: 5px 0;
+    padding: 4px 0; /* Reduced from 5px 0 */
 }
 
 .fantasyteam-nav a:hover {
@@ -81,82 +80,83 @@
     width: 100%;
 }
 
-/* Main heading style */
+/* Main heading style - SCALED DOWN */
 h1 {
     text-align: center;
-    margin: 40px 0 30px;
-    font-size: 42px;
+    margin: 25px 0 20px; /* Reduced from 40px 0 30px */
+    font-size: 32px; /* Reduced from 42px */
     font-weight: 700;
     color: #ffffff;
     position: relative;
 }
 
-
-/* User account dropdown with sleeker design */
+/* User account dropdown with sleeker design - SCALED DOWN */
 .account-container {
     position: relative;
 }
 
 .account-dropdown {
     position: absolute;
-    top: 40px;
+    top: 35px; /* Reduced from 40px */
     right: 0;
     background-color: white;
     color: #2d3748;
-    padding: 16px;
-    border-radius: 10px;
+    padding: 12px; /* Reduced from 16px */
+    border-radius: 8px; /* Reduced from 10px */
     z-index: 100;
-    width: 180px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 150px; /* Reduced from 180px */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Slightly reduced shadow */
     border: 1px solid rgba(0, 0, 0, 0.05);
     animation: fadeIn 0.2s ease-out;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
+    from { opacity: 0; transform: translateY(-8px); } /* Reduced from -10px */
     to { opacity: 1; transform: translateY(0); }
 }
 
 .account-dropdown p {
-    margin: 0 0 12px;
+    margin: 0 0 8px; /* Reduced from 12px */
     font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px; /* Reduced from 8px */
+    font-size: 13px; /* Added smaller font size */
 }
 
 .account-dropdown button {
     width: 100%;
-    padding: 8px 12px;
+    padding: 6px 10px; /* Reduced from 8px 12px */
     background: linear-gradient(135deg, #e53e3e, #c53030);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px; /* Reduced from 6px */
     cursor: pointer;
     font-weight: 600;
+    font-size: 12px; /* Added smaller font size */
     transition: all 0.2s ease;
-    box-shadow: 0 2px 5px rgba(229, 62, 62, 0.3);
+    box-shadow: 0 2px 4px rgba(229, 62, 62, 0.3); /* Slightly reduced shadow */
 }
 
 .account-dropdown button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(229, 62, 62, 0.4);
+    box-shadow: 0 3px 6px rgba(229, 62, 62, 0.4); /* Slightly reduced shadow */
 }
 
-/* Enhanced field layout */
+/* Enhanced field layout - SCALED DOWN */
 .field-wrapper {
     position: relative;
-    width: 500px;
-    height: 650px;
-    margin: 30px auto;
-    border-radius: 5px;
+    width: 350px; /* Reduced from 500px */
+    height: 455px; /* Reduced from 650px (maintaining aspect ratio) */
+    margin: 20px auto; /* Reduced from 30px auto */
+    border-radius: 4px; /* Reduced from 5px */
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Slightly reduced shadow */
     transition: transform 0.3s ease;
 }
 
 .field-wrapper:hover {
-    transform: scale(1.01);
+    transform: scale(1.005); /* Reduced from 1.01 */
 }
 
 .soccer-field {
@@ -178,25 +178,27 @@ h1 {
 .player-label {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.9));
     color: white;
-    padding: 6px 14px;
-    border-radius: 30px;
-    font-size: 14px;
+    padding: 4px 10px; /* Reduced from 6px 14px */
+    border-radius: 20px; /* Reduced from 30px */
+    font-size: 11px; /* Reduced from 14px */
     white-space: nowrap;
     font-family: 'Inter', sans-serif;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    font-weight: 600; /* Added for better readability at smaller size */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); /* Slightly reduced shadow */
     text-align: center;
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(3px); /* Slightly reduced blur */
+    min-width: 45px; /* Added minimum width for consistency */
 }
 
 .player-label:hover {
     background: linear-gradient(135deg, #3182ce, #4c51bf);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    transform: translateY(-1px); /* Reduced from -2px */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Slightly reduced shadow */
 }
 
-/* Position coordinates - maintained from original */
+/* Position coordinates - maintained from original but with consistent spacing */
 .position-gk { top: 90%; left: 50%; }
 .position-d1 { top: 80%; left: 15%; }
 .position-d2 { top: 68%; left: 35%; }
@@ -209,22 +211,23 @@ h1 {
 .position-f2 { top: 20%; left: 50%; }
 .position-f3 { top: 25%; left: 80%; }
 
-/* Improved table design */
+/* Improved table design - SCALED DOWN */
 .fantasyteam-table {
     width: 100%;
-    max-width: 1000px;
+    max-width: 800px; /* Reduced from 1000px */
     border-collapse: separate;
     border-spacing: 0;
-    margin: 40px auto;
+    margin: 30px auto; /* Reduced from 40px auto */
     background-color: white;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); /* Slightly reduced shadow */
+    border-radius: 10px; /* Reduced from 12px */
     overflow: hidden;
+    font-size: 13px; /* Added smaller font size */
 }
 
 .fantasyteam-table th,
 .fantasyteam-table td {
-    padding: 16px 20px;
+    padding: 12px 16px; /* Reduced from 16px 20px */
     text-align: left;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -234,8 +237,8 @@ h1 {
     color: white;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 0.5px;
+    font-size: 12px; /* Reduced from 14px */
+    letter-spacing: 0.4px; /* Reduced from 0.5px */
 }
 
 .fantasyteam-table tr:last-child td {
@@ -248,39 +251,41 @@ h1 {
 
 .fantasyteam-table tbody tr:hover {
     background-color: #f0f5fa;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px); /* Reduced from -2px */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05); /* Slightly reduced shadow */
 }
 
 .fantasyteam-table button {
-    padding: 8px 14px;
+    padding: 6px 12px; /* Reduced from 8px 14px */
     background: linear-gradient(135deg, #4299e1, #3182ce);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px; /* Reduced from 6px */
     cursor: pointer;
     font-weight: 600;
+    font-size: 11px; /* Added smaller font size */
     transition: all 0.2s ease;
-    box-shadow: 0 2px 5px rgba(49, 130, 206, 0.3);
+    box-shadow: 0 2px 4px rgba(49, 130, 206, 0.3); /* Slightly reduced shadow */
 }
 
 .fantasyteam-table button:hover:enabled {
     background: linear-gradient(135deg, #3182ce, #2b6cb0);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(49, 130, 206, 0.4);
+    box-shadow: 0 3px 6px rgba(49, 130, 206, 0.4); /* Slightly reduced shadow */
 }
 
-/* Stats details card */
+/* Stats details card - SCALED DOWN */
 .player-details {
-    margin: 40px auto;
+    margin: 30px auto; /* Reduced from 40px auto */
     border: none;
     background-color: #fff;
-    padding: 24px;
-    border-radius: 12px;
-    max-width: 1000px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 18px; /* Reduced from 24px */
+    border-radius: 10px; /* Reduced from 12px */
+    max-width: 800px; /* Reduced from 1000px */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Slightly reduced shadow */
     position: relative;
     overflow: hidden;
+    font-size: 13px; /* Added smaller font size */
 }
 
 .player-details::before {
@@ -288,25 +293,25 @@ h1 {
     position: absolute;
     top: 0;
     left: 0;
-    width: 6px;
+    width: 5px; /* Reduced from 6px */
     height: 100%;
     background: linear-gradient(to bottom, #4299e1, #4c51bf);
-    border-radius: 3px 0 0 3px;
+    border-radius: 2px 0 0 2px; /* Reduced from 3px 0 0 3px */
 }
 
 .player-details h2 {
     margin-top: 0;
-    font-size: 24px;
+    font-size: 20px; /* Reduced from 24px */
     font-weight: 700;
     color: #2d3748;
-    margin-bottom: 20px;
+    margin-bottom: 16px; /* Reduced from 20px */
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding-bottom: 12px;
+    padding-bottom: 10px; /* Reduced from 12px */
 }
 
 .player-details p {
-    margin: 12px 0;
-    font-size: 16px;
+    margin: 10px 0; /* Reduced from 12px 0 */
+    font-size: 14px; /* Reduced from 16px */
     display: flex;
     justify-content: space-between;
 }
@@ -316,468 +321,456 @@ h1 {
     font-weight: 600;
 }
 
-/* Empty state message */
+/* Empty state message - SCALED DOWN */
 .fantasyteam-container > p {
     text-align: center;
-    margin: 40px auto;
-    font-size: 18px;
+    margin: 30px auto; /* Reduced from 40px auto */
+    font-size: 16px; /* Reduced from 18px */
     color: #718096;
-    max-width: 400px;
+    max-width: 350px; /* Reduced from 400px */
     background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    padding: 16px; /* Reduced from 20px */
+    border-radius: 8px; /* Reduced from 10px */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06); /* Slightly reduced shadow */
 }
 
-/* Make everything responsive */
-@media (max-width: 768px) {
-    .fantasyteam-header {
-        flex-direction: column;
-        padding: 15px;
-    }
-    
-    .fantasyteam-nav {
-        margin-top: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-    
-    .field-wrapper {
-        width: 90%;
-        height: auto;
-        aspect-ratio: 4/5;
-    }
-    
-    .fantasyteam-table {
-        width: 95%;
-    }
-    
-    .player-details {
-        width: 90%;
-    }
-}
+/* Match history table - SCALED DOWN */
 .match-history-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 8px; /* Reduced from 10px */
     background-color: white;
-  }
-  
-  .match-history-table th, .match-history-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-  }
-  
-  .match-history-table th {
-    background-color: #f2f2f2;
-  }
+    font-size: 12px; /* Added smaller font size */
+}
 
-  .toggle-performance-button {
-    margin: 20px auto;
+.match-history-table th, .match-history-table td {
+    border: 1px solid #ddd;
+    padding: 6px; /* Reduced from 8px */
+    text-align: center;
+}
+
+.match-history-table th {
+    background-color: #f2f2f2;
+    font-size: 11px; /* Added smaller font size for headers */
+}
+
+.toggle-performance-button {
+    margin: 16px auto; /* Reduced from 20px auto */
     display: block;
-    padding: 10px 18px;
+    padding: 8px 14px; /* Reduced from 10px 18px */
     background: linear-gradient(135deg, #4299e1, #3182ce);
     color: white;
-    font-size: 15px;
+    font-size: 13px; /* Reduced from 15px */
     font-weight: 600;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px; /* Reduced from 8px */
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(66, 153, 225, 0.2);
+    box-shadow: 0 3px 8px rgba(66, 153, 225, 0.2); /* Slightly reduced shadow */
 }
 
 .toggle-performance-button:hover {
     background: linear-gradient(135deg, #2b6cb0, #2c5282);
-    box-shadow: 0 6px 15px rgba(66, 153, 225, 0.3);
+    box-shadow: 0 5px 12px rgba(66, 153, 225, 0.3); /* Slightly reduced shadow */
 }
+
 .team-layout-wrapper {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 30px;
+    gap: 25px; /* Reduced from 30px */
     flex-wrap: wrap;
-    margin: 40px auto;
-    max-width: 1200px;
+    margin: 30px auto; /* Reduced from 40px auto */
+    max-width: 1000px; /* Reduced from 1200px */
 }
-
 
 .performance-toggle {
     display: flex;
     justify-content: center;
-    margin: 20px auto;
+    margin: 16px auto; /* Reduced from 20px auto */
 }
 
 .performance-toggle button {
-    padding: 10px 20px;
+    padding: 8px 16px; /* Reduced from 10px 20px */
     font-weight: bold;
+    font-size: 13px; /* Added smaller font size */
     background: linear-gradient(135deg, #4299e1, #3182ce);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px; /* Reduced from 6px */
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(49, 130, 206, 0.3);
+    box-shadow: 0 2px 5px rgba(49, 130, 206, 0.3); /* Slightly reduced shadow */
 }
 
 .performance-toggle button:hover {
     background: linear-gradient(135deg, #3182ce, #2b6cb0);
 }
+
 .team-layout-wrapper {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 40px;
-    margin: 30px auto;
+    gap: 30px; /* Reduced from 40px */
+    margin: 25px auto; /* Reduced from 30px auto */
     flex-wrap: wrap;
-    max-width: 1200px;
-    padding: 20px;
+    max-width: 1000px; /* Reduced from 1200px */
+    padding: 16px; /* Reduced from 20px */
 }
 
 .fantasyteam-table-container {
     flex: 1;
-    min-width: 350px;
-    max-width: 1100px;
+    min-width: 300px; /* Reduced from 350px */
+    max-width: 900px; /* Reduced from 1100px */
 }
+
 .total-points-box {
     text-align: right;
-    font-size: 1.2rem;
+    font-size: 1rem; /* Reduced from 1.2rem */
     font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 10px;
+    padding: 8px 16px; /* Reduced from 10px 20px */
+    border-radius: 8px; /* Reduced from 10px */
     background-color: #f3f3f3;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Slightly reduced shadow */
     width: fit-content;
 }
 
-  
-  .field-and-points-wrapper {
+.field-and-points-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* or center if you want centered below field */
-    gap: 12px;
+    align-items: flex-end;
+    gap: 10px; /* Reduced from 12px */
 }
 
 .points-summary-boxes {
     display: flex;
     justify-content: center;
-    gap: 30px;
-    margin-top: 20px;
-  }
-  
-  .latest-gw-box, .total-points-box {
-    font-size: 1.1rem;
+    gap: 20px; /* Reduced from 30px */
+    margin-top: 16px; /* Reduced from 20px */
+}
+
+.latest-gw-box, .total-points-box {
+    font-size: 0.95rem; /* Reduced from 1.1rem */
     font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 10px;
+    padding: 8px 16px; /* Reduced from 10px 20px */
+    border-radius: 8px; /* Reduced from 10px */
     background-color: #f3f3f3;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Slightly reduced shadow */
+}
+
 .points-history-btn {
-  margin: 20px 0;
-  padding: 10px 16px;
-  background-color: #2b6cb0;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
+    margin: 16px 0; /* Reduced from 20px 0 */
+    padding: 8px 12px; /* Reduced from 10px 16px */
+    background-color: #2b6cb0;
+    color: white;
+    border: none;
+    border-radius: 5px; /* Reduced from 6px */
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px; /* Added smaller font size */
 }
 
 .points-history-log {
-  background-color: #f9fafb;
-  border-radius: 8px;
-  padding: 20px;
-  margin-top: 20px;
+    background-color: #f9fafb;
+    border-radius: 6px; /* Reduced from 8px */
+    padding: 16px; /* Reduced from 20px */
+    margin-top: 16px; /* Reduced from 20px */
 }
 
 .points-history-log ul {
-  list-style-type: disc;
-  margin-left: 20px;
-  font-size: 0.95rem;
+    list-style-type: disc;
+    margin-left: 16px; /* Reduced from 20px */
+    font-size: 0.9rem; /* Reduced from 0.95rem */
 }
 
 .points-history-card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* Reduced from 20px */
+    justify-content: center;
+    margin-top: 24px; /* Reduced from 30px */
 }
 
 .points-history-card {
-  background-color: rgba(255, 255, 255, 0.808);
-  border-radius: 12px;
-  padding: 18px 22px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  max-width: 400px;
-  width: 100%;
-  position: relative;
-  transition: all 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.808);
+    border-radius: 10px; /* Reduced from 12px */
+    padding: 14px 18px; /* Reduced from 18px 22px */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); /* Slightly reduced shadow */
+    max-width: 320px; /* Reduced from 400px */
+    width: 100%;
+    position: relative;
+    transition: all 0.2s ease;
+    font-size: 13px; /* Added smaller font size */
 }
 
 .points-history-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px); /* Reduced from -2px */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Slightly reduced shadow */
 }
 
 .points-history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px; /* Reduced from 12px */
 }
 
 .gw-badge {
-  background: linear-gradient(135deg, #4299e1, #3182ce);
-  color: white;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
-  box-shadow: 0 2px 6px rgba(49, 130, 206, 0.3);
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    color: white;
+    font-size: 11px; /* Reduced from 13px */
+    font-weight: 600;
+    padding: 3px 8px; /* Reduced from 4px 10px */
+    border-radius: 16px; /* Reduced from 20px */
+    box-shadow: 0 2px 5px rgba(49, 130, 206, 0.3); /* Slightly reduced shadow */
 }
-/* Modal Overlay */
+
+/* Modal Overlay - SCALED DOWN */
 .pointlog-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.15); /* subtle dim */
-  backdrop-filter: blur(1px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(1px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
 }
 
-/* Modal Container */
+/* Modal Container - SCALED DOWN */
 .pointlog-modal-content {
-  background: rgba(0, 0, 0, 0.575);
-  border-radius: 14px;
-  padding: 30px;
-  max-width: 500px;
-  width: 90%;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  position: relative;
-  animation: popIn 0.2s ease-out;
-  
+    background: rgba(0, 0, 0, 0.575);
+    border-radius: 12px; /* Reduced from 14px */
+    padding: 24px; /* Reduced from 30px */
+    max-width: 450px; /* Reduced from 500px */
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2); /* Slightly reduced shadow */
+    position: relative;
+    animation: popIn 0.2s ease-out;
 }
+
 .pointlog-modal-content::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+    display: none;
 }
 
-/* Pop-in animation */
 @keyframes popIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
 }
 
-/* Modal Header */
 .pointlog-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px; /* Reduced from 20px */
 }
 
 .pointlog-modal-header h2 {
-  margin: 0;
-  font-size: 22px;
-  color: #ffffff;
+    margin: 0;
+    font-size: 18px; /* Reduced from 22px */
+    color: #ffffff;
 }
 
 .close-modal-btn {
-  font-size: 24px;
-  font-weight: bold;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: #718096;
-  transition: color 0.2s;
+    font-size: 20px; /* Reduced from 24px */
+    font-weight: bold;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #718096;
+    transition: color 0.2s;
 }
 
 .close-modal-btn:hover {
-  color: #e53e3e;
+    color: #e53e3e;
 }
 
+/* Modal overlays - SCALED DOWN */
 .playerstats-modal-overlay,
 .teamperformance-modal-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0, 0, 0, 0.15);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
 }
 
 .playerstats-modal-content,
 .teamperformance-modal-content {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  width: 90%;
-  max-width: 1000px;
-  max-height: 90vh;
-  overflow-y: auto;
+    background: #fff;
+    border-radius: 10px; /* Reduced from 12px */
+    padding: 20px; /* Reduced from 24px */
+    width: 90%;
+    max-width: 850px; /* Reduced from 1000px */
+    max-height: 90vh;
+    overflow-y: auto;
+    font-size: 13px; /* Added smaller font size */
 }
+
 .fantasyteam-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 2rem;
-  margin-top: 20px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem; /* Reduced from 2rem */
+    margin-top: 16px; /* Reduced from 20px */
+    flex-wrap: wrap;
 }
 
 .top-right-buttons {
-  display: flex;
-  gap: 10px;
+    display: flex;
+    gap: 8px; /* Reduced from 10px */
 }
 
 .points-history-btn,
 .toggle-performance-button {
-  background-color: #3182ce;
-  color: white;
-  padding: 10px 16px;
-  border: none ;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+    background-color: #3182ce;
+    color: white;
+    padding: 8px 12px; /* Reduced from 10px 16px */
+    border: none;
+    border-radius: 5px; /* Reduced from 6px */
+    font-weight: bold;
+    font-size: 12px; /* Added smaller font size */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .points-history-btn:hover,
 .toggle-performance-button:hover {
-  background-color: #225ea8;
+    background-color: #225ea8;
 }
+
+/* Prediction modal - SCALED DOWN */
 .prediction-modal-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
 .prediction-modal-content {
-  background: #ffffff;
-  padding: 30px 40px;
-  border-radius: 12px;
-  max-width: 500px;
-  width: 90%;
-  max-height: 90vh; /* NEW: Prevent overflow */
-  overflow-y: auto;  /* NEW: Make content scrollable */
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-  position: relative;
-  font-family: 'Inter', 'Roboto', sans-serif;
-  scrollbar-width: thin;
+    background: #ffffff;
+    padding: 24px 32px; /* Reduced from 30px 40px */
+    border-radius: 10px; /* Reduced from 12px */
+    max-width: 450px; /* Reduced from 500px */
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25); /* Slightly reduced shadow */
+    position: relative;
+    font-family: 'Inter', 'Roboto', sans-serif;
+    font-size: 13px; /* Added smaller font size */
+    scrollbar-width: thin;
 }
 
-
 .prediction-modal-content h2 {
-  margin-bottom: 16px;
-  font-size: 24px;
-  color: #2d3748;
+    margin-bottom: 14px; /* Reduced from 16px */
+    font-size: 20px; /* Reduced from 24px */
+    color: #2d3748;
 }
 
 .prediction-modal-content form label {
-  display: block;
-  margin: 12px 0 6px;
-  font-weight: 600;
-  color: #2c3e50;
+    display: block;
+    margin: 10px 0 5px; /* Reduced from 12px 0 6px */
+    font-weight: 600;
+    font-size: 12px; /* Added smaller font size */
+    color: #2c3e50;
 }
 
 .prediction-modal-content form input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid #cbd5e0;
-  border-radius: 6px;
-  font-size: 14px;
-  margin-bottom: 8px;
-  box-sizing: border-box;
-  outline: none;
-  transition: border-color 0.2s ease;
+    width: 100%;
+    padding: 8px 12px; /* Reduced from 10px 14px */
+    border: 1px solid #cbd5e0;
+    border-radius: 5px; /* Reduced from 6px */
+    font-size: 12px; /* Reduced from 14px */
+    margin-bottom: 6px; /* Reduced from 8px */
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease;
 }
 
 .prediction-modal-content form input:focus {
-  border-color: #3182ce;
+    border-color: #3182ce;
 }
 
 .prediction-modal-content button[type="submit"],
 .prediction-modal-content button[type="button"] {
-  margin-top: 16px;
-  padding: 10px 20px;
-  background-color: #3182ce;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+    margin-top: 12px; /* Reduced from 16px */
+    padding: 8px 16px; /* Reduced from 10px 20px */
+    background-color: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 5px; /* Reduced from 6px */
+    font-weight: 600;
+    font-size: 12px; /* Reduced from 14px */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .prediction-modal-content button[type="submit"]:hover,
 .prediction-modal-content button[type="button"]:hover {
-  background-color: #2b6cb0;
+    background-color: #2b6cb0;
 }
+
 .make-prediction-btn {
-  background-color: #3182ce;
-  color: white;
-  padding: 10px 16px;
-  border: none ;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+    background-color: #3182ce;
+    color: white;
+    padding: 8px 12px; /* Reduced from 10px 16px */
+    border: none;
+    border-radius: 5px; /* Reduced from 6px */
+    font-weight: bold;
+    font-size: 12px; /* Added smaller font size */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .submission-message {
-  margin-top: 12px;
-  font-weight: 500;
-  color: #2f855a;
+    margin-top: 10px; /* Reduced from 12px */
+    font-weight: 500;
+    font-size: 12px; /* Added smaller font size */
+    color: #2f855a;
 }
 
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px; /* Reduced from 20px */
 }
 
 .close-modal-btn {
-  background: none;
-  border: none;
-  font-size: 26px;
-  cursor: pointer;
-  color: #4a5568;
+    background: none;
+    border: none;
+    font-size: 22px; /* Reduced from 26px */
+    cursor: pointer;
+    color: #4a5568;
 }
 
 .top-action-button {
-  background-color: #ffffff00;
-  color: rgb(255, 255, 255);
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  border: 2px solid white;
+    background-color: #ffffff00;
+    color: rgb(255, 255, 255);
+    padding: 8px 12px; /* Reduced from 10px 16px */
+    border: none;
+    border-radius: 6px; /* Reduced from 8px */
+    font-weight: 600;
+    font-size: 12px; /* Reduced from 14px */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: 2px solid white;
 }
 
 .top-action-button:hover {
-  background-color: #2b6cb0;
+    background-color: #2b6cb0;
 }
 .top-right-buttons {
   display: flex;

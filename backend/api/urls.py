@@ -25,7 +25,10 @@ from .views import (
     update_user_profile,
     change_password,
     request_reset_otp,
-    reset_password_with_otp
+    reset_password_with_otp,
+    get_all_users,
+    block_user,
+    unblock_user
 )
 
 urlpatterns = [
@@ -56,5 +59,8 @@ urlpatterns = [
     path("change-password/", change_password, name="change-password"),
     path("request-reset-otp/", request_reset_otp),
     path("reset-password/", reset_password_with_otp),
+    path("get-all-users/", get_all_users),
+    path("block-user/", block_user, name="block_user"),
+    path("unblock-user/", unblock_user, name="unblock_user"),
 
 ]

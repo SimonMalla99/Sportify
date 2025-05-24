@@ -271,7 +271,7 @@ function Fantasy() {
                             return (
                                 <div key={player.id} className={`player-container ${posClass}`}>
                                     <div className="player-label">
-                                        {player.first_name} {player.second_name}
+                                        {player.first_name.charAt(0)}. {player.second_name.split(" ").slice(-1)[0]}
                                     </div>
                                     <button 
                                         onClick={() => removePlayer(player.id)} 

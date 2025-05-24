@@ -36,4 +36,4 @@ class NewsArticleSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['dob', 'phone_number', 'bio', 'favourite_sports', 'profile_picture']
+        fields = ['dob', 'phone_number', 'bio', 'favourite_sports', 'profile_picture', 'is_blocked']

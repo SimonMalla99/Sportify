@@ -964,3 +964,63 @@ def reset_password_with_otp(request):
         return JsonResponse({"message": "Password reset successful"}, status=200)
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found"}, status=404)
+
+@api_view(["GET"])
+def get_all_users(request):
+    users = User.objects.all()
+    user_data = []
+
+    for user in users:
+        try:
+            profile = user.profile
+            is_blocked = profile.is_blocked
+        except UserProfile.DoesNotExist:
+            is_blocked = False  # Default to not blocked if no profile exists
+
+        user_data.append({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "is_blocked": is_blocked,
+        })
+
+    return Response(user_data)
+
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def block_user(request):
+    user_id = request.data.get("user_id")
+    if not user_id:
+        return JsonResponse({"error": "User ID is required"}, status=400)
+
+    try:
+        user = User.objects.get(id=user_id)
+        profile = user.profile
+        profile.is_blocked = True
+        profile.save()
+        return JsonResponse({"message": f"User {user.username} blocked."})
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+    except UserProfile.DoesNotExist:
+        return JsonResponse({"error": "UserProfile not found"}, status=404)
+
+
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def unblock_user(request):
+    user_id = request.data.get("user_id")
+    if not user_id:
+        return JsonResponse({"error": "User ID is required"}, status=400)
+
+    try:
+        user = User.objects.get(id=user_id)
+        profile = user.profile
+        profile.is_blocked = False
+        profile.save()
+        return JsonResponse({"message": f"User {user.username} unblocked."})
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+    except UserProfile.DoesNotExist:
+        return JsonResponse({"error": "UserProfile not found"}, status=404)
