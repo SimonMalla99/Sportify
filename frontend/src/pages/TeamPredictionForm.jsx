@@ -72,10 +72,10 @@ function TeamPredictionForm() {
             if (data.success) {
                 setMessage("✅ Prediction submitted successfully!");
             } else {
-                setMessage(data.error || "❌ Something went wrong");
+                setMessage(data.error || "Something went wrong");
             }
         } catch (error) {
-            setMessage("❌ Error submitting prediction");
+            setMessage("Error submitting prediction");
             console.error("Prediction submission error:", error);
         }
     };

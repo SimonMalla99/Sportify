@@ -17,7 +17,7 @@ html, body {
   padding-bottom: 0%;
 }
 
-/* Add this for the blur background */
+
 .fantasyteam-container::before {
   content: "";
   position: absolute;
@@ -29,7 +29,6 @@ html, body {
   z-index: -1;
 }
 
-/* Sleek header with gradient accent - SCALED DOWN */
 .fantasyteam-header {
   display: flex;
   justify-content: space-between;
@@ -46,7 +45,7 @@ html, body {
 }
 
 .fantasyteam-logo {
-    font-size: 22px; /* Reduced from 28px */
+    font-size: 22px; 
     font-weight: 800;
     color: #2d3748;
     background: linear-gradient(135deg, #4299e1, #4c51bf);
@@ -98,26 +97,26 @@ html, body {
 /* Main heading style - SCALED DOWN */
 h1 {
     text-align: center;
-    margin: 25px 0 20px; /* Reduced from 40px 0 30px */
-    font-size: 32px; /* Reduced from 42px */
+    margin: 25px 0 20px; 
+    font-size: 32px; 
     font-weight: 700;
     color: #ffffff;
     position: relative;
 }
 
-/* User account dropdown with sleeker design - SCALED DOWN */
+
 .account-container {
     position: relative;
 }
 
 .account-dropdown {
     position: absolute;
-    top: 35px; /* Reduced from 40px */
+    top: 35px; 
     right: 0;
     background-color: white;
     color: #2d3748;
-    padding: 12px; /* Reduced from 16px */
-    border-radius: 8px; /* Reduced from 10px */
+    padding: 12px; 
+    border-radius: 8px; 
     z-index: 100;
     width: 150px; /* Reduced from 180px */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Slightly reduced shadow */
@@ -126,52 +125,52 @@ h1 {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-8px); } /* Reduced from -10px */
+    from { opacity: 0; transform: translateY(-8px); } 
     to { opacity: 1; transform: translateY(0); }
 }
 
 .account-dropdown p {
-    margin: 0 0 8px; /* Reduced from 12px */
+    margin: 0 0 8px; 
     font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 6px; /* Reduced from 8px */
-    font-size: 13px; /* Added smaller font size */
+    gap: 6px; 
+    font-size: 13px; 
 }
 
 .account-dropdown button {
     width: 100%;
-    padding: 6px 10px; /* Reduced from 8px 12px */
+    padding: 6px 10px; 
     background: linear-gradient(135deg, #e53e3e, #c53030);
     color: white;
     border: none;
-    border-radius: 5px; /* Reduced from 6px */
+    border-radius: 5px; 
     cursor: pointer;
     font-weight: 600;
-    font-size: 12px; /* Added smaller font size */
+    font-size: 12px; 
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(229, 62, 62, 0.3); /* Slightly reduced shadow */
+    box-shadow: 0 2px 4px rgba(229, 62, 62, 0.3); 
 }
 
 .account-dropdown button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(229, 62, 62, 0.4); /* Slightly reduced shadow */
+    box-shadow: 0 3px 6px rgba(229, 62, 62, 0.4);
 }
 
-/* Enhanced field layout - SCALED DOWN */
+
 .field-wrapper {
     position: relative;
-    width: 350px; /* Reduced from 500px */
-    height: 455px; /* Reduced from 650px (maintaining aspect ratio) */
-    margin: 20px auto; /* Reduced from 30px auto */
-    border-radius: 4px; /* Reduced from 5px */
+    width: 350px; 
+    height: 455px; 
+    margin: 20px auto; 
+    border-radius: 4px; 
     overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Slightly reduced shadow */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); 
     transition: transform 0.3s ease;
 }
 
 .field-wrapper:hover {
-    transform: scale(1.005); /* Reduced from 1.01 */
+    transform: scale(1.005); 
 }
 
 .soccer-field {
@@ -193,27 +192,27 @@ h1 {
 .player-label {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.9));
     color: white;
-    padding: 4px 10px; /* Reduced from 6px 14px */
-    border-radius: 20px; /* Reduced from 30px */
-    font-size: 11px; /* Reduced from 14px */
+    padding: 4px 10px; 
+    border-radius: 20px; 
+    font-size: 11px; 
     white-space: nowrap;
     font-family: 'Inter', sans-serif;
-    font-weight: 600; /* Added for better readability at smaller size */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); /* Slightly reduced shadow */
+    font-weight: 600; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); 
     text-align: center;
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(3px); /* Slightly reduced blur */
-    min-width: 45px; /* Added minimum width for consistency */
+    backdrop-filter: blur(3px); 
+    min-width: 45px; 
 }
 
 .player-label:hover {
     background: linear-gradient(135deg, #3182ce, #4c51bf);
-    transform: translateY(-1px); /* Reduced from -2px */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Slightly reduced shadow */
+    transform: translateY(-1px); 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); 
 }
 
-/* Position coordinates - maintained from original but with consistent spacing */
+
 .position-gk { top: 90%; left: 50%; }
 .position-d1 { top: 80%; left: 15%; }
 .position-d2 { top: 68%; left: 35%; }
@@ -226,23 +225,23 @@ h1 {
 .position-f2 { top: 20%; left: 50%; }
 .position-f3 { top: 25%; left: 80%; }
 
-/* Improved table design - SCALED DOWN */
+
 .fantasyteam-table {
     width: 100%;
-    max-width: 800px; /* Reduced from 1000px */
+    max-width: 800px; 
     border-collapse: separate;
     border-spacing: 0;
-    margin: 30px auto; /* Reduced from 40px auto */
+    margin: 30px auto; 
     background-color: white;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); /* Slightly reduced shadow */
-    border-radius: 10px; /* Reduced from 12px */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); 
+    border-radius: 10px; 
     overflow: hidden;
-    font-size: 13px; /* Added smaller font size */
+    font-size: 13px; 
 }
 
 .fantasyteam-table th,
 .fantasyteam-table td {
-    padding: 12px 16px; /* Reduced from 16px 20px */
+    padding: 12px 16px; 
     text-align: left;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -252,8 +251,8 @@ h1 {
     color: white;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 12px; /* Reduced from 14px */
-    letter-spacing: 0.4px; /* Reduced from 0.5px */
+    font-size: 12px;
+    letter-spacing: 0.4px; 
 }
 
 .fantasyteam-table tr:last-child td {
@@ -266,41 +265,41 @@ h1 {
 
 .fantasyteam-table tbody tr:hover {
     background-color: #f0f5fa;
-    transform: translateY(-1px); /* Reduced from -2px */
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05); /* Slightly reduced shadow */
+    transform: translateY(-1px); 
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05); 
 }
 
 .fantasyteam-table button {
-    padding: 6px 12px; /* Reduced from 8px 14px */
+    padding: 6px 12px; 
     background: linear-gradient(135deg, #4299e1, #3182ce);
     color: white;
     border: none;
-    border-radius: 5px; /* Reduced from 6px */
+    border-radius: 5px; 
     cursor: pointer;
     font-weight: 600;
-    font-size: 11px; /* Added smaller font size */
+    font-size: 11px; 
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(49, 130, 206, 0.3); /* Slightly reduced shadow */
+    box-shadow: 0 2px 4px rgba(49, 130, 206, 0.3);
 }
 
 .fantasyteam-table button:hover:enabled {
     background: linear-gradient(135deg, #3182ce, #2b6cb0);
     transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(49, 130, 206, 0.4); /* Slightly reduced shadow */
+    box-shadow: 0 3px 6px rgba(49, 130, 206, 0.4); 
 }
 
-/* Stats details card - SCALED DOWN */
+
 .player-details {
-    margin: 30px auto; /* Reduced from 40px auto */
+    margin: 30px auto; 
     border: none;
     background-color: #fff;
-    padding: 18px; /* Reduced from 24px */
-    border-radius: 10px; /* Reduced from 12px */
-    max-width: 800px; /* Reduced from 1000px */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Slightly reduced shadow */
+    padding: 18px;
+    border-radius: 10px; 
+    max-width: 800px; 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
-    font-size: 13px; /* Added smaller font size */
+    font-size: 13px; 
 }
 
 .player-details::before {
@@ -308,25 +307,25 @@ h1 {
     position: absolute;
     top: 0;
     left: 0;
-    width: 5px; /* Reduced from 6px */
+    width: 5px; 
     height: 100%;
     background: linear-gradient(to bottom, #4299e1, #4c51bf);
-    border-radius: 2px 0 0 2px; /* Reduced from 3px 0 0 3px */
+    border-radius: 2px 0 0 2px; 
 }
 
 .player-details h2 {
     margin-top: 0;
-    font-size: 20px; /* Reduced from 24px */
+    font-size: 20px; 
     font-weight: 700;
     color: #2d3748;
-    margin-bottom: 16px; /* Reduced from 20px */
+    margin-bottom: 16px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding-bottom: 10px; /* Reduced from 12px */
+    padding-bottom: 10px; 
 }
 
 .player-details p {
-    margin: 10px 0; /* Reduced from 12px 0 */
-    font-size: 14px; /* Reduced from 16px */
+    margin: 10px 0; 
+    font-size: 14px; 
     display: flex;
     justify-content: space-between;
 }
@@ -336,85 +335,84 @@ h1 {
     font-weight: 600;
 }
 
-/* Empty state message - SCALED DOWN */
+
 .fantasyteam-container > p {
     text-align: center;
-    margin: 30px auto; /* Reduced from 40px auto */
-    font-size: 16px; /* Reduced from 18px */
+    margin: 30px auto; 
+    font-size: 16px;
     color: #718096;
-    max-width: 350px; /* Reduced from 400px */
+    max-width: 350px; 
     background-color: white;
-    padding: 16px; /* Reduced from 20px */
-    border-radius: 8px; /* Reduced from 10px */
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06); /* Slightly reduced shadow */
+    padding: 16px; 
+    border-radius: 8px; 
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06); 
 }
 
-/* Match history table - SCALED DOWN */
 .match-history-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 8px; /* Reduced from 10px */
+    margin-top: 8px; 
     background-color: white;
-    font-size: 12px; /* Added smaller font size */
+    font-size: 12px; 
 }
 
 .match-history-table th, .match-history-table td {
     border: 1px solid #ddd;
-    padding: 6px; /* Reduced from 8px */
+    padding: 6px; 
     text-align: center;
 }
 
 .match-history-table th {
     background-color: #f2f2f2;
-    font-size: 11px; /* Added smaller font size for headers */
+    font-size: 11px; 
 }
 
 .toggle-performance-button {
-    margin: 16px auto; /* Reduced from 20px auto */
+    margin: 16px auto; 
     display: block;
-    padding: 8px 14px; /* Reduced from 10px 18px */
+    padding: 8px 14px; 
     background: linear-gradient(135deg, #4299e1, #3182ce);
     color: white;
-    font-size: 13px; /* Reduced from 15px */
+    font-size: 13px;
     font-weight: 600;
     border: none;
-    border-radius: 6px; /* Reduced from 8px */
+    border-radius: 6px; 
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 3px 8px rgba(66, 153, 225, 0.2); /* Slightly reduced shadow */
+    box-shadow: 0 3px 8px rgba(66, 153, 225, 0.2); 
 }
 
 .toggle-performance-button:hover {
     background: linear-gradient(135deg, #2b6cb0, #2c5282);
-    box-shadow: 0 5px 12px rgba(66, 153, 225, 0.3); /* Slightly reduced shadow */
+    box-shadow: 0 5px 12px rgba(66, 153, 225, 0.3); 
 }
 
 .team-layout-wrapper {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 25px; /* Reduced from 30px */
+    gap: 25px;
     flex-wrap: wrap;
-    margin: 30px auto; /* Reduced from 40px auto */
-    max-width: 1000px; /* Reduced from 1200px */
+    margin: 30px auto;
+    max-width: 1000px;
 }
 
 .performance-toggle {
     display: flex;
     justify-content: center;
-    margin: 16px auto; /* Reduced from 20px auto */
+    margin: 16px auto;
 }
 
 .performance-toggle button {
-    padding: 8px 16px; /* Reduced from 10px 20px */
+    padding: 8px 16px;
     font-weight: bold;
-    font-size: 13px; /* Added smaller font size */
+    font-size: 13px; 
     background: linear-gradient(135deg, #4299e1, #3182ce);
     color: white;
     border: none;
-    border-radius: 5px; /* Reduced from 6px */
+    border-radius: 5px;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(49, 130, 206, 0.3); /* Slightly reduced shadow */
+    box-shadow: 0 2px 5px rgba(49, 130, 206, 0.3); 
 }
 
 .performance-toggle button:hover {
@@ -425,27 +423,25 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 30px; /* Reduced from 40px */
-    margin: 25px auto; /* Reduced from 30px auto */
+    gap: 30px;
+    margin: 25px auto;
     flex-wrap: wrap;
-    max-width: 1000px; /* Reduced from 1200px */
-    padding: 16px; /* Reduced from 20px */
+    max-width: 1000px; 
+    padding: 16px;
 }
 
 .fantasyteam-table-container {
     flex: 1;
-    min-width: 300px; /* Reduced from 350px */
-    max-width: 900px; /* Reduced from 1100px */
+    min-width: 30;
 }
-
 .total-points-box {
     text-align: right;
-    font-size: 1rem; /* Reduced from 1.2rem */
+    font-size: 1rem; 
     font-weight: bold;
-    padding: 8px 16px; /* Reduced from 10px 20px */
-    border-radius: 8px; /* Reduced from 10px */
+    padding: 8px 16px;
+    border-radius: 8px;
     background-color: #f3f3f3;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Slightly reduced shadow */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); 
     width: fit-content;
 }
 
@@ -453,93 +449,92 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 10px; /* Reduced from 12px */
+    gap: 10px; 
 }
 
 .points-summary-boxes {
     display: flex;
     justify-content: center;
-    gap: 20px; /* Reduced from 30px */
-    margin-top: 16px; /* Reduced from 20px */
+    gap: 20px; 
+    margin-top: 16px; 
 }
 
 .latest-gw-box, .total-points-box {
-    font-size: 0.95rem; /* Reduced from 1.1rem */
+    font-size: 0.95rem;
     font-weight: bold;
-    padding: 8px 16px; /* Reduced from 10px 20px */
-    border-radius: 8px; /* Reduced from 10px */
+    padding: 8px 16px;
+    border-radius: 8px; 
     background-color: #f3f3f3;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Slightly reduced shadow */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .points-history-btn {
-    margin: 16px 0; /* Reduced from 20px 0 */
-    padding: 8px 12px; /* Reduced from 10px 16px */
+    margin: 16px;
     background-color: #2b6cb0;
     color: white;
     border: none;
-    border-radius: 5px; /* Reduced from 6px */
+    border-radius: 5px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 13px; /* Added smaller font size */
+    font-size: 13px; 
 }
 
 .points-history-log {
     background-color: #f9fafb;
-    border-radius: 6px; /* Reduced from 8px */
-    padding: 16px; /* Reduced from 20px */
-    margin-top: 16px; /* Reduced from 20px */
+    border-radius: 6px;
+    padding: 16px; 
+    margin-top: 16px; 
 }
 
 .points-history-log ul {
     list-style-type: disc;
-    margin-left: 16px; /* Reduced from 20px */
-    font-size: 0.9rem; /* Reduced from 0.95rem */
+    margin-left: 16px; 
+    font-size: 0.9rem; 
 }
 
 .points-history-card-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px; /* Reduced from 20px */
+    gap: 16px; 
     justify-content: center;
-    margin-top: 24px; /* Reduced from 30px */
+    margin-top: 24px; 
 }
 
 .points-history-card {
     background-color: rgba(255, 255, 255, 0.808);
-    border-radius: 10px; /* Reduced from 12px */
-    padding: 14px 18px; /* Reduced from 18px 22px */
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); /* Slightly reduced shadow */
-    max-width: 320px; /* Reduced from 400px */
+    border-radius: 10px; 
+    padding: 14px 18px; 
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); 
+    max-width: 320px; 
     width: 100%;
     position: relative;
     transition: all 0.2s ease;
-    font-size: 13px; /* Added smaller font size */
+    font-size: 13px; 
 }
 
 .points-history-card:hover {
-    transform: translateY(-1px); /* Reduced from -2px */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Slightly reduced shadow */
+    transform: translateY(-1px); 
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); 
 }
 
 .points-history-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px; /* Reduced from 12px */
+    margin-bottom: 10px; 
 }
 
 .gw-badge {
     background: linear-gradient(135deg, #4299e1, #3182ce);
     color: white;
-    font-size: 11px; /* Reduced from 13px */
+    font-size: 11px; 
     font-weight: 600;
-    padding: 3px 8px; /* Reduced from 4px 10px */
-    border-radius: 16px; /* Reduced from 20px */
-    box-shadow: 0 2px 5px rgba(49, 130, 206, 0.3); /* Slightly reduced shadow */
+    padding: 3px 8px; 
+    border-radius: 16px;
+    box-shadow: 0 2px 5px rgba(49, 130, 206, 0.3); 
 }
 
-/* Modal Overlay - SCALED DOWN */
+
 .pointlog-modal-overlay {
     position: fixed;
     top: 0;
@@ -557,13 +552,13 @@ h1 {
 /* Modal Container - SCALED DOWN */
 .pointlog-modal-content {
     background: rgba(0, 0, 0, 0.575);
-    border-radius: 12px; /* Reduced from 14px */
-    padding: 24px; /* Reduced from 30px */
-    max-width: 450px; /* Reduced from 500px */
+    border-radius: 12px; 
+    padding: 24px; 
+    max-width: 450px; 
     width: 90%;
     max-height: 85vh;
     overflow-y: auto;
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2); /* Slightly reduced shadow */
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2); 
     position: relative;
     animation: popIn 0.2s ease-out;
 }
@@ -581,17 +576,17 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px; /* Reduced from 20px */
+    margin-bottom: 16px; 
 }
 
 .pointlog-modal-header h2 {
     margin: 0;
-    font-size: 18px; /* Reduced from 22px */
+    font-size: 18px; 
     color: #ffffff;
 }
 
 .close-modal-btn {
-    font-size: 20px; /* Reduced from 24px */
+    font-size: 20px; 
     font-weight: bold;
     background: transparent;
     border: none;
@@ -604,7 +599,7 @@ h1 {
     color: #e53e3e;
 }
 
-/* Modal overlays - SCALED DOWN */
+
 .playerstats-modal-overlay,
 .teamperformance-modal-overlay {
     position: fixed;
@@ -620,38 +615,38 @@ h1 {
 .playerstats-modal-content,
 .teamperformance-modal-content {
     background: #fff;
-    border-radius: 10px; /* Reduced from 12px */
-    padding: 20px; /* Reduced from 24px */
+    border-radius: 10px; 
+    padding: 20px; 
     width: 90%;
-    max-width: 850px; /* Reduced from 1000px */
+    max-width: 850px; 
     max-height: 90vh;
     overflow-y: auto;
-    font-size: 13px; /* Added smaller font size */
+    font-size: 13px; 
 }
 
 .fantasyteam-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 1.5rem; /* Reduced from 2rem */
-    margin-top: 16px; /* Reduced from 20px */
+    padding: 0 1.5rem; 
+    margin-top: 16px;
     flex-wrap: wrap;
 }
 
 .top-right-buttons {
     display: flex;
-    gap: 8px; /* Reduced from 10px */
+    gap: 8px; 
 }
 
 .points-history-btn,
 .toggle-performance-button {
     background-color: #3182ce;
     color: white;
-    padding: 8px 12px; /* Reduced from 10px 16px */
+    padding: 8px 12px; 
     border: none;
-    border-radius: 5px; /* Reduced from 6px */
+    border-radius: 5px; 
     font-weight: bold;
-    font-size: 12px; /* Added smaller font size */
+    font-size: 12px; 
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
@@ -661,7 +656,7 @@ h1 {
     background-color: #225ea8;
 }
 
-/* Prediction modal - SCALED DOWN */
+
 .prediction-modal-overlay {
     position: fixed;
     top: 0; left: 0;
@@ -675,40 +670,40 @@ h1 {
 
 .prediction-modal-content {
     background: #ffffff;
-    padding: 24px 32px; /* Reduced from 30px 40px */
-    border-radius: 10px; /* Reduced from 12px */
-    max-width: 450px; /* Reduced from 500px */
+    padding: 24px 32px; 
+    border-radius: 10px; 
+    max-width: 450px; 
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25); /* Slightly reduced shadow */
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25); 
     position: relative;
     font-family: 'Inter', 'Roboto', sans-serif;
-    font-size: 13px; /* Added smaller font size */
+    font-size: 13px; 
     scrollbar-width: thin;
 }
 
 .prediction-modal-content h2 {
-    margin-bottom: 14px; /* Reduced from 16px */
-    font-size: 20px; /* Reduced from 24px */
+    margin-bottom: 14px; 
+    font-size: 20px; 
     color: #2d3748;
 }
 
 .prediction-modal-content form label {
     display: block;
-    margin: 10px 0 5px; /* Reduced from 12px 0 6px */
+    margin: 10px 0 5px; 
     font-weight: 600;
-    font-size: 12px; /* Added smaller font size */
+    font-size: 12px; 
     color: #2c3e50;
 }
 
 .prediction-modal-content form input {
     width: 100%;
-    padding: 8px 12px; /* Reduced from 10px 14px */
+    padding: 8px 12px; 
     border: 1px solid #cbd5e0;
-    border-radius: 5px; /* Reduced from 6px */
-    font-size: 12px; /* Reduced from 14px */
-    margin-bottom: 6px; /* Reduced from 8px */
+    border-radius: 5px; 
+    font-size: 12px; 
+    margin-bottom: 6px; 
     box-sizing: border-box;
     outline: none;
     transition: border-color 0.2s ease;
@@ -720,14 +715,14 @@ h1 {
 
 .prediction-modal-content button[type="submit"],
 .prediction-modal-content button[type="button"] {
-    margin-top: 12px; /* Reduced from 16px */
-    padding: 8px 16px; /* Reduced from 10px 20px */
+    margin-top: 12px; 
+    padding: 8px 16px; 
     background-color: #3182ce;
     color: white;
     border: none;
-    border-radius: 5px; /* Reduced from 6px */
+    border-radius: 5px; 
     font-weight: 600;
-    font-size: 12px; /* Reduced from 14px */
+    font-size: 12px; 
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
@@ -740,19 +735,19 @@ h1 {
 .make-prediction-btn {
     background-color: #3182ce;
     color: white;
-    padding: 8px 12px; /* Reduced from 10px 16px */
+    padding: 8px 12px; 
     border: none;
-    border-radius: 5px; /* Reduced from 6px */
+    border-radius: 5px; 
     font-weight: bold;
-    font-size: 12px; /* Added smaller font size */
+    font-size: 12px; 
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
 .submission-message {
-    margin-top: 10px; /* Reduced from 12px */
+    margin-top: 10px; 
     font-weight: 500;
-    font-size: 12px; /* Added smaller font size */
+    font-size: 12px; 
     color: #2f855a;
 }
 
@@ -760,13 +755,13 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px; /* Reduced from 20px */
+    margin-bottom: 16px; 
 }
 
 .close-modal-btn {
     background: none;
     border: none;
-    font-size: 22px; /* Reduced from 26px */
+    font-size: 22px; 
     cursor: pointer;
     color: #4a5568;
 }
@@ -774,11 +769,11 @@ h1 {
 .top-action-button {
     background-color: #ffffff00;
     color: rgb(255, 255, 255);
-    padding: 8px 12px; /* Reduced from 10px 16px */
+    padding: 8px 12px; 
     border: none;
-    border-radius: 6px; /* Reduced from 8px */
+    border-radius: 6px; 
     font-weight: 600;
-    font-size: 12px; /* Reduced from 14px */
+    font-size: 12px; 
     cursor: pointer;
     transition: background-color 0.2s ease;
     border: 2px solid white;
@@ -792,4 +787,16 @@ h1 {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.captain-highlight {
+  box-shadow: 0 0 12px 4px gold;
+  border: 2px solid gold;
+  border-radius: 50%;
+}
+
+.captain-badge {
+  margin-left: 6px;
+  color: gold;
+  font-weight: bold;
 }

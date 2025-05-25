@@ -45,6 +45,7 @@ function FantasyTeam() {
     const [evaluationMessage, setEvaluationMessage] = useState("");
     const [showPredictionHistory, setShowPredictionHistory] = useState(false);
     const [predictionHistory, setPredictionHistory] = useState([]);
+    const [upcomingGameweeks, setUpcomingGameweeks] = useState([]);
 
 
     const toggleMenu = () => setShowMenu(!showMenu);
@@ -278,12 +279,20 @@ function FantasyTeam() {
     }
     };
 
+    const [captainId, setCaptainId] = useState(null);    
 
+    useEffect(() => {
+        fetch("http://127.0.0.1:8000/api/fpl-fixtures/")
+            .then(res => res.json())
+            .then(data => {
+                const today = new Date();
+                const upcoming = data.filter(fixture => new Date(fixture.kickoff_time) > today);
+                const uniqueGameweeks = [...new Set(upcoming.map(f => f.event))];
+                setUpcomingGameweeks(uniqueGameweeks);
+            })
+            .catch(err => console.error("Error fetching fixtures:", err));
+    }, []);
 
-
-
-
-    
 
     return (
         <div className="fantasyteam-container">
@@ -424,12 +433,15 @@ function FantasyTeam() {
 
                                 return (
                                     <div
-                                        key={`${player.id}-${player.indexInPosition}`}
-                                        className={`player-container ${posClass}`}
+                                    key={`${player.id}-${player.indexInPosition}`}
+                                    className={`player-container ${posClass} ${captainId === player.id ? 'captain-highlight' : ''}`}
+                                    onClick={() => setCaptainId(player.id)}
+                                    title="Click to set as captain"
                                     >
-                                        <div className="player-label">
-                                            {player.first_name.charAt(0)}. {player.second_name.split(" ").slice(-1)[0]}
-                                        </div>
+                                    <div className="player-label">
+                                        {player.first_name.charAt(0)}. {player.second_name.split(" ").slice(-1)[0]}
+                                        {captainId === player.id && <span className="captain-badge">⭐</span>}
+                                    </div>
                                     </div>
                                 );
                                 
@@ -570,8 +582,14 @@ function FantasyTeam() {
                     </div>
                     <form onSubmit={handleSubmitPrediction}>
                         <label>Gameweek:
-                        <input type="number" value={gameweek} onChange={(e) => setGameweek(parseInt(e.target.value))} required />
+                            <select value={gameweek} onChange={(e) => setGameweek(parseInt(e.target.value))} required>
+                                <option value="" disabled>Select Gameweek</option>
+                                {upcomingGameweeks.map((gw, index) => (
+                                    <option key={index} value={gw}>Gameweek {gw}</option>
+                                ))}
+                            </select>
                         </label>
+
                         <label>Forward Goals:
                         <input type="number" value={forwardGoals} onChange={(e) => setForwardGoals(parseInt(e.target.value))} />
                         </label>
@@ -620,7 +638,6 @@ function FantasyTeam() {
                             <th>DEF CS</th>
                             <th>GK CS</th>
                             <th>Assists</th>
-                            <th>Submitted On</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -632,7 +649,6 @@ function FantasyTeam() {
                                 <td>{p.predicted_defender_clean_sheets}</td>
                                 <td>{p.predicted_goalkeeper_clean_sheets}</td>
                                 <td>{p.predicted_total_assists}</td>
-                                <td>{p.timestamp ? new Date(p.timestamp).toLocaleString() : "N/A"}</td>
                             </tr>
                             ))}
                         </tbody>

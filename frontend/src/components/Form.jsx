@@ -77,6 +77,14 @@ function Form({ route, method }) {
           headers: { Authorization: `Bearer ${res.data.access}` },
         });
 
+        // ✅ Check if user is blocked
+        if (userRes.data.is_blocked) {
+          toast.error("🚫 Your account has been blocked by the admin.");
+          navigate("/blocked"); // Make sure this route exists
+          return; // ⛔ Stop login flow here
+        }
+
+        // Continue normal login flow
         login(userRes.data, res.data.access, res.data.refresh);
 
         toast.success("Login successful!");
@@ -86,7 +94,9 @@ function Form({ route, method }) {
         } else {
           navigate("/");
         }
-      } else {
+      }
+
+      else {
         setUserId(res.data.id);
         setShowExtraFields(true);
       }

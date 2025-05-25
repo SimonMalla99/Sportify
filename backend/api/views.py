@@ -40,19 +40,27 @@ from .serializers import CustomTokenObtainPairSerializer
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)  # Get tokens
+        response = super().post(request, *args, **kwargs)
 
         if response.status_code == 200:
-            user = User.objects.get(username=request.data["username"])  # Fetch user details
+            user = User.objects.get(username=request.data["username"])
+            try:
+                is_blocked = user.profile.is_blocked
+            except UserProfile.DoesNotExist:
+                is_blocked = False  # fallback if no profile yet
+
             user_data = {
                 "id": user.id,
                 "username": user.username,
-                "email": user.email
+                "email": user.email,
+                "is_blocked": is_blocked  # ✅ include this
             }
-            response.data["user"] = user_data  # Attach user data to response
+            response.data["user"] = user_data
 
         return response
+
 class UserView(APIView):
     permission_classes = [IsAuthenticated]  # Ensure user is logged in
 
@@ -61,8 +69,9 @@ class UserView(APIView):
         return Response({
             "id": user.id,
             "username": user.username,
-            "email": user.email,  # ✅ ADD THIS LINE
-            "is_superuser": user.is_superuser
+            "email": user.email,  
+            "is_superuser": user.is_superuser,
+            "is_blocked": user.profile.is_blocked if hasattr(user, "profile") else False
         })
 
 

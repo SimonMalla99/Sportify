@@ -138,7 +138,7 @@ const VideoStream = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <iframe
-              src="https://cdn.totalsportek.space/embed77/?event=stack.html&link=1&domain=&force=https%3A%2F%2Fstreambtw.com%2Fiframe%2Fch1.php&ask=1747857600&lgt=3&noplayer=0"
+              src="https://cdn.totalsportek.space/embed77/?event=stack.html&link=1&domain=&force=https%3A%2F%2Fstreambtw.com%2Fiframe%2Ff1.php&ask=1748181600&lgt=3&noplayer=0"
               style={{
                 position: "absolute",
                 top: "-90px",
@@ -157,7 +157,45 @@ const VideoStream = () => {
           </div>
         </div>
       )}
+      <footer className="home-footer">
+      <div className="footer-cta">
+        <h2>Join the Fantasy Football Fun!</h2>
+        <p>Sign up now for exclusive updates and insights.</p>
+        <div className="footer-buttons">
+          <button className="btn primary-btn">Join</button>
+          <button className="btn outline-btn">Learn More</button>
+        </div>
+      </div>
 
+      <div className="footer-links">
+        <div className="footer-brand">
+          <h3>⚽ Sportify</h3>
+        </div>
+        <ul className="footer-nav">
+          <li>Fantasy League</li>
+          <li>Latest News</li>
+          <li>Player Stats</li>
+          <li>Join Us</li>
+          <li>Get Started</li>
+        </ul>
+        <div className="footer-socials">
+          <i className="fab fa-facebook"></i>
+          <i className="fab fa-instagram"></i>
+          <i className="fab fa-x-twitter"></i>
+          <i className="fab fa-linkedin"></i>
+          <i className="fab fa-youtube"></i>
+        </div>
+      </div>
+
+      <div className="footer-bottom">
+        <p>© 2024 Sportify. All rights reserved.</p>
+        <ul>
+          <li>Privacy Policy</li>
+          <li>Terms of Service</li>
+          <li>Cookies Settings</li>
+        </ul>
+      </div>
+    </footer>
     </div>
   );
 };

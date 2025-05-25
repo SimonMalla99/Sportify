@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { FaUserCircle } from "react-icons/fa";
-import { ACCESS_TOKEN } from "../constants"; // ✅ Import token key
+import { ACCESS_TOKEN } from "../constants"; 
 
 function AdminDashboard() {
     const { user } = useContext(AuthContext);

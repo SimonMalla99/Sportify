@@ -42,11 +42,10 @@ function NewsDetail() {
       });
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!article) return <p>News article not found.</p>;
+  if (loading) return ;
 
   return (
-    <div className="news-container">
+    <div className="npl-container">
       <header className="home-header">
         <div className="logo">Sportify</div>
         <nav className="nav-bar">

@@ -51,7 +51,7 @@ function NewsEditForm() {
 
     try {
       const res = await fetch(`http://127.0.0.1:8000/api/news/${articleId}/`, {
-        method: "PUT",
+        method: "PATCH",
         body: formData,
       });
 

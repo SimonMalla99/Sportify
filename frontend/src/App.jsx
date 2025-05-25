@@ -21,6 +21,7 @@ import ProfileEdit from "./pages/ProfileEdit";
 import VideoStream from "./pages/VideoStream";
 import NewsEdit from "./pages/NewsEdit";
 import NewsEditForm from "./pages/NewsEditForm";
+import Blocked from "./pages/Blocked";
 
 
 function Logout() {
@@ -155,7 +156,8 @@ function App() {
                             <NewsEditForm />
                         </ProtectedRoute>
                     }
-                />      
+                />     
+                <Route path="/blocked" element={<Blocked />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
 

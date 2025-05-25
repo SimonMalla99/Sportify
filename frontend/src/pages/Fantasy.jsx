@@ -30,6 +30,9 @@ function Fantasy() {
     const [topUsers, setTopUsers] = useState([]);
     const [budget, setBudget] = useState(100.0); // default fallback
     const [remainingBudget, setRemainingBudget] = useState(100.0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+
 
 
     const handleLogout = () =>{
@@ -73,18 +76,21 @@ function Fantasy() {
                 .catch(err => console.error("Error checking team:", err));
         }
     }, [user, navigate]);
+
     const confirmDraft = () => {
         if (draftedPlayers.length !== 11) {
             alert("You must select exactly 11 players before confirming!");
             return;
         }
-    
+
         const draftedData = draftedPlayers.map(player => ({
             player_id: player.id,
-            user_id: user.id,  
+            user_id: user.id,
             position: player.position
         }));
-    
+
+        setIsSubmitting(true); // Show loading popup
+
         fetch("http://127.0.0.1:8000/api/save-draft/", {
             method: "POST",
             headers: {
@@ -93,18 +99,20 @@ function Fantasy() {
             body: JSON.stringify({ drafted_players: draftedData })
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             return response.json();
         })
         .then(data => {
             alert(data.message || "Draft successfully saved!");
             navigate("/fantasy-team");
         })
-        .catch(error => console.error("Error saving draft:", error));
-        
+        .catch(error => {
+            console.error("Error saving draft:", error);
+            alert("Error saving draft");
+        })
+        .finally(() => setIsSubmitting(false)); 
     };
+
 
     const getPositionCount = (position) => 
         draftedPlayers.filter(player => player.position === position).length;
@@ -136,6 +144,7 @@ function Fantasy() {
     setRemainingBudget(prev => prev - player.price);
     };
 
+    
 
     // Function to remove player from draft
     const removePlayer = (playerId) => {
@@ -330,6 +339,15 @@ function Fantasy() {
 
                 </div>
             </>
+            {isSubmitting && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="spinner" />
+                        <p>Saving your draft... please wait.</p>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
     

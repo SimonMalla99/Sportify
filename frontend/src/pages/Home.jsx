@@ -23,7 +23,7 @@ function Home() {
   const { user, profilePic } = useContext(AuthContext);
   const [topUsers, setTopUsers] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
-
+  const featuresRef = useRef(null);
 
   const handleSendEmail = async () => {
     try {
@@ -344,12 +344,17 @@ function Home() {
             <button className="btn primary-btn" onClick={goToFantasy}>
               Join
             </button>
-            <button className="btn secondary-btn">Learn More</button>
+            <button className="btn secondary-btn" onClick={() => {
+              featuresRef.current?.scrollIntoView({ behavior: "smooth" });
+            }}>
+              Learn More
+            </button>
+
           </div>
         </div>
       </main>
 
-      <section className="home-features-section">
+      <section className="home-features-section " ref={featuresRef}>
         <div className="home-features-header">
           <h2 className="home-features-title">
             Discover the Thrill of Fantasy Football and Live Sports Action
