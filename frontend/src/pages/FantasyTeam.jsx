@@ -43,10 +43,8 @@ function FantasyTeam() {
     const [totalAssists, setTotalAssists] = useState(0);
     const [predictionMessage, setPredictionMessage] = useState("");
     const [evaluationMessage, setEvaluationMessage] = useState("");
-
-
-
-
+    const [showPredictionHistory, setShowPredictionHistory] = useState(false);
+    const [predictionHistory, setPredictionHistory] = useState([]);
 
 
     const toggleMenu = () => setShowMenu(!showMenu);
@@ -258,6 +256,29 @@ function FantasyTeam() {
         }
     };
 
+    const fetchPredictionHistory = async () => {
+    try {
+        const accessToken = localStorage.getItem("access_token");  // ✅ Make sure this is set
+        const response = await fetch(`http://127.0.0.1:8000/api/prediction-history/`, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+        }
+        });
+
+        if (!response.ok) {
+        throw new Error("Failed to fetch prediction history");
+        }
+
+        const data = await response.json();
+        setPredictionHistory(data.predictions || []);
+        setShowPredictionHistory(true);
+    } catch (err) {
+        console.error("Error fetching prediction history:", err);
+    }
+    };
+
+
 
 
     
@@ -319,6 +340,10 @@ function FantasyTeam() {
                 <button onClick={() => setShowPredictionModal(true)} className="top-action-button">
                     Make Your Predictions
                 </button>
+                <button onClick={fetchPredictionHistory} className="top-action-button">
+                Show Your Predictions
+                </button>
+
                 </div>
 
                 </div>
@@ -580,6 +605,47 @@ function FantasyTeam() {
                 )}
 
             </>
+            {showPredictionHistory && (
+                <div className="prediction-modal-overlay" onClick={() => setShowPredictionHistory(false)}>
+                    <div className="prediction-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="modal-header">
+                        <h2>Your Past Predictions</h2>
+                        <button className="close-modal-btn" onClick={() => setShowPredictionHistory(false)}>×</button>
+                    </div>
+                    {predictionHistory.length === 0 ? (
+                        <p>No past predictions found.</p>
+                    ) : (
+                        <table className="match-history-table">
+                        <thead>
+                            <tr>
+                            <th>Gameweek</th>
+                            <th>FWD Goals</th>
+                            <th>MID Goals</th>
+                            <th>DEF CS</th>
+                            <th>GK CS</th>
+                            <th>Assists</th>
+                            <th>Submitted On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {predictionHistory.map((p, i) => (
+                            <tr key={i}>
+                                <td>{p.gameweek}</td>
+                                <td>{p.predicted_forward_goals}</td>
+                                <td>{p.predicted_midfielder_goals}</td>
+                                <td>{p.predicted_defender_clean_sheets}</td>
+                                <td>{p.predicted_goalkeeper_clean_sheets}</td>
+                                <td>{p.predicted_total_assists}</td>
+                                <td>{new Date(p.timestamp).toLocaleString()}</td>
+                            </tr>
+                            ))}
+                        </tbody>
+                        </table>
+                    )}
+                    </div>
+                </div>
+                )}
+
         </div>
     );
     

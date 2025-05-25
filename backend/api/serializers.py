@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import NewsArticle, UserProfile
+from .models import NewsArticle, UserProfile, TeamPrediction
 from rest_framework.validators import UniqueValidator
 
 
@@ -36,4 +36,9 @@ class NewsArticleSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['dob', 'phone_number', 'bio', 'favourite_sports', 'profile_picture', 'is_blocked']
+        fields = ['dob', 'phone_number', 'bio', 'favourite_sports', 'profile_picture', 'is_blocked', 'budget']
+
+class TeamPredictionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamPrediction
+        fields = '__all__'

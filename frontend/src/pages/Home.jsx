@@ -234,6 +234,11 @@ function Home() {
     return teams[teamId] || `Team ${teamId}`;
   };
 
+  const getTeamLogo = (teamId) => {
+    return `/team-logos/${teamId}.png`;
+  };
+
+
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
     setSelectedPlayer(null);
@@ -283,51 +288,52 @@ function Home() {
 
 
   return (
-    <div className="home-container">
-      <header className="home-header">
-        <div className="logo">Sportify</div>
-        <nav className="nav-bar">
-          <Link to="/">Home Page</Link>
-          <Link to="/fantasy-team">Fantasy</Link>
-          <Link to="/News">Sports News</Link>
-          <Link to="/team-prediction-form">Predictions</Link>
-          <Link to="/npl">NPL</Link>
-          <Link to="/leaderboard">Leaderboards</Link>
-          <Link to="/videostream">Live Game</Link>
-          {user && (
-            <div className="account-container">
-              {profilePic ? (
-                <img
-                  src={profilePic}
-                  alt="Profile"
-                  className="nav-profile-picture"
-                  onClick={toggleMenu}
-                />
-              ) : (
-                <FaUserCircle
-                  size={24}
-                  onClick={toggleMenu}
-                  style={{ cursor: "pointer" }}
-                />
-              )}
-              
-              {showMenu && (
-                <div className="account-dropdown">
-                  <p>👤 {user.username}</p>
-                  <p><Link to="/account">Account Overview</Link></p>
-                  <button onClick={handleLogout}>Logout</button>
-                </div>
-              )}
-            </div>
+  <div className="home-container">
+    {/* NAVBAR */}
+    <header className="home-header">
+      <div className="logo">Sportify</div>
+      <nav className="nav-bar">
+        <Link to="/">Home Page</Link>
+        <Link to="/fantasy-team">Fantasy</Link>
+        <Link to="/News">Sports News</Link>
+        <Link to="/team-prediction-form">Predictions</Link>
+        <Link to="/npl">NPL</Link>
+        <Link to="/leaderboard">Leaderboards</Link>
+        <Link to="/videostream">Live Game</Link>
+        {user && (
+          <div className="account-container">
+            {profilePic ? (
+              <img
+                src={profilePic}
+                alt="Profile"
+                className="nav-profile-picture"
+                onClick={toggleMenu}
+              />
+            ) : (
+              <FaUserCircle
+                size={24}
+                onClick={toggleMenu}
+                style={{ cursor: "pointer" }}
+              />
+            )}
 
-          )}
-        </nav>
-      </header>
-      <div className="scroll-reveal-wrapper">
+            {showMenu && (
+              <div className="account-dropdown">
+                <p>👤 {user.username}</p>
+                <p><Link to="/account">Account Overview</Link></p>
+                <button onClick={handleLogout}>Logout</button>
+              </div>
+            )}
+          </div>
+        )}
+      </nav>
+    </header>
+
+    {/* HERO */}
+    <div className="scroll-reveal-wrapper">
       <main className="hero scroll-reveal">
         <div className="hero-text">
           <h1>Unleash Your Fantasy Football Passion with Sportify</h1>
-
           <div className="hero-buttons">
             <button className="btn primary-btn" onClick={goToFantasy}>
               Join
@@ -336,227 +342,205 @@ function Home() {
           </div>
         </div>
       </main>
+
+      {/* FEATURES */}
       <section className="features-section">
         <h2 className="features-title">
-            Explore the Latest in Football, Player Stats, and Match Results!
+          Explore the Latest in Football, Player Stats, and Match Results!
         </h2>
-
         <div className="features-grid">
-            <div className="feature-card">
+          <div className="feature-card">
             <img src="/football.jpg" alt="icon" className="feature-icon" />
             <h3>Stay Updated with Real-Time Sports News and Insights!</h3>
             <p>Get comprehensive coverage on football, including player stats and match outcomes.</p>
             <a href="#" className="feature-link">Learn More <span>›</span></a>
-            </div>
-
-            <div className="feature-card">
+          </div>
+          <div className="feature-card">
             <img src="/football.jpg" alt="icon" className="feature-icon" />
             <h3>Dive into In-Depth Analysis of Player Performance and Predictions!</h3>
             <p>Utilize our prediction feature to enhance your fantasy football experience.</p>
             <a href="#" className="feature-link">Sign Up <span>›</span></a>
-            </div>
-
-            <div className="feature-card">
+          </div>
+          <div className="feature-card">
             <img src="/football.jpg" alt="icon" className="feature-icon" />
             <h3>Follow the Latest Match Results and Stay Ahead of the Game!</h3>
             <p>Access real-time match results and never miss a moment of action.</p>
             <a href="#" className="feature-link">Join Us <span>›</span></a>
-            </div>
-        </div>
-        </section>
-        </div>
-      {/* Fixtures Section */}
-      <section className="fixtures-section">
-        <h2>Premier League Fixtures</h2>
-
-        <section className="fixtures-block scrollable-matches">
-          <h3>Recent Matches</h3>
-          <div className="scroll-container">
-            {previousFixtures.slice(-10).map((match) => (
-              <div className="scroll-item" key={match.id}>
-                {formatDate(match.kickoff_time)} - {getTeamName(match.team_h)}{" "}
-                {match.team_h_score} : {match.team_a_score}{" "}
-                {getTeamName(match.team_a)}
-              </div>
-            ))}
           </div>
-        </section>
+        </div>
+      </section>
+    </div>
 
-        <section className="upcoming-section">
-          <h3>Upcoming Matches</h3>
-          <div className="date-nav" ref={dateNavRef}>
-            <div className="date-spacer" />
-            {Object.keys(groupedFixtures).map((date, index) => (
-                <button
-                key={date}
-                className={`date-pill ${selectedDate === date ? 'active' : ''}`}
-                onClick={() => scrollToDate(index, date)}
-                >
-                {date}
-                </button>
-            ))}
-            <div className="date-spacer" />
-            </div>
-
-
-          <div className="match-carousel" ref={carouselRef}>
-            {Object.entries(groupedFixtures).map(([date, matches]) => (
-              <div
-                key={date}
-                data-date={date}
-                className={`match-card ${
-                  selectedDate === date ? "focused" : "dimmed"
-                }`}
-              >
-                <h4>{date}</h4>
-                <ul className="match-list">
-                  {matches.map((match) => (
-                    <li key={match.id}>
-                      {formatDate(match.kickoff_time)} -{" "}
-                      {getTeamName(match.team_a)} vs{" "}
-                      {getTeamName(match.team_h)}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+    {/* NEWS - moved up */}
+    <header className="news-header">
+      <h1>Stay Updated with the Latest Sports News</h1>
+    </header>
+    <div className="news-articles">
+      {newsArticles.length === 0 ? (
+        <p>No news articles available.</p>
+      ) : (
+        newsArticles.slice(0, 3).map((article) => (
+          <div key={article.id} className="news-article">
+            {article.image && (
+              <img
+                src={`http://127.0.0.1:8000${article.image}`}
+                alt={article.title}
+              />
+            )}
+            <h2>{article.title}</h2>
           </div>
-        </section>
+        ))
+      )}
+    </div>
+
+    {/* FIXTURES */}
+    <section className="fixtures-section">
+      <h2>Premier League Fixtures</h2>
+      <section className="fixtures-block scrollable-matches">
+        <h3>Recent Matches</h3>
+        <div className="scroll-container">
+          {previousFixtures.slice(-10).map((match) => (
+            <div className="scroll-item" key={match.id}>
+              {formatDate(match.kickoff_time)}  <p></p>
+              <img src={getTeamLogo(match.team_h)} alt={getTeamName(match.team_h)} className="team-logo" />
+              {getTeamName(match.team_h)} {match.team_h_score} : {match.team_a_score} {getTeamName(match.team_a)}
+              <img src={getTeamLogo(match.team_a)} alt={getTeamName(match.team_a)} className="team-logo" />
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* Players */}
-      <div className="players-section">
-        <h1>Top Premier League Players</h1>
-        <input
-          type="text"
-          placeholder="Search player by name..."
-          value={searchQuery}
-          onChange={handleSearch}
-        />
-        <table border="1">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Team</th>
-              <th>Goals Scored</th>
-              <th>Assists</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPlayers
-              .sort((a, b) => b.goals_scored - a.goals_scored)
-              .slice(0, 5)
-              .map((player) => (
-                <tr key={player.id}>
-                  <td>
-                    {player.first_name} {player.second_name}
-                  </td>
-                  <td>{player.team}</td>
-                  <td>{player.goals_scored}</td>
-                  <td>{player.assists}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+      <section className="upcoming-section">
+        <h3>Upcoming Matches</h3>
+        <div className="date-nav" ref={dateNavRef}>
+          <div className="date-spacer" />
+          {Object.keys(groupedFixtures).map((date, index) => (
+            <button
+              key={date}
+              className={`date-pill ${selectedDate === date ? 'active' : ''}`}
+              onClick={() => scrollToDate(index, date)}
+            >
+              {date}
+            </button>
+          ))}
+          <div className="date-spacer" />
+        </div>
 
-        {selectedPlayer && (
-          <div className="player-details">
-            <h2>
-              {selectedPlayer.first_name} {selectedPlayer.second_name}
-            </h2>
-            <p>
-              <strong>Team:</strong> {selectedPlayer.team}
-            </p>
-            <p>
-              <strong>Goals Scored:</strong> {selectedPlayer.goals_scored}
-            </p>
-            <p>
-              <strong>Assists:</strong> {selectedPlayer.assists}
-            </p>
-            <p>
-              <strong>Position:</strong> {selectedPlayer.position}
-            </p>
-            <p>
-              <strong>Total Points:</strong> {selectedPlayer.total_points}
-            </p>
-          </div>
-        )}
-      </div>
+        <div className="match-carousel" ref={carouselRef}>
+          {Object.entries(groupedFixtures).map(([date, matches]) => (
+            <div
+              key={date}
+              data-date={date}
+              className={`match-card ${selectedDate === date ? "focused" : "dimmed"}`}
+            >
+              <h4>{date}</h4>
+              <ul className="match-list">
+                {matches.map((match) => (
+                  <li key={match.id}>
+                    {formatDate(match.kickoff_time)} - 
+                    <img src={getTeamLogo(match.team_a)} alt={getTeamName(match.team_a)} className="team-logo" />
+                    {getTeamName(match.team_a)} vs {getTeamName(match.team_h)}
+                    <img src={getTeamLogo(match.team_h)} alt={getTeamName(match.team_h)} className="team-logo" />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    </section>
 
-      
-      {/* News */}
-      <header className="news-header">
-            <h1>Stay Updated with the Latest Sports News</h1>
-          </header>
-          <div className="news-articles">
-            {newsArticles.length === 0 ? (
-              <p>No news articles available.</p>
-            ) : (
-              newsArticles.slice(0, 3).map((article) => (
-                <div key={article.id} className="news-article">
-                  {article.image && (
-                    <img
-                      src={`http://127.0.0.1:8000${article.image}`}
-                      alt={article.title}
-                      
-                      
-                    />
-                  )}
-                  <h2 >{article.title} </h2>
-                </div>
-              ))
-            )}
-          </div>
-          <section className="leaderboard-preview-section">
-      <header className="news-header">🏆 Top Fantasy Managers</header>
-      <div className="max-w-md mx-auto">
-        <table className="table-auto w-full text-sm rounded shadow-md overflow-hidden">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-2 text-left">Rank</th>
-              <th className="p-2 text-left">Username</th>
-              <th className="p-2 text-left">Points</th>
-            </tr>
-          </thead>
-          <tbody>
-            {topUsers.map((user, index) => (
-              <tr
-                key={user.user_id}
-                className={`${
-                  index === 0
-                    ? "bg-yellow-100 font-bold"
-                    : index === 1
-                    ? "bg-gray-200 font-semibold"
-                    : index === 2
-                    ? "bg-orange-100 font-medium"
-                    : ""
-                }`}
-              >
-                <td className="p-2">{index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}</td>
-                <td className="p-2">{user.username}</td>
-                <td className="p-2">{user.allpoints}</td>
+    {/* TOP PLAYERS */}
+    <div className="players-section">
+      <h1>Top Premier League Players</h1>
+      <input
+        type="text"
+        placeholder="Search player by name..."
+        value={searchQuery}
+        onChange={handleSearch}
+      />
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Team</th>
+            <th>Goals Scored</th>
+            <th>Assists</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredPlayers
+            .sort((a, b) => b.goals_scored - a.goals_scored)
+            .slice(0, 5)
+            .map((player) => (
+              <tr key={player.id}>
+                <td>{player.first_name} {player.second_name}</td>
+                <td>{player.team}</td>
+                <td>{player.goals_scored}</td>
+                <td>{player.assists}</td>
               </tr>
             ))}
-          </tbody>
-        </table>
-        <div className="text-center mt-4">
-          <Link
-            to="/leaderboard"
-            className="text-blue-600 font-semibold hover:underline"
-          >
-            View Full Leaderboard →
-          </Link>
+        </tbody>
+      </table>
+
+      {selectedPlayer && (
+        <div className="player-details">
+          <h2>{selectedPlayer.first_name} {selectedPlayer.second_name}</h2>
+          <p><strong>Team:</strong> {selectedPlayer.team}</p>
+          <p><strong>Goals Scored:</strong> {selectedPlayer.goals_scored}</p>
+          <p><strong>Assists:</strong> {selectedPlayer.assists}</p>
+          <p><strong>Position:</strong> {selectedPlayer.position}</p>
+          <p><strong>Total Points:</strong> {selectedPlayer.total_points}</p>
+        </div>
+      )}
+    </div>
+
+    {/* LEADERBOARD */}
+    <section className="leaderboard-preview-section">
+      <div className="leaderboard-container">
+        <div className="leaderboard-text-content">
+          <h5 className="leaderboard-subtitle">Compete</h5>
+          <h2 className="leaderboard-title">Join the Global Fantasy Football Leaderboard</h2>
+          <p className="leaderboard-description">
+            Showcase your skills and climb the ranks on our global leaderboard.
+            Compete against players from around the world and prove you have what it takes to be the best.
+          </p>
+          <div className="leaderboard-buttons">
+            <button className="btn primary-btn" onClick={goToFantasy}>Learn More</button>
+            <button className="btn secondary-btn">Sign Up →</button>
+          </div>
+        </div>
+
+        <div className="leaderboard-table-wrapper">
+          <table className="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topUsers.map((user, index) => (
+                <tr key={user.user_id}>
+                  <td>{index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}</td>
+                  <td>{user.username}</td>
+                  <td>{user.allpoints}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
+
+    {/* FOOTER */}
     <footer className="home-footer">
       <div className="footer-cta">
         <h2>Join the Fantasy Football Fun!</h2>
         <p>Sign up now for exclusive updates and insights.</p>
         <div className="footer-buttons">
-          <button className="btn primary-btn" onClick={goToFantasy}>
-              Join
-            </button>
+          <button className="btn primary-btn" onClick={goToFantasy}>Join</button>
           <button className="btn outline-btn">Learn More</button>
         </div>
       </div>
@@ -590,10 +574,9 @@ function Home() {
         </ul>
       </div>
     </footer>
+  </div>
+);
 
-    </div>
-    
-  );
 }
 
 export default Home;

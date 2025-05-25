@@ -131,6 +131,7 @@ def fetch_players(request):
                     "red_cards": player["red_cards"],
                     "photo": f"https://resources.premierleague.com/premierleague/photos/players/110x140/p{player['photo']}",
                     "position": position_map.get(player["element_type"], "Unknown Position"),
+                    "price": player["now_cost"] / 10,  
                 })
 
             return JsonResponse(player_list, safe=False)
@@ -151,6 +152,7 @@ def fetch_fixtures(request):
     else:
         return JsonResponse({"error": "Failed to fetch data"}, status=500)
 
+from decimal import Decimal
 
 
 @csrf_exempt
@@ -175,9 +177,22 @@ def save_draft(request):
                 )
                 saved_players.append(obj)
 
-            # 💡 Fetch player names from FPL API
+            # 💡 Fetch player names and prices from FPL API
             fpl_data = requests.get("https://fantasy.premierleague.com/api/bootstrap-static/").json()
             all_players = {p["id"]: p for p in fpl_data["elements"]}
+            player_prices = {p["id"]: p["now_cost"] / 10 for p in fpl_data["elements"]}
+
+            # Calculate total team cost
+            total_cost = sum(player_prices.get(int(p["player_id"]), 0) for p in drafted_players)
+
+            # 🔄 Update user's remaining budget
+            try:
+                profile = user.profile
+                remaining_budget = profile.budget - Decimal(str(total_cost))
+                profile.budget = max(Decimal("0.00"), remaining_budget)
+                profile.save()
+            except Exception as e:
+                return JsonResponse({"error": "Failed to update user budget", "details": str(e)}, status=500)
 
             # Build HTML table
             table_html = "<h2>Your Drafted Fantasy Team</h2><table border='1' cellpadding='8' cellspacing='0'><tr><th>First Name</th><th>Last Name</th><th>Position</th></tr>"
@@ -186,6 +201,9 @@ def save_draft(request):
                 if player_info:
                     table_html += f"<tr><td>{player_info['first_name']}</td><td>{player_info['second_name']}</td><td>{dp.position}</td></tr>"
             table_html += "</table>"
+
+            # Add total cost to email
+            table_html += f"<p><strong>Total Cost:</strong> £{total_cost:.1f}m</p>"
 
             # Send email
             if user.email:
@@ -204,6 +222,7 @@ def save_draft(request):
             return JsonResponse({"success": False, "message": str(e)}, status=400)
 
     return JsonResponse({"success": False, "message": "Invalid request method"}, status=405)
+
 
 
 @csrf_exempt
@@ -1024,3 +1043,20 @@ def unblock_user(request):
         return JsonResponse({"error": "User not found"}, status=404)
     except UserProfile.DoesNotExist:
         return JsonResponse({"error": "UserProfile not found"}, status=404)
+
+# views.py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import TeamPrediction
+from .serializers import TeamPredictionSerializer
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def prediction_history(request):
+    user = request.user
+    predictions = TeamPrediction.objects.filter(user=user).order_by('-gameweek')
+    serializer = TeamPredictionSerializer(predictions, many=True)
+    return Response({"predictions": serializer.data})

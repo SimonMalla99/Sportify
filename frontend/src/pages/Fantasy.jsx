@@ -28,6 +28,9 @@ function Fantasy() {
     const [error, setError] = useState(null);
     const { profilePic } = useContext(AuthContext);
     const [topUsers, setTopUsers] = useState([]);
+    const [budget, setBudget] = useState(100.0); // default fallback
+    const [remainingBudget, setRemainingBudget] = useState(100.0);
+
 
     const handleLogout = () =>{
         navigate("/logout");
@@ -107,27 +110,42 @@ function Fantasy() {
         draftedPlayers.filter(player => player.position === position).length;
 
     const draftPlayer = (player) => {
-        if (draftedPlayers.length >= 11) {
-            alert("You can only draft 11 players!");
-            return;
-        }
+    if (draftedPlayers.length >= 11) {
+        alert("You can only draft 11 players!");
+        return;
+    }
 
-        const positionCount = getPositionCount(player.position);
+    const positionCount = getPositionCount(player.position);
+    if (positionCount >= (POSITION_LIMITS[player.position] || 0)) {
+        alert(`You can only draft ${POSITION_LIMITS[player.position]} ${player.position}(s)!`);
+        return;
+    }
 
-        if (positionCount >= (POSITION_LIMITS[player.position] || 0)) {
-            alert(`You can only draft ${POSITION_LIMITS[player.position]} ${player.position}(s)!`);
-            return;
-        }
+    if (draftedPlayers.some(p => p.id === player.id)) {
+        alert("This player is already in your team.");
+        return;
+    }
 
-        if (!draftedPlayers.some(p => p.id === player.id)) {
-            setDraftedPlayers([...draftedPlayers, player]);
-        }
+    if (remainingBudget < player.price) {
+        alert(`Not enough budget! You have £${remainingBudget.toFixed(1)}m left.`);
+        return;
+    }
+
+    // Passed all checks
+    setDraftedPlayers([...draftedPlayers, player]);
+    setRemainingBudget(prev => prev - player.price);
     };
+
 
     // Function to remove player from draft
     const removePlayer = (playerId) => {
-        setDraftedPlayers(draftedPlayers.filter(player => player.id !== playerId));
+    const playerToRemove = draftedPlayers.find(p => p.id === playerId);
+    if (playerToRemove) {
+        setDraftedPlayers(draftedPlayers.filter(p => p.id !== playerId));
+        setRemainingBudget(prev => prev + playerToRemove.price);
+    }
     };
+
 
     const filteredPlayers = players.filter(player => {
         const matchesSearch = `${player.first_name} ${player.second_name}`.toLowerCase().includes(searchQuery.toLowerCase());
@@ -135,7 +153,22 @@ function Fantasy() {
         return matchesSearch && matchesFilter;
     });
     
-    
+    useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        fetch(`http://127.0.0.1:8000/api/get-user-profile?user_id=${userData.id}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.budget) {
+            setBudget(parseFloat(data.budget));
+            setRemainingBudget(parseFloat(data.budget));
+            }
+        })
+        .catch(error => console.error("Error fetching user profile:", error));
+    }
+    }, []);
+
 
     if (!user) return null;
 
@@ -188,7 +221,7 @@ function Fantasy() {
                     <div className="fantasy-left">
                         <h1>Welcome to Fantasy Football, {user.username}!</h1>
                         <h2>Draft Your Players</h2>
-    
+                        <p><strong>Remaining Budget:</strong> £{remainingBudget.toFixed(1)}m</p>
                         <div className="fantasy-filters">
                             <input 
                                 type="text" 
@@ -219,6 +252,7 @@ function Fantasy() {
                                     <th>Team</th>
                                     <th>Position</th>
                                     <th>Action</th>
+                                    <th>Price</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -237,12 +271,14 @@ function Fantasy() {
                                                     disabled={
                                                         draftedPlayers.length >= 11 || 
                                                         draftedPlayers.some(p => p.id === player.id) || 
-                                                        getPositionCount(player.position) >= (POSITION_LIMITS[player.position] || 0)
+                                                        getPositionCount(player.position) >= (POSITION_LIMITS[player.position] || 0)||
+                                                        player.price > remainingBudget
                                                     }
                                                 >
                                                     Draft
                                                 </button>
                                             </td>
+                                            <td>£{player.price.toFixed(1)}</td>
                                         </tr>
                                     );
                                 })}

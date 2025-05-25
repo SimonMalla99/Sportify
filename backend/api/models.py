@@ -104,6 +104,7 @@ class UserProfile(models.Model):
     phone_number = models.CharField(max_length=10)
     bio = models.TextField(blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+    budget = models.DecimalField(max_digits=6, decimal_places=2, default=80.00)
 
     is_blocked = models.BooleanField(default=False)
     

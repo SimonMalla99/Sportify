@@ -62,5 +62,5 @@ urlpatterns = [
     path("get-all-users/", get_all_users),
     path("block-user/", block_user, name="block_user"),
     path("unblock-user/", unblock_user, name="unblock_user"),
-
+    path('prediction-history/', views.prediction_history, name='prediction-history'),
 ]
