@@ -44,6 +44,28 @@ function AdminDashboard() {
             .catch(err => console.error("Error updating user status:", err));
     };
 
+    const handleDeleteUser = (userId) => {
+        const confirmed = window.confirm("Are you sure you want to permanently delete this user and all their data?");
+        if (!confirmed) return;
+
+        const token = localStorage.getItem(ACCESS_TOKEN);
+
+        fetch(`http://127.0.0.1:8000/api/admin/delete-user/${userId}/`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message || data.error);
+                // Remove deleted user from list
+                setUsers(prev => prev.filter(user => user.id !== userId));
+            })
+            .catch(err => console.error("Error deleting user:", err));
+    };
+
+
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -88,6 +110,7 @@ function AdminDashboard() {
                 <div className="logo">Sportify Admin</div>
                 <nav className="nav-bar">
                     <Link to="/news-admin">News Upload</Link>
+                    <Link to="/news-edit">News Edit</Link>
 
                     <div className="account-container">
                         <FaUserCircle size={24} onClick={toggleMenu} style={{ cursor: "pointer" }} />
@@ -117,7 +140,9 @@ function AdminDashboard() {
                         </tr>
                     </thead>
                     <tbody>
-                        {Array.isArray(users) && users.map(u => (
+                        {Array.isArray(users) && users
+                            .filter(u => u.id !== user.id)
+                            .map(u => (
                             <tr key={u.id}>
                                 <td>{u.id}</td>
                                 <td>{u.username}</td>
@@ -129,6 +154,12 @@ function AdminDashboard() {
                                     ) : (
                                         <button onClick={() => handleUserStatusChange(u.id, true)}>Block</button>
                                     )}
+                                        <button
+                                            onClick={() => handleDeleteUser(u.id)}
+                                            style={{ marginLeft: "0.5rem", backgroundColor: "crimson", color: "white", border: "none", padding: "6px 12px", borderRadius: "4px" }}
+                                        >
+                                            Delete
+                                        </button>
                                 </td>
                             </tr>
                         ))}

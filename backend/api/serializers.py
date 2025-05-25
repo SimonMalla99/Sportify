@@ -3,13 +3,34 @@ from rest_framework import serializers
 from .models import NewsArticle, UserProfile, TeamPrediction
 from rest_framework.validators import UniqueValidator
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.exceptions import AuthenticationFailed
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        try:
+            return super().validate(attrs)
+        except AuthenticationFailed:
+            raise AuthenticationFailed("Your credentials do not match.")
 
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
         validators=[
-            UniqueValidator(queryset=User.objects.all(), message="Email already exists")
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message="An account with this email already exists."
+            )
+        ]
+    )
+    username = serializers.CharField(
+        required=True,
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message="This username is already taken."
+            )
         ]
     )
 
@@ -19,7 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
-        print(validated_data)
+        print(validated_data)  # Optional: Debugging
         user = User.objects.create_user(
             username=validated_data["username"],
             email=validated_data["email"],

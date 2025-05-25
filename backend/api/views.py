@@ -34,10 +34,12 @@ from django.template.loader import render_to_string  # Optional, for better HTML
 from django.utils.html import strip_tags
 import random
 from django.core.cache import cache
-
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)  # Get tokens
 
@@ -317,10 +319,15 @@ class NewsArticleView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
-class NewsArticleDetail(generics.RetrieveAPIView):
+from rest_framework import generics
+from .models import NewsArticle
+from .serializers import NewsArticleSerializer
+
+class NewsArticleDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = NewsArticle.objects.all()
     serializer_class = NewsArticleSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny]  # Or IsAdminUser if you want it admin-only
+
     
 def calculate_custom_points(stats, position):
     points = 0
@@ -1060,3 +1067,18 @@ def prediction_history(request):
     predictions = TeamPrediction.objects.filter(user=user).order_by('-gameweek')
     serializer = TeamPredictionSerializer(predictions, many=True)
     return Response({"predictions": serializer.data})
+
+@csrf_exempt
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_user(request, user_id):
+    if not request.user.is_superuser:
+        return JsonResponse({"error": "Unauthorized"}, status=403)
+
+    try:
+        user = User.objects.get(id=user_id)
+        username = user.username
+        user.delete()  # 💥 Deletes the user and cascades to related models
+        return JsonResponse({"message": f"User '{username}' and all associated data deleted successfully."}, status=200)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)

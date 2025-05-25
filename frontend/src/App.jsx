@@ -19,6 +19,9 @@ import Leaderboard from "./pages/Leaderboard";
 import Account from "./pages/Account";
 import ProfileEdit from "./pages/ProfileEdit";
 import VideoStream from "./pages/VideoStream";
+import NewsEdit from "./pages/NewsEdit";
+import NewsEditForm from "./pages/NewsEditForm";
+
 
 function Logout() {
     localStorage.clear();
@@ -136,7 +139,23 @@ function App() {
                             <VideoStream />
                         </ProtectedRoute>
                     }
-                />                
+                />     
+                <Route
+                    path="/news-edit"
+                    element={
+                        <ProtectedRoute>
+                            <NewsEdit />
+                        </ProtectedRoute>
+                    }
+                />         
+                <Route
+                    path="/news-edit/:articleId"
+                    element={
+                        <ProtectedRoute>
+                            <NewsEditForm />
+                        </ProtectedRoute>
+                    }
+                />      
                 <Route path="*" element={<NotFound />} />
             </Routes>
 

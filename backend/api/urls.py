@@ -28,7 +28,8 @@ from .views import (
     reset_password_with_otp,
     get_all_users,
     block_user,
-    unblock_user
+    unblock_user,
+    CustomTokenObtainPairView
 )
 
 urlpatterns = [
@@ -63,4 +64,8 @@ urlpatterns = [
     path("block-user/", block_user, name="block_user"),
     path("unblock-user/", unblock_user, name="unblock_user"),
     path('prediction-history/', views.prediction_history, name='prediction-history'),
+    path("admin/delete-user/<int:user_id>/", views.delete_user),
+    path('news/<int:pk>/', NewsArticleDetail.as_view()),
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+
 ]

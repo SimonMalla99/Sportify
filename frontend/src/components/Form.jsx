@@ -92,11 +92,20 @@ function Form({ route, method }) {
       }
     } catch (error) {
       console.error("Login/Signup Error:", error);
-      const message =
-        error.response?.data?.detail ||
-        error.response?.data ||
-        "Login failed. Please check your credentials.";
-      toast.error(typeof message === "string" ? message : "Something went wrong.");
+      const data = error.response?.data;
+
+      if (typeof data === "string") {
+        toast.error(data);
+      } else if (data?.detail) {
+        toast.error(data.detail); // ✅ this will catch "Your credentials do not match"
+      } else if (data?.username) {
+        toast.error(data.username[0]);
+      } else if (data?.email) {
+        toast.error(data.email[0]);
+      } else {
+        toast.error("Something went wrong.");
+      }
+
     } finally {
       setLoading(false);
     }
