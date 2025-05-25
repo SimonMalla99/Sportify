@@ -129,7 +129,7 @@ function AdminDashboard() {
                 <h1>Welcome Admin, {user.username}</h1>
 
                 <h2 style={{ marginTop: "2rem" }}>All Users</h2>
-                <table border="1" cellPadding="10" style={{ width: "100%", marginTop: "1rem" }}>
+                <table className="npl-table">
                     <thead>
                         <tr>
                             <th>ID</th>

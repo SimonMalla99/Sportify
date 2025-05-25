@@ -40,7 +40,7 @@ function NewsEdit() {
 
       <h2 className="newsadmin-title">Edit News Articles</h2>
 
-      <table className="news-table">
+      <table className="npl-table">
         <thead>
           <tr>
             <th>Image</th>

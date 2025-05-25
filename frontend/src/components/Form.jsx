@@ -96,12 +96,14 @@ function Form({ route, method }) {
 
       if (typeof data === "string") {
         toast.error(data);
-      } else if (data?.detail) {
-        toast.error(data.detail); // ✅ this will catch "Your credentials do not match"
       } else if (data?.username) {
-        toast.error(data.username[0]);
+        toast.error(data.username[0]);  // Username error
       } else if (data?.email) {
-        toast.error(data.email[0]);
+        toast.error(data.email[0]);     // Email error
+      } else if (data?.password) {
+        toast.error(data.password[0]);  // 🔥 Password error
+      } else if (data?.detail) {
+        toast.error(data.detail);       // Token/auth errors
       } else {
         toast.error("Something went wrong.");
       }
@@ -292,12 +294,31 @@ function Form({ route, method }) {
 
               {formMode === "login" && (
                 <div className="form-footer">
-                  Don’t have an account?
-                  <button type="button" onClick={handleSignupRedirect}>
+                  Don’t have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => navigate("/register")}
+                    style={{ color: "#3182ce", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                  >
                     Sign up
                   </button>
                 </div>
               )}
+
+              {formMode !== "login" && (
+                <div className="form-footer">
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => navigate("/login")}
+                    style={{ color: "#3182ce", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                  >
+                    Log in
+                  </button>
+                </div>
+              )}
+
+
             </>
           )}
         </form>

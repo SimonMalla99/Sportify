@@ -258,16 +258,16 @@ function FantasyTeam() {
 
     const fetchPredictionHistory = async () => {
     try {
-        const accessToken = localStorage.getItem("access_token");  // ✅ Make sure this is set
-        const response = await fetch(`http://127.0.0.1:8000/api/prediction-history/`, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json"
+        const userData = JSON.parse(localStorage.getItem("user"));
+        if (!userData?.id) {
+        console.error("No user ID found");
+        return;
         }
-        });
+
+        const response = await fetch(`http://127.0.0.1:8000/api/prediction-history/?user_id=${userData.id}`);
 
         if (!response.ok) {
-        throw new Error("Failed to fetch prediction history");
+        throw new Error(`HTTP ${response.status}`);
         }
 
         const data = await response.json();
@@ -281,18 +281,19 @@ function FantasyTeam() {
 
 
 
+
+
     
 
     return (
         <div className="fantasyteam-container">
             <>
-                <header className="fantasyteam-header">
+                <header className="home-header">
                     <div className="logo">Sportify</div>
                     <nav className="nav-bar">
                         <Link to="/">Home Page</Link>
                         <Link to="/fantasy-team">Fantasy</Link>
                         <Link to="/News">Sports News</Link>
-                        <Link to="/team-prediction-form">Predictions</Link>
                         <Link to="/npl">NPL</Link>
                         <Link to="/leaderboard">Leaderboards</Link>
                         <Link to="/videostream">Live Game</Link>
@@ -456,12 +457,7 @@ function FantasyTeam() {
     
                 {teamPerformance.length > 0 && (
                 <div className="team-performance">
-                    <button
-                    className="toggle-performance-button"
-                    onClick={() => setShowTeamPerformance(!showTeamPerformance)}
-                    >
-                    {showTeamPerformance ? "Hide Team Performance" : "Show Team Performance"}
-                    </button>
+
 
                     {showTeamPerformance && (
                     <div className="teamperformance-modal-overlay" onClick={() => setShowTeamPerformance(false)}>
@@ -636,7 +632,7 @@ function FantasyTeam() {
                                 <td>{p.predicted_defender_clean_sheets}</td>
                                 <td>{p.predicted_goalkeeper_clean_sheets}</td>
                                 <td>{p.predicted_total_assists}</td>
-                                <td>{new Date(p.timestamp).toLocaleString()}</td>
+                                <td>{p.timestamp ? new Date(p.timestamp).toLocaleString() : "N/A"}</td>
                             </tr>
                             ))}
                         </tbody>
@@ -645,8 +641,47 @@ function FantasyTeam() {
                     </div>
                 </div>
                 )}
-
+                <footer className="home-footer">
+      <div className="footer-cta">
+        <h2>Join the Fantasy Football Fun!</h2>
+        <p>Sign up now for exclusive updates and insights.</p>
+        <div className="footer-buttons">
+          <button className="btn primary-btn" >Join</button>
+          <button className="btn outline-btn">Learn More</button>
         </div>
+      </div>
+
+      <div className="footer-links">
+        <div className="footer-brand">
+          <h3>⚽ Sportify</h3>
+        </div>
+        <ul className="footer-nav">
+          <li>Fantasy League</li>
+          <li>Latest News</li>
+          <li>Player Stats</li>
+          <li>Join Us</li>
+          <li>Get Started</li>
+        </ul>
+        <div className="footer-socials">
+          <i className="fab fa-facebook"></i>
+          <i className="fab fa-instagram"></i>
+          <i className="fab fa-x-twitter"></i>
+          <i className="fab fa-linkedin"></i>
+          <i className="fab fa-youtube"></i>
+        </div>
+      </div>
+
+      <div className="footer-bottom">
+        <p>© 2024 Sportify. All rights reserved.</p>
+        <ul>
+          <li>Privacy Policy</li>
+          <li>Terms of Service</li>
+          <li>Cookies Settings</li>
+        </ul>
+      </div>
+    </footer>
+        </div>
+        
     );
     
 }

@@ -13,6 +13,7 @@ const Leaderboard = () => {
   const [visibleCount, setVisibleCount] = useState(10);
   const [players, setPlayers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [newsArticles, setNewsArticles] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -50,7 +51,6 @@ const Leaderboard = () => {
           <Link to="/">Home Page</Link>
           <Link to="/fantasy-team">Fantasy</Link>
           <Link to="/News">Sports News</Link>
-          <Link to="/team-prediction-form">Predictions</Link>
           <Link to="/npl">NPL</Link>
           <Link to="/leaderboard">Leaderboards</Link>
           <Link to="/videostream">Live Game</Link>
@@ -85,6 +85,16 @@ const Leaderboard = () => {
       </header>
       <h1 className="text-3xl font-bold text-center my-8">🏆 Leaderboard</h1>
       <div className="overflow-x-auto">
+        <div className="leaderboard-search">
+        <input
+          type="text"
+          placeholder="Search by username..."
+          className="border border-gray-300 rounded px-4 py-2 w-1/2"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
         <table className="leaderboard-table">
           <thead className="leaderboard-header">
             <tr>
@@ -95,29 +105,46 @@ const Leaderboard = () => {
           </thead>
           <tbody>
             {leaders
-                .filter(user => user.allpoints > 0)
-                .map((user, index) => {
-                let rowClass = "";
-                if (index === 0) rowClass = "bg-yellow-100 font-bold";     // 🥇 1st
-                else if (index === 1) rowClass = "bg-gray-200 font-semibold"; // 🥈 2nd
-                else if (index === 2) rowClass = "bg-orange-100 font-medium"; // 🥉 3rd
+              .filter(user => user.allpoints > 0)
+              .filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+              .map((user) => {
+                const actualIndex = leaders.findIndex(
+                  (u) => u.user_id === user.user_id
+                );
+
+                const rowClass =
+                  actualIndex === 0
+                    ? "bg-yellow-100 font-bold"
+                    : actualIndex === 1
+                    ? "bg-gray-200 font-semibold"
+                    : actualIndex === 2
+                    ? "bg-orange-100 font-medium"
+                    : "";
 
                 return (
-                    <tr
-                        key={user.user_id}
-                        style={{
-                            backgroundColor:
-                            index === 0 ? "#FEF08A" : index === 1 ? "#E5E7EB" : index === 2 ? "#FED7AA" : "white",
-                            fontWeight: index < 3 ? "bold" : "normal",
-                        }}
-                        >
-
-                    <td className="border p-2">{index + 1}</td>
+                  <tr
+                    key={user.user_id}
+                    className={rowClass}
+                    style={{
+                      backgroundColor:
+                        actualIndex === 0
+                          ? "#FEF08A"
+                          : actualIndex === 1
+                          ? "#E5E7EB"
+                          : actualIndex === 2
+                          ? "#FED7AA"
+                          : "white",
+                      fontWeight: actualIndex < 3 ? "bold" : "normal",
+                    }}
+                  >
+                    <td className="border p-2">{actualIndex + 1}</td>
                     <td className="border p-2">{user.username}</td>
                     <td className="border p-2">{user.allpoints}</td>
-                    </tr>
+                  </tr>
                 );
-                })}
+              })}
+
+
             </tbody>
 
         </table>

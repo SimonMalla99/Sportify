@@ -23,19 +23,20 @@ html, body {
 
 /* Modern Header with Glass Effect */
 .home-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: rgba(10, 1, 27, 0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-radius: 0 0 20px 20px;
 }
+
 
 
 
@@ -108,6 +109,7 @@ html, body {
     width: 100%;
     text-align: center;
     padding: 0.75rem;
+    border-radius: 12px;
   }
 }
 
@@ -524,7 +526,8 @@ html, body {
 
 .match-card {
   scroll-snap-align: center;
-  flex: 0 0 min(90vw, 350px);
+  flex: 0 0 min(90vw, 1000px); /* wider card */
+  margin: 0 auto;            
   min-height: 400px;
   max-height: 400px;
   padding: 1.5rem;
@@ -960,4 +963,279 @@ html, body {
 
 .leaderboard-table tr:last-child td {
   border-bottom: none;
+}
+.prediction-feature-section {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.prediction-text {
+  flex: 1 1 500px;
+}
+
+.prediction-text .section-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #718096;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.prediction-text h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #1a202c;
+}
+
+.prediction-text .section-description {
+  font-size: 1rem;
+  color: #4a5568;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.feature-highlights {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.feature-highlights h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.feature-highlights p {
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+.prediction-image {
+  flex: 1 1 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prediction-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+}
+.prediction-benefits {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+  font-size: 1rem;
+  color: #2d3748;
+  line-height: 1.6;
+}
+
+.prediction-benefits li {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.prediction-benefits strong {
+  font-weight: 600;
+}
+.hot-news-section {
+  padding: 4rem 2rem;
+  background-color: #ffffff;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hot-news-heading {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: 800;
+  color: #1a202c;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.hot-news-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hot-news-image-box {
+  flex: 1 1 45%;
+}
+
+.hot-news-image {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
+
+.hot-news-content {
+  flex: 1 1 50%;
+}
+
+.hot-news-title {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 700;
+  color: #2d3748;
+  line-height: 1.4;
+}
+
+.hot-news-empty {
+  font-size: 1rem;
+  color: #718096;
+  text-align: center;
+}
+.home-features-section {
+  background: #ffffff;
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-features-header {
+  text-align: left;
+  margin-bottom: 3rem;
+}
+
+.home-features-title {
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 800;
+  color: #1a202c;
+  margin-bottom: 1rem;
+}
+
+.home-features-subtitle {
+  font-size: 1rem;
+  color: #4a5568;
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+.home-features-grid {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.home-feature-box {
+  flex: 1 1 30%;
+  min-width: 280px;
+  background: #f9fafb;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  transition: transform 0.3s ease;
+}
+
+.home-feature-box:hover {
+  transform: translateY(-5px);
+}
+
+.home-feature-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.home-feature-box h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 0.75rem;
+}
+
+.home-feature-box p {
+  font-size: 0.95rem;
+  color: #4a5568;
+}
+.news-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  gap: 0.5rem;
+}
+
+.news-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #cbd5e0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.news-dot.active {
+  background-color: #2d3748;
+}
+
+/* Leaderboard Search Input */
+.leaderboard-search {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.leaderboard-search input {
+  width: 50%;
+  max-width: 500px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e0; /* soft gray border */
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.leaderboard-search input:focus {
+  outline: none;
+  border-color: #3182ce; /* blue */
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+/* Table Enhancements */
+.leaderboard-table {
+  width: 600px;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  margin-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.leaderboard-table th {
+  background-color: #f7fafc;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.leaderboard-table tr:hover {
+  background-color: #f1f5f9;
 }

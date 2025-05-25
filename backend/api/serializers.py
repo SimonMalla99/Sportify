@@ -39,6 +39,14 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email", "password"]
         extra_kwargs = {"password": {"write_only": True}}
 
+    def validate_password(self, value):
+        if len(value) < 6:
+            raise serializers.ValidationError("Password must be at least 6 characters long.")
+        if value.isdigit():
+            raise serializers.ValidationError("Password cannot be entirely numeric.")
+        return value
+
+
     def create(self, validated_data):
         print(validated_data)  # Optional: Debugging
         user = User.objects.create_user(

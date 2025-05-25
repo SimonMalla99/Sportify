@@ -106,14 +106,13 @@ function News() {
   if (error) return <p>Error loading news articles: {error.message || "Unknown error"}</p>;
 
   return (
-    <div className="news-container">
+    <div className="home-container">
       <header className="home-header">
         <div className="logo">Sportify</div>
         <nav className="nav-bar">
           <Link to="/">Home Page</Link>
           <Link to="/fantasy-team">Fantasy</Link>
           <Link to="/News">Sports News</Link>
-          <Link to="/team-prediction-form">Predictions</Link>
           <Link to="/npl">NPL</Link>
           <Link to="/leaderboard">Leaderboards</Link>
           <Link to="/videostream">Live Game</Link>

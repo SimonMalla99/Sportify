@@ -47,7 +47,6 @@ const Account = () => {
           <Link to="/">Home Page</Link>
           <Link to="/fantasy-team">Fantasy</Link>
           <Link to="/News">Sports News</Link>
-          <Link to="/team-prediction-form">Predictions</Link>
           <Link to="/npl">NPL</Link>
           <Link to="/leaderboard">Leaderboards</Link>
           {user && (
@@ -84,7 +83,6 @@ const Account = () => {
           </div>
 
           <h2>{user?.username}</h2>
-          <p><strong>Email:</strong> {user?.email || "Not available"}</p>
 
           <p className="points-label">Total Fantasy Points:</p>
           <div className="points">{allPoints !== null ? allPoints : "Loading..."}</div>

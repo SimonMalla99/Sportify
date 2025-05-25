@@ -7,25 +7,50 @@ import "../styles/VideoStream.css";
 
 const VideoStream = () => {
   const navigate = useNavigate();
+  const [fixtures, setFixtures] = useState([]);
   const { user, profilePic } = useContext(AuthContext);
   const [showMenu, setShowMenu] = useState(false);
+  const [showFrame, setShowFrame] = useState(false);
   const toggleMenu = () => setShowMenu(!showMenu);
-  const [showPointLog, setShowPointLog] = useState(false);
-  const [pointLogs, setPointLogs] = useState([]);
-  const [fixtures, setFixtures] = useState([]);
-  const [previousFixtures, setPreviousFixtures] = useState([]);
-  const [visibleCount, setVisibleCount] = useState(10);
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [newsArticles, setNewsArticles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [topUsers, setTopUsers] = useState([]);
-
-  const handleLogout = () => {
-    navigate("/logout");
+  const getTeamName = (teamId) => {
+  const teams = {
+      1: "Arsenal",
+      2: "Aston Villa",
+      3: "Bournemouth",
+      4: "Brentford",
+      5: "Brighton",
+      6: "Chelsea",
+      7: "Crystal Palace",
+      8: "Everton",
+      9: "Fulham",
+      10: "Ipswich Town",
+      11: "Leicester City",
+      12: "Liverpool",
+      13: "Man City",
+      14: "Man Utd",
+      15: "Newcastle Utd",
+      16: "Nottingham Forest",
+      17: "Southampton",
+      18: "Tottenham",
+      19: "West Ham",
+      20: "Wolves",
+    };
+    return teams[teamId] || `Team ${teamId}`;
   };
 
-  // ✅ Prevent scrollbars globally
+  useEffect(() => {
+      fetch("http://127.0.0.1:8000/api/fpl-fixtures/")
+        .then((res) => res.json())
+        .then((data) => {
+          const now = new Date();
+          const upcoming = data.filter((f) => new Date(f.kickoff_time) > now);
+          const past = data.filter((f) => new Date(f.kickoff_time) <= now);
+          setFixtures(upcoming);
+          setPreviousFixtures(past);
+        })
+        .catch((error) => console.error("Error fetching fixtures:", error));
+    }, []);
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -41,7 +66,6 @@ const VideoStream = () => {
           <Link to="/">Home Page</Link>
           <Link to="/fantasy-team">Fantasy</Link>
           <Link to="/News">Sports News</Link>
-          <Link to="/team-prediction-form">Predictions</Link>
           <Link to="/npl">NPL</Link>
           <Link to="/leaderboard">Leaderboards</Link>
           <Link to="/videostream">Live Game</Link>
@@ -61,60 +85,79 @@ const VideoStream = () => {
                   style={{ cursor: "pointer" }}
                 />
               )}
-              
+
               {showMenu && (
                 <div className="account-dropdown">
                   <p>👤 {user.username}</p>
                   <p><Link to="/account">Account Overview</Link></p>
-                  <button onClick={handleLogout}>Logout</button>
+                  <button onClick={() => navigate("/logout")}>Logout</button>
                 </div>
               )}
             </div>
-
           )}
         </nav>
       </header>
-      {/* Cropped iframe */}
-      <div
-        style={{
-          width: "100%",
-          height: "calc(100vh - 80px)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            width: "820px",
-            height: "470px",
-            overflow: "hidden",
-            position: "relative",
-            borderRadius: "12px",
-            boxShadow: "0 0 12px rgba(0,0,0,0.4)",
-          }}
-        >
-          <iframe
-            src="https://cdn.totalsportek.space/embed77/?event=stack.html&link=1&domain=&force=https%3A%2F%2Fstreambtw.com%2Fiframe%2Fch1.php&ask=1747857600&lgt=3&noplayer=0"
-            style={{
-              position: "absolute",
-              top: "-90px",
-              right: "-25px",
-              width: "860px",
-              height: "560px",
-              border: "none",
-              pointerEvents: "auto", // or conditionally based on your logic
-            }}
-            scrolling="no"
-            allowFullScreen
-            loading="lazy"
-            sandbox="allow-scripts allow-presentation"
-            title="Sportify Live Stream"
-          />
 
+      {/* 🔹 Fixture Selection Grid */}
+      {!showFrame && (
+        <div className="fixture-grid-section">
+          <h2 className="fixture-section-title">Watch Live Fixtures</h2>
+          <div className="fixture-grid">
+            {fixtures.slice(0, 12).map((fixture) => (
+              <div className="fixture-card" onClick={() => setShowFrame(true)}>
+                <div className="fixture-logos">
+                  <img
+                    src={`/team-logos/${fixture.team_h}.png`}
+                    alt={getTeamName(fixture.team_h)}
+                    className="fixture-logo"
+                  />
+                  <span className="vs-text">vs</span>
+                  <img
+                    src={`/team-logos/${fixture.team_a}.png`}
+                    alt={getTeamName(fixture.team_a)}
+                    className="fixture-logo"
+                  />
+                </div>
+                <p>{getTeamName(fixture.team_h)} vs {getTeamName(fixture.team_a)}</p>
+              </div>
+
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+
+      {/* 🔹 Live Video Frame (unchanged) */}
+      {showFrame && (
+        <div
+          className="iframe-modal-overlay"
+          onClick={() => setShowFrame(false)}
+        >
+          <div
+            className="iframe-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src="https://cdn.totalsportek.space/embed77/?event=stack.html&link=1&domain=&force=https%3A%2F%2Fstreambtw.com%2Fiframe%2Fch1.php&ask=1747857600&lgt=3&noplayer=0"
+              style={{
+                position: "absolute",
+                top: "-90px",
+                right: "-25px",
+                width: "860px",
+                height: "560px",
+                border: "none",
+                pointerEvents: "auto",
+              }}
+              scrolling="no"
+              allowFullScreen
+              loading="lazy"
+              sandbox="allow-scripts allow-presentation"
+              title="Sportify Live Stream"
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

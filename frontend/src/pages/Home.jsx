@@ -22,6 +22,7 @@ function Home() {
   const navigate = useNavigate();
   const { user, profilePic } = useContext(AuthContext);
   const [topUsers, setTopUsers] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
 
   const handleSendEmail = async () => {
@@ -286,6 +287,12 @@ function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % Math.min(3, newsArticles.length));
+    }, 10000); // 10 seconds
+    return () => clearInterval(interval);
+  }, [newsArticles]);
 
   return (
   <div className="home-container">
@@ -296,7 +303,6 @@ function Home() {
         <Link to="/">Home Page</Link>
         <Link to="/fantasy-team">Fantasy</Link>
         <Link to="/News">Sports News</Link>
-        <Link to="/team-prediction-form">Predictions</Link>
         <Link to="/npl">NPL</Link>
         <Link to="/leaderboard">Leaderboards</Link>
         <Link to="/videostream">Live Game</Link>
@@ -343,55 +349,99 @@ function Home() {
         </div>
       </main>
 
-      {/* FEATURES */}
-      <section className="features-section">
-        <h2 className="features-title">
-          Explore the Latest in Football, Player Stats, and Match Results!
-        </h2>
-        <div className="features-grid">
-          <div className="feature-card">
-            <img src="/football.jpg" alt="icon" className="feature-icon" />
-            <h3>Stay Updated with Real-Time Sports News and Insights!</h3>
-            <p>Get comprehensive coverage on football, including player stats and match outcomes.</p>
-            <a href="#" className="feature-link">Learn More <span>›</span></a>
+      <section className="home-features-section">
+        <div className="home-features-header">
+          <h2 className="home-features-title">
+            Discover the Thrill of Fantasy Football and Live Sports Action
+          </h2>
+          <p className="home-features-subtitle">
+            Dive into the exciting world of fantasy football where strategy meets fun.
+            Create your dream team, compete with friends, and climb the global leaderboard.
+            Experience the joy of sports like never before!
+          </p>
+        </div>
+
+        <div className="home-features-grid">
+          <div className="home-feature-box">
+            <img src="/football.jpg" alt="icon" className="home-feature-icon" />
+            <h3>Stay Informed with the Latest Sports News and Updates</h3>
+            <p>Get real-time updates on Nepalese sports and beyond.</p>
           </div>
-          <div className="feature-card">
-            <img src="/football.jpg" alt="icon" className="feature-icon" />
-            <h3>Dive into In-Depth Analysis of Player Performance and Predictions!</h3>
-            <p>Utilize our prediction feature to enhance your fantasy football experience.</p>
-            <a href="#" className="feature-link">Sign Up <span>›</span></a>
+          <div className="home-feature-box">
+            <img src="/football.jpg" alt="icon" className="home-feature-icon" />
+            <h3>Watch Live Football Matches Anytime, Anywhere with Our Streaming Service</h3>
+            <p>Catch every goal and moment as they happen in real time.</p>
           </div>
-          <div className="feature-card">
-            <img src="/football.jpg" alt="icon" className="feature-icon" />
-            <h3>Follow the Latest Match Results and Stay Ahead of the Game!</h3>
-            <p>Access real-time match results and never miss a moment of action.</p>
-            <a href="#" className="feature-link">Join Us <span>›</span></a>
+          <div className="home-feature-box">
+            <img src="/football.jpg" alt="icon" className="home-feature-icon" />
+            <h3>Join the Community of Passionate Football Fans and Players</h3>
+            <p>Connect, compete, and celebrate your love for football with others.</p>
           </div>
         </div>
       </section>
+
     </div>
 
-    {/* NEWS - moved up */}
-    <header className="news-header">
-      <h1>Stay Updated with the Latest Sports News</h1>
-    </header>
-    <div className="news-articles">
-      {newsArticles.length === 0 ? (
-        <p>No news articles available.</p>
-      ) : (
-        newsArticles.slice(0, 3).map((article) => (
-          <div key={article.id} className="news-article">
-            {article.image && (
+    <section className="hot-news-section">
+      <h1 className="hot-news-heading">Today’s Hot News 🔥</h1>
+      {newsArticles.length > 0 ? (
+        <>
+          <div className="hot-news-container">
+            <div className="hot-news-image-box">
               <img
-                src={`http://127.0.0.1:8000${article.image}`}
-                alt={article.title}
+                src={`http://127.0.0.1:8000${newsArticles[activeIndex].image}`}
+                alt={newsArticles[activeIndex].title}
+                className="hot-news-image"
               />
-            )}
-            <h2>{article.title}</h2>
+            </div>
+            <div className="hot-news-content">
+              <h2 className="hot-news-title">{newsArticles[activeIndex].title}</h2>
+            </div>
           </div>
-        ))
+
+          <div className="news-dots">
+            {newsArticles.slice(0, 3).map((_, index) => (
+              <span
+                key={index}
+                className={`news-dot ${activeIndex === index ? "active" : ""}`}
+                onClick={() => setActiveIndex(index)}
+              ></span>
+            ))}
+          </div>
+        </>
+      ) : (
+        <p className="hot-news-empty">No news available right now.</p>
       )}
-    </div>
+    </section>
+
+
+    <section className="prediction-feature-section">
+      <div className="prediction-text">
+        <p className="section-label">Predict</p>
+        <h2>Enhance Your Game with Predictions</h2>
+        <p className="section-description">
+          Forecast your fantasy team's weekly stats before each match. Earn multipliers on your total points by getting predictions right — and climb the leaderboard with strategy, not just luck.
+        </p>
+
+        <ul className="prediction-benefits">
+          <li>
+            🎯 <strong>Make Strategic Calls:</strong> Anticipate clean sheets, top scorers, and more based on player form.
+          </li>
+          <li>
+            📈 <strong>Multiply Your Score:</strong> Correct predictions boost your weekly performance.
+          </li>
+          <li>
+            🧠 <strong>Use Your Knowledge:</strong> Your football IQ earns you more than bragging rights.
+          </li>
+        </ul>
+      </div>
+
+      <div className="prediction-image">
+        <img src="predict.png" alt="Prediction system preview" />
+      </div>
+    </section>
+
+
 
     {/* FIXTURES */}
     <section className="fixtures-section">

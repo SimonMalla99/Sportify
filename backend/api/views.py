@@ -601,38 +601,42 @@ def evaluate_prediction(request):
             return JsonResponse({"error": "No team performance data found for this gameweek"}, status=404)
 
         # Check if prediction is correct
-        is_correct = (
-            prediction.predicted_forward_goals == performance.forward_goals and
-            prediction.predicted_midfielder_goals == performance.midfielder_goals and
-            prediction.predicted_defender_clean_sheets == performance.defender_clean_sheets and
-            prediction.predicted_goalkeeper_clean_sheets == performance.goalkeeper_clean_sheets and
-            prediction.predicted_total_assists == performance.total_assists
-        )
+# Count correct predictions
+        correct_count = 0
+        if prediction.predicted_forward_goals == performance.forward_goals:
+            correct_count += 1
+        if prediction.predicted_midfielder_goals == performance.midfielder_goals:
+            correct_count += 1
+        if prediction.predicted_defender_clean_sheets == performance.defender_clean_sheets:
+            correct_count += 1
+        if prediction.predicted_goalkeeper_clean_sheets == performance.goalkeeper_clean_sheets:
+            correct_count += 1
+        if prediction.predicted_total_assists == performance.total_assists:
+            correct_count += 1
 
-        # Apply multiplier if correct
-        multiplier = 1.1 if is_correct else 1.0
+        # Multiplier logic: 1.0 base + 0.1 per correct, capped at 1.5
+        multiplier = min(1.0 + (0.1 * correct_count), 1.5)
         final_points = round(performance.total_points * multiplier, 2)
 
         # Save updated fields
-        prediction.prediction_correct = is_correct
-        prediction.multiplier_applied = is_correct
+        prediction.prediction_correct = correct_count == 5
+        prediction.multiplier_applied = True
         prediction.save()
-
-        # Update final_points based on prediction result
-        performance.final_points = performance.total_points * 1.5 if is_correct else performance.total_points
-        performance.save()
-
 
         performance.final_points = final_points
         performance.save()
 
+
         return JsonResponse({
             "success": True,
-            "prediction_correct": is_correct,
-            "multiplier_applied": is_correct,
+            "correct_count": correct_count,
+            "multiplier": multiplier,
+            "prediction_correct": correct_count == 5,
+            "multiplier_applied": True,
             "final_points": final_points,
             "original_points": performance.total_points,
         })
+
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
@@ -820,9 +824,14 @@ def leaderboard_view(request):
         leaderboard = []
 
         for user in users:
-            total = TeamGamePerformance.objects.filter(user=user).aggregate(
-                total_points_sum=Sum("total_points")
-            )["total_points_sum"] or 0
+            performances = TeamGamePerformance.objects.filter(user=user)
+
+            total = 0
+            for perf in performances:
+                if perf.final_points and perf.final_points > 0:
+                    total += perf.final_points
+                else:
+                    total += perf.total_points
 
             leaderboard.append({
                 "user_id": user.id,
@@ -840,6 +849,7 @@ def leaderboard_view(request):
         return JsonResponse(leaderboard, safe=False)
 
     return JsonResponse({"error": "GET method only"}, status=405)
+
 
 @csrf_exempt
 @api_view(["POST"])
@@ -1060,13 +1070,24 @@ from .serializers import TeamPredictionSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+from rest_framework.permissions import AllowAny
+
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def prediction_history(request):
-    user = request.user
+    user_id = request.GET.get("user_id")
+    if not user_id:
+        return Response({"error": "User ID required"}, status=400)
+
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=404)
+
     predictions = TeamPrediction.objects.filter(user=user).order_by('-gameweek')
     serializer = TeamPredictionSerializer(predictions, many=True)
     return Response({"predictions": serializer.data})
+
 
 @csrf_exempt
 @api_view(["DELETE"])

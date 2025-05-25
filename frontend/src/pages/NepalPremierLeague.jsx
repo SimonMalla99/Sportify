@@ -69,13 +69,12 @@ const NepalPremierLeague = () => {
 
   return (
     <div className="npl-container">
-      <header className="home-header">
+      <header className="npl-header">
         <div className="logo">Sportify</div>
         <nav className="nav-bar">
           <Link to="/">Home Page</Link>
           <Link to="/fantasy-team">Fantasy</Link>
           <Link to="/News">Sports News</Link>
-          <Link to="/team-prediction-form">Predictions</Link>
           <Link to="/npl">NPL</Link>
           <Link to="/leaderboard">Leaderboards</Link>
           <Link to="/videostream">Live Game</Link>
@@ -117,7 +116,7 @@ const NepalPremierLeague = () => {
         <section>
         <h2 className="text-xl font-bold mb-4">Nepal Premier League</h2>
         <div className="overflow-x-auto">
-            <table className="table-auto w-full border-collapse border border-gray-300">
+            <table className="npl-table">
             <thead>
                 <tr className="bg-gray-100 text-left">
                 <th className="border p-2">Rank</th>
